@@ -138,7 +138,7 @@ const ATOMIC_MASSES = [ # Values in g/mol
 ]
 
 const VDW_RADIUS = [ # Values in pm
-    "H" => 120
+    "H" => 120,
     "Zn" => 139,
     "He" => 140,
     "Cu" => 140,

@@ -81,6 +81,6 @@ end
 
 #==============================================================================#
 # Includes
-include("density.jl")
-include("dipole.jl")
-include("rdf.jl")
+include("Histograms/density.jl")
+include("Histograms/dipole.jl")
+include("Histograms/rdf.jl")
