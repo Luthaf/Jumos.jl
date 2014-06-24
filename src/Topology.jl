@@ -27,7 +27,8 @@ type Topology
     residues::Dict{String, Array{Int,1}}
     bonds::Array{Bond, 1}
     angles::Array{Angle, 1}
-    dihedrals::Array{Dihedral, 1}
+    dihedrals::Array{Dihedral, 1}  # Reals dihedrals
+    impropers::Array{Dihedral, 1}  # Impropers dihedrals
 end
 
 Topology(natoms::Integer) = Topology(Array(Atom, natoms),
@@ -35,9 +36,10 @@ Topology(natoms::Integer) = Topology(Array(Atom, natoms),
                                      Dict(),
                                      Array(Bond, 0),
                                      Array(Angle, 0),
+                                     Array(Dihedral, 0),
                                      Array(Dihedral, 0)
                                     )
-Topology() = Topology([], Dict(), Dict(), [], [], [])
+Topology() = Topology(0)
 
 function Base.size(a::Dict{String, Array{Int64,1}})
     # Just count the number of dict entry
@@ -57,3 +59,5 @@ function Base.show(io::IO, top::Topology)
     print(string("Topology with $n_molecules molecules, $n_residues residues, ",
                 "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
 end
+
+include("Topologies/LAMMPS.jl")

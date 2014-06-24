@@ -8,12 +8,14 @@
 using NetCDF
 
 type NCReader <: BaseReader
+    natoms::Integer
     nsteps::Integer
     current_step::Integer
     file::NcFile
+    topology::Topology
 end
 
-function NCReader(filename::String, topology::String="")
+function NCReader(filename::String, topology_file::String="")
     file = NetCDF.open(filename)
     is_AMBER = false
     try
@@ -24,17 +26,19 @@ function NCReader(filename::String, topology::String="")
     if !is_AMBER
         error("This software can only read AMBER convention for NetCDF files.")
     end
+
     natoms = file.dim["atom"].dimlen
     nsteps = file.dim["frame"].dimlen
-    top = String[]
-    if topology==""
+
+    if topology_file == ""
+        topology = Topology(natoms)
         for i=1:natoms
-            push!(top, string(i))
+            topology.atoms[i] = Atom(string(i))
         end
     else
-        top = read_topology(topology)
+        topology = read_topology(topology_file)
     end
-    return NCReader(natoms, nsteps, 0, file, top)
+    return NCReader(natoms, nsteps, 0, file, topology)
 end
 
 
@@ -82,30 +86,4 @@ function read_frame!(traj::NCReader, step::Integer, frame::Frame; vel=false)
     else
         return true
     end
-end
-
-# This function read a '.lmp' file to find about atomic names associated to
-# the atomic types.
-function read_topology(filename::String)
-    topology = String[]
-    if split(filename, '.')[end] != "lmp"
-        error("Only .lmp topology files are supported")
-    end
-    open(filename) do f
-        line = readline(f)
-        while !contains(line, "# Bond Coeffs", )
-            if contains(line, "#")
-                try
-                    i = int(split(line)[2])
-                    name = split(line)[3]
-                    push!(topology, name)
-                catch
-                    # do nothing in case of error, just wait for the next
-                    # valid conversion. This may hardly fail.
-                end
-            end
-            line = readline(f)
-        end
-    end
-    return topology
 end

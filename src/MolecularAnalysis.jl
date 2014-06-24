@@ -5,6 +5,7 @@ module MolecularAnalysis
 
     include("Topology.jl")
     export Topology, Atom, Bond, Angle, Dihedral
+    export read_topology
 
     include("Trajectory.jl")
     export MDTrajectory, BaseReader, BaseWriter, Box, Frame

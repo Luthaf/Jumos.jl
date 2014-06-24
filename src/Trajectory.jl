@@ -21,14 +21,12 @@ type Frame
     step::Integer
     positions::Array{Real,2}
     velocities::Array{Real,2}
-    topology::Topology
     box::Box
 end
 
-Frame(natoms::Integer) = Frame(natoms,
+Frame(natoms::Integer) = Frame(-1,
                                Array(Float64, 3, natoms),
                                Array(Float64, 3, natoms),
-                               Topology(natoms),
                                Box()
                               )
 Frame() = Frame(0)
