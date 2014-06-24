@@ -72,10 +72,6 @@ function read_frame!(traj::NCReader, step::Integer, frame::Frame; vel=false)
     end
 
     types = NetCDF.readvar(traj.file, "atom_types")
-    frame.labels = String[] # Clearing the labels
-    for i=1:traj.natoms
-        push!(frame.labels, traj.topology[types[i]])
-    end
 
     frame.box = NetCDF.readvar(traj.file,
                                "cell_lengths",
