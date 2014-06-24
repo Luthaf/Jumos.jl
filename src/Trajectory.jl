@@ -18,18 +18,19 @@ box() = box(0)
 
 # The Frame type holds a frame, i.e. one step of a simulation.
 type Frame
+    trajectory::MDTrajectory
     step::Integer
     positions::Array{Real,2}
     velocities::Array{Real,2}
     box::Box
 end
 
-Frame(natoms::Integer) = Frame(-1,
-                               Array(Float64, 3, natoms),
-                               Array(Float64, 3, natoms),
-                               Box()
+Frame(t::MDTrajectory) = Frame(t,
+                               -1,
+                               Array(Float64, 3, t.natoms),
+                               Array(Float64, 3, t.natoms),
+                               box()
                               )
-Frame() = Frame(0)
 
 #==============================================================================#
 #==============================================================================#

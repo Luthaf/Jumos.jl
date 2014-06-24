@@ -57,7 +57,6 @@ function read_frame!(traj::NCReader, step::Integer, frame::Frame; vel=false)
         error("Can not read step $step. Maximum step: $max")
     end
     frame.step = step
-    frame.natoms = traj.natoms
 
     frame.positions = NetCDF.readvar(traj.file,
                                "coordinates",
@@ -70,8 +69,6 @@ function read_frame!(traj::NCReader, step::Integer, frame::Frame; vel=false)
                                    start=[1,1,step],
                                    count=[-1,-1,1])[:,:,1]
     end
-
-    types = NetCDF.readvar(traj.file, "atom_types")
 
     frame.box = NetCDF.readvar(traj.file,
                                "cell_lengths",
