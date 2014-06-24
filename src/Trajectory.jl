@@ -97,3 +97,10 @@ function opentraj(filename, mode="r"; kwargs...)
         error("Only read mode is supported")
     end
 end
+
+
+
+import Base.close, Base.isopen
+
+Base.close(traj::MDTrajectory) = close(traj.file)
+Base.isopen(traj::MDTrajectory)= isopen(traj.file)

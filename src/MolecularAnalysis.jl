@@ -11,6 +11,7 @@ module MolecularAnalysis
     export MDTrajectory, BaseReader, BaseWriter, Box, Frame
     export XYZReader, NCReader
     export read_frame!, read_next_frame!, go_to_step, opentraj, eachframe
+    export close, isopen
 
     include("Histograms.jl")
     export Histogram, DensityProfile

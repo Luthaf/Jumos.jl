@@ -80,3 +80,7 @@ function read_frame!(traj::NCReader, step::Integer, frame::Frame; vel=false)
         return true
     end
 end
+
+
+import Base.close
+Base.close(traj::NCReader) = ncclose(traj.file.name)
