@@ -13,6 +13,8 @@ type XYZReader <: BaseReader
     current_step::Integer
     file::IOStream
     box::Box
+    topology::Topology
+    topology_read::Bool
 end
 
 # Constructor of XYZReader: open the file and get some informations
@@ -26,7 +28,7 @@ function XYZReader(filename::String, box={0,0,0})
     if !(nlines%(natoms + 2) == 0)
         error("Wrong number of lines in file $filename")
     end
-    return XYZReader(nsteps, 0, file, box)
+    return XYZReader(nsteps, 0, file, box, Topology(natoms), false)
 end
 
 # Read a given step of am XYZ Trajectory
@@ -54,7 +56,9 @@ function read_next_frame!(traj::XYZReader, frame::Frame)
         line = readline(traj.file)
         label, position = read_atom_from_line(line)
         frame.positions[:, i] = position
-        push!(frame.labels, label)
+        if !traj.topology_read
+            traj.topology.atoms[i] = Atom(label)
+        end
     end
     frame.box = traj.box
     frame.step = traj.current_step
