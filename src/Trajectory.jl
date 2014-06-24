@@ -9,7 +9,7 @@ abstract BaseWriter <: MDTrajectory
 
 
 # Simulation box type
-typealias Box Array{Real,1}
+typealias Box{T<:Real} Array{T,1}
 
 box(Lx::Real, Ly::Real, Lz::Real) = Real[Lx, Ly, Lz]
 box(L::Real) = box(L, L, L)
