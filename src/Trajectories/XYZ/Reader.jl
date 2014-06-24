@@ -9,6 +9,7 @@
 
 # The XYZReader type hold .xyz files
 type XYZReader <: BaseReader
+    natoms::Integer
     nsteps::Integer
     current_step::Integer
     file::IOStream
@@ -28,7 +29,7 @@ function XYZReader(filename::String, box={0,0,0})
     if !(nlines%(natoms + 2) == 0)
         error("Wrong number of lines in file $filename")
     end
-    return XYZReader(nsteps, 0, file, box, Topology(natoms), false)
+    return XYZReader(natoms, nsteps, 0, file, box, Topology(natoms), false)
 end
 
 # Read a given step of am XYZ Trajectory
@@ -48,11 +49,10 @@ end
 # Assume that the cursor is already at the good place.
 # Return True if there is still some step to read, false otherwhile
 function read_next_frame!(traj::XYZReader, frame::Frame)
-    frame.natoms = int(readline(traj.file))
+    traj.natoms = int(readline(traj.file))
     readline(traj.file)  # comment
-    frame.positions = zeros(Float64, 3, frame.natoms) # Clearing the arrays
-    frame.labels = String[]
-    for i = 1:frame.natoms
+    frame.positions = zeros(Float64, 3, traj.natoms) # Clearing the arrays
+    for i = 1:traj.natoms
         line = readline(traj.file)
         label, position = read_atom_from_line(line)
         frame.positions[:, i] = position
