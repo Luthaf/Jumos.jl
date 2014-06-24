@@ -32,6 +32,34 @@ Frame(t::MDTrajectory) = Frame(t,
                                box()
                               )
 
+
+#===============================================================================
+                    Iterator interface for trajectories
+===============================================================================#
+# Only reads some specific steps
+function eachframe(t::BaseReader, range::Range{Integer})
+    frame = Frame(t)
+    function _it()
+        for i in range
+            read_frame!(t, i, frame)
+            produce(frame)
+        end
+    end
+    return Task(_it)
+end
+
+# Reads every steps of a trajectory, given a starting point
+function eachframe(t::BaseReader; start=1)
+    t.current_step = start - 1
+    frame = Frame(t)
+    function _it()
+        while read_next_frame!(t, frame)
+            produce(frame)
+        end
+    end
+    return Task(_it)
+end
+
 #==============================================================================#
 #==============================================================================#
 
