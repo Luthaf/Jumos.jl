@@ -13,11 +13,11 @@ module MolecularAnalysis
     export read_frame!, read_next_frame!, go_to_step, opentraj, eachframe
     export close, isopen
 
+    include("Distances.jl")
+    export minimal_image!, pbc_distance, distance, distance_array
+
     include("Histograms.jl")
     export Histogram, DensityProfile
     export update!, normalize!, write, clean!
-
-    include("Distances.jl")
-    export minimal_image!, pbc_distance, distance
 
 end
