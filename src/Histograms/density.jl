@@ -41,6 +41,7 @@ function write(d::DensityProfile, filename::String)
         println(f, position, "\t", d.values.weight[i])
     end
     close(f)
+    return outname
 end
 
 function normalize!(d::DensityProfile)
