@@ -82,5 +82,4 @@ end
 #==============================================================================#
 # Includes
 include("Histograms/density.jl")
-include("Histograms/dipole.jl")
 include("Histograms/rdf.jl")
