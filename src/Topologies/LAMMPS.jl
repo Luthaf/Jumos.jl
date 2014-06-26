@@ -11,7 +11,7 @@ const N_IMPROPERS = r"([0-9]*)\s*impropers"
 const N_TYPES = r"([0-9]*)\s*atom types"
 const NAMES = r"Pair Coeffs\n#\n(.*)\n\n# Bond Coeffs"s
 
-function read_topology(filename::String)
+function read_lmp_topology(filename::String)
     f = open(filename)
 
     # Read the header

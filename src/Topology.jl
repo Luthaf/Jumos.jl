@@ -2,8 +2,6 @@
                  Useful types for topology storage.
 ===============================================================================#
 
-import Base.show
-
 type Atom
     name::String                # atom name
     symbol::String              # atom chemical type
@@ -13,7 +11,7 @@ end
 Atom(s::String) = Atom(s, s, Dict())
 Atom() = Atom("")
 
-function Base.show(io::IO, atom::Atom)
+function show(io::IO, atom::Atom)
     print("Atom $(atom.name) ($(atom.symbol))")
 end
 
@@ -21,14 +19,15 @@ typealias Bond (Int, Int)
 typealias Angle (Int, Int, Int)
 typealias Dihedral (Int, Int, Int, Int)
 
+
 type Topology
-    atoms::Array{Atom,1}
+    atoms::Vector{Atom}
     molecules::Dict{String, Array{Int,1}}
     residues::Dict{String, Array{Int,1}}
-    bonds::Array{Bond, 1}
-    angles::Array{Angle, 1}
-    dihedrals::Array{Dihedral, 1}  # Reals dihedrals
-    impropers::Array{Dihedral, 1}  # Impropers dihedrals
+    bonds::Vector{Bond}
+    angles::Vector{Angle}
+    dihedrals::Vector{Dihedral}  # Reals dihedrals
+    impropers::Vector{Dihedral}  # Impropers dihedrals
 end
 
 Topology(natoms::Integer) = Topology(Array(Atom, natoms),
@@ -41,7 +40,7 @@ Topology(natoms::Integer) = Topology(Array(Atom, natoms),
                                     )
 Topology() = Topology(0)
 
-function Base.size(a::Dict{String, Array{Int64,1}})
+function size(a::Dict{String, Array{Int64,1}})
     # Just count the number of dict entry
     i = 0
     for _ in a
@@ -50,7 +49,7 @@ function Base.size(a::Dict{String, Array{Int64,1}})
     return i
 end
 
-function Base.show(io::IO, top::Topology)
+function show(io::IO, top::Topology)
     n_molecules = size(top.molecules)
     n_residues = size(top.residues)
     n_bonds = size(top.bonds, 1)
@@ -60,4 +59,21 @@ function Base.show(io::IO, top::Topology)
                 "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
 end
 
+include("Topologies/XYZ.jl")
 include("Topologies/LAMMPS.jl")
+
+function read_topology(filename; kwargs...)
+    extension = split(strip(filename), ".")[end]
+    kwargs = Dict(convert(Array{(Symbol,Any), 1}, kwargs))
+    if extension == "xyz"
+        info("Reading topology in XYZ format")
+        return read_xyz_topology(filename)
+    elseif extension == "lmp"
+        info("Reading topology in LAMMPS format")
+        return read_lmp_topology(filename)
+    else
+        error("The '$extension' extension is not recognized")
+    end
+end
+
+Topology(filename::String) = read_topology(filename)

@@ -1,5 +1,7 @@
 module MolecularAnalysis
 
+    importall Base
+
     include("vect3.jl")
     export Vect3
 
@@ -11,10 +13,8 @@ module MolecularAnalysis
     export read_topology
 
     include("Trajectory.jl")
-    export MDTrajectory, BaseReader, BaseWriter, Box, Frame
-    export XYZReader, NCReader
-    export read_frame!, read_next_frame!, go_to_step, opentraj, eachframe
-    export close, isopen
+    export Reader, Writer, Box, Frame
+    export eachframe, read_next_frame!, read_frame!
 
     include("Distances.jl")
     export minimal_image!, pbc_distance, distance, distance_array

@@ -7,29 +7,27 @@
     of atoms.
 ===============================================================================#
 
-# The XYZReader type hold .xyz files
-type XYZReader <: BaseReader
-    natoms::Integer
-    nsteps::Integer
-    current_step::Integer
+type XYZReader <: AbstractReaderIO
     file::IOStream
     box::Box
-    topology::Topology
-    topology_read::Bool
 end
 
-# Constructor of XYZReader: open the file and get some informations
-function XYZReader(filename::String, box={0,0,0})
-    file = open(filename, "r")
-    natoms = int(readline(file))
-    seekstart(file)
-    nlines = countlines(file)
-    seekstart(file)
+
+function get_traj_infos(r::XYZReader)
+    natoms = int(readline(r.file))
+    seekstart(r.file)
+    nlines = countlines(r.file)
+    seekstart(r.file)
     nsteps = nlines/(natoms + 2)
     if !(nlines%(natoms + 2) == 0)
         error("Wrong number of lines in file $filename")
     end
-    return XYZReader(natoms, nsteps, 0, file, box, Topology(natoms), false)
+    return natoms, nsteps
+end
+# Constructor of XYZReader: open the file and get some informations
+function XYZReader(filename::String, box=0.0)
+    file = open(filename, "r")
+    return XYZReader(file, Box(box))
 end
 
 # Read a given step of am XYZ Trajectory
