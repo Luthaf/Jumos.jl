@@ -31,9 +31,9 @@ end
 
 
 # Simulation box type
-immutable Box{T<:Real}
-    length :: Vect3{T}
-    angles :: Vect3{T}
+immutable Box
+    length :: Vect3{Float64}
+    angles :: Vect3{Float64}
     box_type :: Symbol  # box_type should takes only the values :triclinic and :orthorombic
 end
 
@@ -80,23 +80,18 @@ type Frame
     step::Integer
     box::Box
     topology::Topology
-    positions::Vector{Vect3}
-    velocities::Vector{Vect3}
+    positions::Vector{Vect3{Float32}}
+    velocities::Vector{Vect3{Float32}}
 end
 
 Frame(t::Topology) = Frame(0,
                            Box(),
                            t,
-                           Array(Vect3, size(t.atoms, 1)),
-                           Array(Vect3, size(t.atoms, 1)),
+                           Array(Vect3{Float32}, size(t.atoms, 1)),
+                           Array(Vect3{Float32}, size(t.atoms, 1)),
                            )
 
-Frame(t::MDTrajectory) = Frame(0,
-                           Box(),
-                           t.topology,
-                           Array(Vect3, t.natoms),
-                           Array(Vect3, t.natoms),
-                           )
+Frame(t::MDTrajectory) = Frame(t.topology)
 
 
 #===============================================================================

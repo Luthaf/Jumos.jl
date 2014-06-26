@@ -8,16 +8,19 @@ immutable Vect3{T<:Real}
   z::T
 end
 
+typealias RVector{T<:Real} Array{T, 1}
+typealias RArray{T<:Real} Array{T, 2}
+
 Vect3(x::Real, y::Real, z::Real) = Vect3(promote(x, y, z)...)
 Vect3(a::Real) = Vect3(a, a, a)
-Vect3(v::Vector) = length(v)==3 ? Vect3(v[1], v[2], v[3]) : throw(InexactError())
+Vect3(v::RVector) = length(v)==3 ? Vect3(v[1], v[2], v[3]) : throw(InexactError())
 
-convert{T<:Real}(::Type{Vect3}, a::Array{T,1}) = Vect3(a)
-convert{S<:Real, T<:Real}(::Type{Vect3{S}}, a::Array{T,1}) = Vect3(a)
+convert{T<:Real}(::Type{Vect3}, v::Vect3{T}) = v
+convert(::Type{Vect3}, v::RVector) = Vect3(v)
 
-function convert{T<:Real}(::Type{Vector{Vect3}}, a::Array{T,2})
+function convert{T<:Real}(::Type{Vector{Vect3{T}}}, a::RArray)
     if size(a, 1) == 3
-        return Vect3[a[:, i] for i=1:size(a,1)]
+        return [Vect3(a[:, i]) for i=1:size(a,1)]
     elseif size(a, 2) == 3
         return Vect3[reshape(a[i, :], 3) for i=1:size(a,1)]
     end
