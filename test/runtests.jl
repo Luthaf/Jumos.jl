@@ -1,4 +1,6 @@
+tic()
 using MolecularAnalysis
+println("Load time: $(toq())")
 using Base.Test
 
 #===============================================================================
