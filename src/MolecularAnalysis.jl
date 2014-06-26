@@ -1,5 +1,8 @@
 module MolecularAnalysis
 
+    include("vect3.jl")
+    export Vect3
+
     include("Periodic.jl")
     export ATOMIC_MASSES, VDW_RADIUS
 
@@ -17,7 +20,7 @@ module MolecularAnalysis
     export minimal_image!, pbc_distance, distance, distance_array
 
     include("Histograms.jl")
-    export Histogram, DensityProfile
+    export Histogram, DensityProfile, RDF
     export update!, normalize!, write, clean!
 
 end
