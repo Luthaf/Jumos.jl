@@ -33,6 +33,7 @@ const TEST_DIR = dirname(Base.source_path())
 traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
     frame = Frame(traj)
     read_next_frame!(traj, frame)
+    @test length(frame.positions) == 297
 close(traj)
 
 # XYZ

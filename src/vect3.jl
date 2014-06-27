@@ -15,14 +15,14 @@ Vect3(x::Real, y::Real, z::Real) = Vect3(promote(x, y, z)...)
 Vect3(a::Real) = Vect3(a, a, a)
 Vect3(v::RVector) = length(v)==3 ? Vect3(v[1], v[2], v[3]) : throw(InexactError())
 
-convert{T<:Real}(::Type{Vect3}, v::Vect3{T}) = v
+convert{T<:Real}(::Type{Vect3{T}}, v::Vect3) = Vect3(convert(T, v.x), convert(T, v.y), convert(T, v.z))
 convert{T<:Real}(::Type{Vect3{T}}, v::RVector) = Vect3(v)
 
 function convert{T<:Real}(::Type{Vector{Vect3{T}}}, a::RArray)
     if size(a, 1) == 3
-        return [Vect3(a[:, i]) for i=1:size(a,1)]
+        return [Vect3(a[:, i]) for i=1:size(a,2)]
     elseif size(a, 2) == 3
-        return Vect3[reshape(a[i, :], 3) for i=1:size(a,1)]
+        return [Vect3(reshape(a[i, :], 3)) for i=1:size(a,1)]
     end
     throw(InexactError())
 end

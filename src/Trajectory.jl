@@ -37,12 +37,12 @@ immutable Box
     box_type :: Symbol  # box_type should takes only the values :triclinic and :orthorombic
 end
 
-function getindex(b::Box, i::(Int, String))
-    if i <: Integer && 0 < i <= 3
+function getindex(b::Box, i::Union(Integer, String))
+    if isa(i, Integer) && 0 < i <= 3
         return b.length[i]
-    elseif i <: Integer && 3 < i <= 6
+    elseif isa(i, Integer) && 3 < i <= 6
         return b.angles[i-3]
-    elseif i <: String
+    elseif isa(i, String)
         if lower(i) == "x"
             return b.length[1]
         elseif lower(i) == "y"
