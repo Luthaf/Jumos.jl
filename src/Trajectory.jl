@@ -68,9 +68,22 @@ function Box(u::Vect3, v::Vect3)
     end
     return Box(u, v, box_type)
 end
-Box{S<:Real, T<:Real}(u::Vector{S}, v::Vector{T}) = Box(Vect3(u), Vect3(v))
-Box(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = Box(promote(Vect3(Lx, Ly, Lz), Vect3(a, b, c))...)
-Box(Lx::Real, Ly::Real, Lz::Real) = Box(Lx, Ly, Lz, 90., 90., 90.)
+
+Box(u::Vector, v::Vector) = Box(Vect3(u), Vect3(v))
+Box(u::Vect3) = Box(u, Vect3(90.0))
+
+function Box(u::Vector)
+    if length(u) == 3
+        return Box(Vect3(u))
+    elseif length(u) == 6
+        return Box(Vect3(u[1:3]), Vect3(u[4:6]))
+    else
+        throw(InexactError())
+    end
+end
+
+Box(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = Box(Vect3(Lx, Ly, Lz), Vect3(a, b, c))
+Box(Lx::Real, Ly::Real, Lz::Real) = Box(Vect3(Lx, Ly, Lz))
 Box(L::Real) = Box(L, L, L)
 Box() = Box(0.0)
 

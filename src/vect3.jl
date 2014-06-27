@@ -16,7 +16,7 @@ Vect3(a::Real) = Vect3(a, a, a)
 Vect3(v::RVector) = length(v)==3 ? Vect3(v[1], v[2], v[3]) : throw(InexactError())
 
 convert{T<:Real}(::Type{Vect3}, v::Vect3{T}) = v
-convert(::Type{Vect3}, v::RVector) = Vect3(v)
+convert{T<:Real}(::Type{Vect3{T}}, v::RVector) = Vect3(v)
 
 function convert{T<:Real}(::Type{Vector{Vect3{T}}}, a::RArray)
     if size(a, 1) == 3

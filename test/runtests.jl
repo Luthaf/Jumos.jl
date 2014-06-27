@@ -47,7 +47,7 @@ close(traj)
                         Test the histograms functions
 ===============================================================================#
 
-traj = opentraj("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
+traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
 
     info("Testing DensityProfile")
     tic()
