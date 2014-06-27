@@ -17,16 +17,16 @@ end
 RDF(atom_i::String; kwargs...) = RDF(atom_i, atom_i; kwargs...)
 
 function update!(r::RDF, f::Frame)
-    const natoms = f.trajectory.natoms
+    const natoms = length(f.positions)
     distances = Array(Float64, natoms, natoms)
     distance_array(f, f, distances)
 
     dists = Float64[]
 
     for i=1:natoms
-        if f.trajectory.topology.atoms[i].name == r.atom_i
+        if f.topology.atoms[i].name == r.atom_i
             for j=1:natoms
-                if f.trajectory.topology.atoms[j].name == r.atom_j
+                if f.topology.atoms[j].name == r.atom_j
                     push!(dists, distances[i, j])
                 end
             end

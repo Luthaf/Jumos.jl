@@ -11,9 +11,9 @@ function minimal_image!{T<:Number}(vect::Array{T, 1}, box::Box)
 end
 
 function pbc_distance(ref::Frame, conf::Frame, i, j)
-    xx = ref.positions[1, i] - conf.positions[1, j]
-    yy = ref.positions[2, i] - conf.positions[2, j]
-    zz = ref.positions[3, i] - conf.positions[3, j]
+    xx = ref.positions[i].x - conf.positions[j].x
+    yy = ref.positions[i].y - conf.positions[j].y
+    zz = ref.positions[i].z - conf.positions[j].z
 	# Periodic boundary conditions
 	xx -= round(xx / ref.box[1]) * ref.box[1]
 	yy -= round(yy / ref.box[2]) * ref.box[2]
@@ -22,15 +22,15 @@ function pbc_distance(ref::Frame, conf::Frame, i, j)
 end
 
 function distance(ref::Frame, conf::Frame, i, j)
-    xx = ref.positions[1, i] - conf.positions[1, j]
-    yy = ref.positions[2, i] - conf.positions[2, j]
-    zz = ref.positions[3, i] - conf.positions[3, j]
+    xx = ref.positions[i].x - conf.positions[j].x
+    yy = ref.positions[i].y - conf.positions[j].y
+    zz = ref.positions[i].z - conf.positions[j].z
     return sqrt(xx*xx + yy*yy + zz*zz)
 end
 
 function distance_array(ref::Frame, conf::Frame, result = nothing)
-    cols = ref.trajectory.natoms
-    rows = conf.trajectory.natoms
+    cols = length(ref.positions)
+    rows = length(conf.positions)
     # Checking the pre-allocated array
     if result == nothing
         result = Array(Float64, cols, rows)
@@ -55,4 +55,3 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
 
     return result
 end
-

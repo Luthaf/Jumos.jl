@@ -17,8 +17,9 @@ end
 
 function update!(d::DensityProfile, f::Frame)
     positions = Float64[]
-    for (i, pos) in enumerate(f.positions[d.dim, :])
-        if f.trajectory.topology.atoms[i].name == d.atom
+    for (i, pos) in enumerate(f.positions)
+        if f.topology.atoms[i].name == d.atom
+            pos = pos[d.dim]
             # PBC
             pos -= floor(pos/f.box[d.dim])*f.box[d.dim]
             push!(positions, pos)
