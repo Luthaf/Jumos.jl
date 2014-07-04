@@ -1,5 +1,8 @@
 #===============================================================================
                 Type Vect3: immutable type for 3D vectors
+
+    TODO: Use immutable fixed size array when they exists
+        see https://github.com/JuliaLang/julia/issues/5857
 ===============================================================================#
 
 immutable Vect3{T<:Real}

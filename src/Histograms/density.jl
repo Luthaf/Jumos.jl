@@ -3,7 +3,7 @@
 ===============================================================================#
 
 type DensityProfile
-    values::Histogram
+    values::Histogram{Float64}
     atom::String
     dim::Int  # The dimension for computing the profile
     used_steps::Int
@@ -31,11 +31,13 @@ function update!(d::DensityProfile, f::Frame)
     return nothing
 end
 
-function write(d::DensityProfile, filename::String)
-    outname = join(split(filename, '.')[1:end-1], '.')
-    outname = "$outname-$(d.atom).rho"
+function write(d::DensityProfile, trajname::String; outname="")
+    if outname == ""
+        outname = join(split(trajname, '.')[1:end-1], '.')
+        outname = "$outname-$(d.atom).rho"
+    end
     f = open(outname, "w")
-    println(f, "# Density profile along dimmension ", d.dim, " for trajectory", filename)
+    println(f, "# Density profile along dimmension ", d.dim, " for trajectory", trajname)
     println(f, "# x[", d.dim, "]\trho")
     for i=1:d.values.bins
         position = i*d.values.step

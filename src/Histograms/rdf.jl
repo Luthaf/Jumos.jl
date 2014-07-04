@@ -3,15 +3,17 @@
 ===============================================================================#
 
 type RDF
-    values::Histogram
+    values::Histogram{Float64}
     atom_i::String
     atom_j::String
     used_steps::Int
+    n_parts::BigInt
+    box::Box
 end
 
-function RDF(atom_i::String, atom_j::String; bins=300, min=0, max=0, step=0)
-    h = Histogram(Float64, bins; min=min, max=max, step=step)
-    return RDF(h, atom_i, atom_j, 0)
+function RDF(atom_i::String, atom_j::String; bins=200)
+    h = Histogram(Float64, bins)
+    return RDF(h, atom_i, atom_j, 0, 0, Box())
 end
 
 RDF(atom_i::String; kwargs...) = RDF(atom_i, atom_i; kwargs...)
@@ -25,7 +27,8 @@ function update!(r::RDF, f::Frame)
 
     for i=1:natoms
         if f.topology.atoms[i].name == r.atom_i
-            for j=1:natoms
+            r.n_parts += 1
+            for j=(i+1):natoms
                 if f.topology.atoms[j].name == r.atom_j
                     push!(dists, distances[i, j])
                 end
@@ -33,22 +36,51 @@ function update!(r::RDF, f::Frame)
         end
     end
 
-    update!(r.values, dists)
+    if r.box == Box(0.0) initialize!(r, f) end
+
+    update!(r.values, dists, weight=2.0)
     r.used_steps += 1
     return nothing
 end
 
-function write(d::DensityProfile, filename::String)
-    #TODO
+function initialize!(r::RDF, f::Frame)
+    @assert f.box != Box(0.0) "The simulation box can not be null for RDF computations"
+    r.box = f.box
+    r.values.min = 0.0
+    r.values.max = 0.5*min(r.box.length.x, r.box.length.y, r.box.length.z)
 end
 
-function normalize!(d::DensityProfile)
-    #TODO
+function write(r::RDF, trajname::String; outname="")
+    if outname == ""
+        outname = join(split(trajname, '.')[1:end-1], '.')
+        outname = "$outname-$(r.atom_i)-$(r.atom_j).rdf"
+    end
+    f = open(outname, "w")
+    println(f, "# Radial distribution function for atoms ", r.atom_i, " & ",
+                r.atom_j, " for trajectory", trajname)
+    for i=1:r.values.bins
+        position = i*r.values.step
+        println(f, position, "\t", r.values.weight[i])
+    end
+    close(f)
+    return outname
 end
 
+function normalize!(r::RDF)
+    function norm(i::Integer)
+        V = r.box[1]*r.box[2]*r.box[3]
+        n_particles = r.n_parts/(r.used_steps)
+        rho = n_particles/V
+        dr = r.values.step
+        f = i -> 4*pi/3 * (dr*(i + 1))^3
+        return rho * n_particles * r.used_steps * (f(i+1) - f(i))
+    end
 
-function clean!(d::DensityProfile)
-    clean!(d.values)
-    d.used_steps = 0
+    normalize!(r.values, norm)
+end
+
+function clean!(r::RDF)
+    clean!(r.values)
+    r.used_steps = 0
     return nothing
 end

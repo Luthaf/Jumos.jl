@@ -58,7 +58,7 @@ function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
     frame.box = traj.reader.box
     frame.step = traj.current_step
     traj.current_step += 1
-    if traj.current_step > traj.nsteps
+    if traj.current_step >= traj.nsteps
         return false
     else
         return true

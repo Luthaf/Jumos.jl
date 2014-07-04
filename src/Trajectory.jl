@@ -87,6 +87,8 @@ Box(Lx::Real, Ly::Real, Lz::Real) = Box(Vect3(Lx, Ly, Lz))
 Box(L::Real) = Box(L, L, L)
 Box() = Box(0.0)
 
+Box(b::Box) = b
+
 
 # The Frame type holds a frame, i.e. one step of a simulation.
 type Frame
