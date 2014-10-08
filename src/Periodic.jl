@@ -2,7 +2,7 @@
        Atomic informations: mass, Van der Waals radii, names aliases, etc.
 ===============================================================================#
 
-const ATOMIC_MASSES = [ # Values in g/mol
+const ATOMIC_MASSES = Dict( # Values in g/mol
     "Ac"=> 227.028,
     "Ag"=> 107.8682,
     "Al"=> 26.981539,
@@ -135,9 +135,9 @@ const ATOMIC_MASSES = [ # Values in g/mol
 
     "Zn"=> 65.37,
     "Zr"=> 91.224
-]
+)
 
-const VDW_RADIUS = [ # Values in pm
+const VDW_RADIUS = Dict( # Values in pm
     "H" => 120,
     "Zn" => 139,
     "He" => 140,
@@ -176,4 +176,4 @@ const VDW_RADIUS = [ # Values in pm
     "Sn" => 217,
     "Na" => 227,
     "K" => 275,
-]
+)
