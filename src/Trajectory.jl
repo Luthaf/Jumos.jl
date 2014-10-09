@@ -32,8 +32,8 @@ end
 
 # Simulation box type
 immutable Box
-    length :: Vect3{Float64}
-    angles :: Vect3{Float64}
+    length :: Vect3D{Float64}
+    angles :: Vect3D{Float64}
     box_type :: Symbol  # box_type should takes only the values :triclinic and :orthorombic
 end
 
@@ -60,8 +60,8 @@ function getindex(b::Box, i::Union(Integer, String))
     throw(BoundsError())
 end
 
-function Box(u::Vect3, v::Vect3)
-    if v == Vect3(90.0)
+function Box(u::Vect3D, v::Vect3D)
+    if v == vect3d(90.0)
         box_type = :orthorombic
     else
         box_type = :triclinic
@@ -69,21 +69,21 @@ function Box(u::Vect3, v::Vect3)
     return Box(u, v, box_type)
 end
 
-Box(u::Vector, v::Vector) = Box(Vect3(u), Vect3(v))
-Box(u::Vect3) = Box(u, Vect3(90.0))
+Box(u::Vector, v::Vector) = Box(vect3d(u), vect3d(v))
+Box(u::Vect3D) = Box(u, vect3d(90.0))
 
 function Box(u::Vector)
     if length(u) == 3
-        return Box(Vect3(u))
+        return Box(vect3d(u))
     elseif length(u) == 6
-        return Box(Vect3(u[1:3]), Vect3(u[4:6]))
+        return Box(vect3d(u[1:3]), vect3d(u[4:6]))
     else
         throw(InexactError())
     end
 end
 
-Box(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = Box(Vect3(Lx, Ly, Lz), Vect3(a, b, c))
-Box(Lx::Real, Ly::Real, Lz::Real) = Box(Vect3(Lx, Ly, Lz))
+Box(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = Box(vect3d(Lx, Ly, Lz), vect3d(a, b, c))
+Box(Lx::Real, Ly::Real, Lz::Real) = Box(vect3d(Lx, Ly, Lz))
 Box(L::Real) = Box(L, L, L)
 Box() = Box(0.0)
 
@@ -95,15 +95,15 @@ type Frame
     step::Integer
     box::Box
     topology::Topology
-    positions::Vector{Vect3{Float32}}
-    velocities::Vector{Vect3{Float32}}
+    positions::Vector{Vect3D{Float32}}
+    velocities::Vector{Vect3D{Float32}}
 end
 
 Frame(t::Topology) = Frame(0,
                            Box(),
                            t,
-                           Array(Vect3{Float32}, size(t.atoms, 1)),
-                           Array(Vect3{Float32}, size(t.atoms, 1)),
+                           Array(Vect3D{Float32}, size(t.atoms, 1)),
+                           Array(Vect3D{Float32}, size(t.atoms, 1)),
                            )
 
 Frame(t::MDTrajectory) = Frame(t.topology)

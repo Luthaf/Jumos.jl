@@ -1,9 +1,9 @@
 module MolecularAnalysis
 
-    importall Base
+    import Base.show, Base.convert, Base.close, Base.size
 
-    include("vect3.jl")
-    export Vect3
+    include("vect3d.jl")
+    export Vect3D, vect3d
 
     include("Periodic.jl")
     export ATOMIC_MASSES, VDW_RADIUS

@@ -47,7 +47,7 @@ function initialize!(r::RDF, f::Frame)
     @assert f.box != Box(0.0) "The simulation box can not be null for RDF computations"
     r.box = f.box
     r.values.min = 0.0
-    r.values.max = 0.5*min(r.box.length.x, r.box.length.y, r.box.length.z)
+    r.values.max = 0.5*min(r.box.length[1], r.box.length[2], r.box.length[3])
 end
 
 function write(r::RDF, trajname::String; outname="")
