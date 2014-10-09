@@ -63,7 +63,7 @@ function read_frame!(traj::Reader{NCReader}, step::Integer, frame::Frame)
                                "cell_angles",
                                start=[1, step],
                                count=[-1,1])[:,1]
-    frame.box = Box(length, angles)
+    frame.box = SimBox(length, angles)
     if step >= traj.nsteps
         return false
     else

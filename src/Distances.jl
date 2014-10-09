@@ -3,7 +3,7 @@
 ===============================================================================#
 
 # Refine a vector using the minimal image convention
-function minimal_image!{T<:Number}(vect::Array{T, 1}, box::Box)
+function minimal_image!{T<:Number}(vect::Array{T, 1}, box::SimBox)
     vect[1] -= round(vect[1]/box[1])*box[1]
     vect[2] -= round(vect[2]/box[2])*box[2]
     vect[3] -= round(vect[3]/box[3])*box[3]

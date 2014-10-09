@@ -31,13 +31,13 @@ end
 
 
 # Simulation box type
-immutable Box
+immutable SimBox
     length :: Vect3D{Float64}
     angles :: Vect3D{Float64}
     box_type :: Symbol  # box_type should takes only the values :triclinic and :orthorombic
 end
 
-function getindex(b::Box, i::Union(Integer, String))
+function getindex(b::SimBox, i::Union(Integer, String))
     if isa(i, Integer) && 0 < i <= 3
         return b.length[i]
     elseif isa(i, Integer) && 3 < i <= 6
@@ -60,47 +60,47 @@ function getindex(b::Box, i::Union(Integer, String))
     throw(BoundsError())
 end
 
-function Box(u::Vect3D, v::Vect3D)
+function SimBox(u::Vect3D, v::Vect3D)
     if v == vect3d(90.0)
         box_type = :orthorombic
     else
         box_type = :triclinic
     end
-    return Box(u, v, box_type)
+    return SimBox(u, v, box_type)
 end
 
-Box(u::Vector, v::Vector) = Box(vect3d(u), vect3d(v))
-Box(u::Vect3D) = Box(u, vect3d(90.0))
+SimBox(u::Vector, v::Vector) = SimBox(vect3d(u), vect3d(v))
+SimBox(u::Vect3D) = SimBox(u, vect3d(90.0))
 
-function Box(u::Vector)
+function SimBox(u::Vector)
     if length(u) == 3
-        return Box(vect3d(u))
+        return SimBox(vect3d(u))
     elseif length(u) == 6
-        return Box(vect3d(u[1:3]), vect3d(u[4:6]))
+        return SimBox(vect3d(u[1:3]), vect3d(u[4:6]))
     else
         throw(InexactError())
     end
 end
 
-Box(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = Box(vect3d(Lx, Ly, Lz), vect3d(a, b, c))
-Box(Lx::Real, Ly::Real, Lz::Real) = Box(vect3d(Lx, Ly, Lz))
-Box(L::Real) = Box(L, L, L)
-Box() = Box(0.0)
+SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = SimBox(vect3d(Lx, Ly, Lz), vect3d(a, b, c))
+SimBox(Lx::Real, Ly::Real, Lz::Real) = SimBox(vect3d(Lx, Ly, Lz))
+SimBox(L::Real) = SimBox(L, L, L)
+SimBox() = SimBox(0.0)
 
-Box(b::Box) = b
+SimBox(b::SimBox) = b
 
 
 # The Frame type holds a frame, i.e. one step of a simulation.
 type Frame
     step::Integer
-    box::Box
+    box::SimBox
     topology::Topology
     positions::Vector{Vect3D{Float32}}
     velocities::Vector{Vect3D{Float32}}
 end
 
 Frame(t::Topology) = Frame(0,
-                           Box(),
+                           SimBox(),
                            t,
                            Array(Vect3D{Float32}, size(t.atoms, 1)),
                            Array(Vect3D{Float32}, size(t.atoms, 1)),

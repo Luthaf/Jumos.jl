@@ -8,12 +8,12 @@ type RDF
     atom_j::String
     used_steps::Int
     n_parts::BigInt
-    box::Box
+    box::SimBox
 end
 
 function RDF(atom_i::String, atom_j::String; bins=200)
     h = Histogram(Float64, bins)
-    return RDF(h, atom_i, atom_j, 0, 0, Box())
+    return RDF(h, atom_i, atom_j, 0, 0, SimBox())
 end
 
 RDF(atom_i::String; kwargs...) = RDF(atom_i, atom_i; kwargs...)
@@ -36,7 +36,7 @@ function update!(r::RDF, f::Frame)
         end
     end
 
-    if r.box == Box(0.0) initialize!(r, f) end
+    if r.box == SimBox(0.0) initialize!(r, f) end
 
     update!(r.values, dists, weight=2.0)
     r.used_steps += 1
@@ -44,7 +44,7 @@ function update!(r::RDF, f::Frame)
 end
 
 function initialize!(r::RDF, f::Frame)
-    @assert f.box != Box(0.0) "The simulation box can not be null for RDF computations"
+    @assert f.box != SimBox(0.0) "The simulation box can not be null for RDF computations"
     r.box = f.box
     r.values.min = 0.0
     r.values.max = 0.5*min(r.box.length[1], r.box.length[2], r.box.length[3])

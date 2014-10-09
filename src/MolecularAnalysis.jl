@@ -13,7 +13,7 @@ module MolecularAnalysis
     export read_topology
 
     include("Trajectory.jl")
-    export Reader, Writer, Box, Frame
+    export Reader, Writer, SimBox, Frame
     export eachframe, read_next_frame!, read_frame!
 
     include("Distances.jl")

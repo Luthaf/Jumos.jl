@@ -9,7 +9,7 @@
 
 type XYZReader <: AbstractReaderIO
     file::IOStream
-    box::Box
+    box::SimBox
 end
 
 
@@ -27,7 +27,7 @@ end
 # Constructor of XYZReader: open the file and get some informations
 function XYZReader(filename::String, box=0.0)
     file = open(filename, "r")
-    return XYZReader(file, Box(box))
+    return XYZReader(file, SimBox(box))
 end
 
 # Read a given step of am XYZ Trajectory
