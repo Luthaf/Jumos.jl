@@ -1,6 +1,7 @@
 module MolecularAnalysis
 
     import Base.show, Base.convert, Base.close, Base.size, Base.norm
+    import Base.write
 
     include("vect3d.jl")
     export Vect3D, vect3d
@@ -14,7 +15,7 @@ module MolecularAnalysis
 
     include("Trajectory.jl")
     export Reader, Writer, SimBox, Frame
-    export eachframe, read_next_frame!, read_frame!
+    export eachframe, read_next_frame!, read_frame!, opentraj
 
     include("Distances.jl")
     export minimal_image!, pbc_distance, distance, distance_array

@@ -42,8 +42,12 @@ function Reader(r::AbstractReaderIO, topology_filename="")
 end
 
 abstract AbstractWriterIO <: TrajectoryIO
-type Writer <: MDTrajectory
+type Writer{T<:AbstractWriterIO} <: MDTrajectory
+    current_step::Int
+    writer::T
 end
+
+Writer(IOWriter::AbstractWriterIO) = Writer(0, IOWriter)
 
 
 # Simulation box type
@@ -124,6 +128,7 @@ Frame(t::Topology) = Frame(0,
 
 Frame(t::MDTrajectory) = Frame(t.topology)
 
+size(f::Frame) = size(f.positions, 1)
 
 #===============================================================================
                     Iterator interface for trajectories
@@ -191,6 +196,7 @@ function opentraj(filename; mode="r", kwargs...)
     extension = split(strip(filename), ".")[end]
     kwargs = Dict(convert(Array{(Symbol,Any), 1}, kwargs))
     if mode == "r"
+        # TODO: Use a dict to associate extensions and Readers
         if extension == "xyz"
             info(".xyz extension, assuming XYZ trajectory")
             if !(haskey(kwargs, :box))
@@ -206,12 +212,24 @@ function opentraj(filename; mode="r", kwargs...)
         else
             error("The '$extension' extension is not recognized")
         end
+    elseif mode =="w"
+        if extension == "xyz"
+            info(".xyz extension, assuming XYZ trajectory")
+            IOwriter = XYZWriter(filename)
+            return Writer(IOwriter)
+        else
+            error("The '$extension' extension is not recognized")
+        end
     else
-        error("Only read mode is supported")
+        error("Only read ('r') and write ('w') modes are supported")
     end
 end
 
 Reader(filename::String; kwargs...) = opentraj(filename; mode="r", kwargs...)
+Writer(filename::String; kwargs...) = opentraj(filename; mode="w", kwargs...)
 
 close(traj::Reader) = close(traj.reader.file)
 isopen(traj::Reader)= isopen(traj.reader.file)
+
+close(traj::Writer) = close(traj.writer.file)
+isopen(traj::Writer)= isopen(traj.writer.file)
