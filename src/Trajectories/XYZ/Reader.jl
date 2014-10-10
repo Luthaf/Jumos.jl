@@ -44,7 +44,7 @@ function read_frame!(traj::Reader{XYZReader}, step::Integer, frame::Frame)
 end
 
 # Read the next step of a trajectory.
-# Assume that the cursor is already at the good place.
+# Assumes that the cursor is already at the good place.
 # Return True if there is still some step to read, false otherwhile
 function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
     traj.natoms = int(readline(traj.reader.file))
