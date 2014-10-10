@@ -6,6 +6,22 @@
 abstract MDTrajectory
 abstract TrajectoryIO
 
+# Exceptions types
+type TrajectoryIOError <: Exception
+    message::String
+end
+type NotImplementedError <: Exception
+    message::String
+end
+
+function show(io::IO, e::NotImplementedError)
+    show(io, "Not implemented : $(e.message)")
+end
+function show(io::IO, e::TrajectoryIOError)
+    show(io, e.message)
+end
+
+
 abstract AbstractReaderIO <: TrajectoryIO
 type Reader{T<:AbstractReaderIO} <: MDTrajectory
     natoms::Int
@@ -146,6 +162,16 @@ function eachframe(t::Reader; start=1)
         end
     end
     return Task(_it)
+end
+
+function read_next_frame!{T<:AbstractReaderIO}(t::Reader{T}, f::Frame)
+   throw(NotImplementedError("Method read_next_frame! not implemented for "*
+                             "$(typeof(t.reader)) trajectory type"))
+end
+
+function read_frame!{T<:AbstractReaderIO}(t::Reader{T}, step::Integer, f::Frame)
+    throw(NotImplementedError("Method read_frame! not implemented for "*
+                              "$(typeof(t.reader)) trajectory type"))
 end
 
 #===============================================================================
