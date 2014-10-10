@@ -1,6 +1,6 @@
 module MolecularAnalysis
 
-    import Base.show, Base.convert, Base.close, Base.size
+    import Base.show, Base.convert, Base.close, Base.size, Base.norm
 
     include("vect3d.jl")
     export Vect3D, vect3d

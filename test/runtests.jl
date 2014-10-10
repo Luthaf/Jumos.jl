@@ -21,7 +21,7 @@ b = vect3d(4)
 @test (a^b)*a == 0.0
 @test (b^a)*b == 0.0
 
-#@test norm(a) == sqrt(104.0)
+@test norm(a) == sqrt(104.0)
 
 #===============================================================================
                     Open and read a frame from the trajectories
