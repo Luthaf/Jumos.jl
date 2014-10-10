@@ -1,10 +1,11 @@
 # Trajectories formats
 
-Add the following : 
+Add the following :
 
  - Gromacs binary and text
  - LAMMPS native binary and text
  - PDB and PSF
+ - TNG
 
 See what is used by :
 
@@ -17,7 +18,7 @@ See what is used by :
 
 Existing formats :
 
-CHARMM/XPLOR 	psf 
+CHARMM/XPLOR 	psf
 
 CHARMM      	crd
 
@@ -54,6 +55,14 @@ From the Python MDAnalysis
  - Hydrogen Bond analysis
  - Calculating root mean square quantities
 
+
+#### Dynamical properties
+
+ - Diffusion coefficient : Einstein's équation or Velocity autocorrelation function
+ - Vibrational spectra
+
+In a more generical way, add (average) correlation function computation.
+
 #### Membranes and membrane proteins
 
  - Generation and Analysis of HOLE pore profiles
@@ -78,7 +87,7 @@ From the Python MDAnalysis
 
 Use parrallelisation somewhere
 
-See : 
+See :
 
  - http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/core/distances.html
  - http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/core/transformations.html
