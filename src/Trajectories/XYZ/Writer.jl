@@ -22,8 +22,8 @@ end
 function write(traj::Writer{XYZWriter}, frame::Frame)
     header = traj.writer.header * " Step = " * string(frame.step) * "\n"
     natoms = string(size(frame)) * "\n"
-    write(traj.writer.file, header)
     write(traj.writer.file, natoms)
+    write(traj.writer.file, header)
     write_xyz_data(traj.writer.file, frame)
 end
 
