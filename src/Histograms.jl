@@ -66,7 +66,7 @@ end
 # normalize by a function of the current bin
 function normalize!{T<:Number}(h::Histogram{T}, norm::Function)
     for i=1:h.bins
-        h.weight[i] /= apply(norm, i)
+        h.weight[i] /= norm(i)
     end
     return nothing
 end
