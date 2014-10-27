@@ -1,12 +1,29 @@
 #===============================================================================
-            Type Vect3D: 3D NTuple for representing 3D Vectors
+            Type Vect3D: representing 3D Vectors in an efficient way
 ===============================================================================#
 
-typealias Vect3D{T<:Real} NTuple{3, T}
+type Vect3D{T<:Real}
+   x::T
+   y::T
+   z::T
+end
+
+function getindex(v::Vect3D, i::Int)
+   if i == 1
+       return v.x
+   elseif i==2
+       return v.y
+   elseif i==3
+       return v.z
+   else
+       throw(BoundError())
+   end
+end
+
 typealias RVector{T<:Real} Array{T, 1}
 typealias RArray{T<:Real} Array{T, 2}
 
-vect3d{T<:Real}(x::T, y::T, z::T) = (x, y, z)
+vect3d{T<:Real}(x::T, y::T, z::T) = Vect3D(x, y, z)
 vect3d(x::Real, y::Real, z::Real) = vect3d(promote(x, y, z)...)
 vect3d(a::Real) = vect3d(a, a, a)
 vect3d(v::RVector) = length(v)==3 ? vect3d(v[1], v[2], v[3]) : throw(InexactError())
@@ -52,3 +69,5 @@ cross(u::Vect3D, v::Vect3D) = vect3d(u[2]*v[3] - u[3]*v[2],
 (^)(u::Vect3D, v::Vect3D) = cross(u, v)
 
 norm(v::Vect3D) = sqrt(v[1]*v[1] + v[2]*v[2] + v[3]*v[3])
+
+(==)(u::Vect3D, v::Vect3D) = u.x == v.x && u.y == v.y && u.z == v.z
