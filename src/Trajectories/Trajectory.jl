@@ -4,7 +4,7 @@
 import Base: close, write, show
 
 export Reader, Writer, SimBox, Frame, InifiniteBox, OrthorombicBox, TriclinicBox
-export eachframe, read_next_frame!, read_frame!, opentraj
+export eachframe, read_next_frame!, read_frame!, opentraj, writetraj
 
 # Trajectory types
 abstract MDTrajectory
