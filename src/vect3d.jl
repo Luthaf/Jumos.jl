@@ -1,6 +1,8 @@
 #===============================================================================
             Type Vect3D: representing 3D Vectors in an efficient way
 ===============================================================================#
+using Base: norm, show, convert
+export Vect3D, vect3d
 
 type Vect3D{T<:Real}
    x::T

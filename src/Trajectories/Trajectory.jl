@@ -1,6 +1,10 @@
 #===============================================================================
              Trajectories reading and writing through iterators
 ===============================================================================#
+using Base: close, write, show
+
+export Reader, Writer, SimBox, Frame, InifiniteBox, OrthorombicBox, TriclinicBox
+export eachframe, read_next_frame!, read_frame!, opentraj
 
 # Trajectory types
 abstract MDTrajectory
@@ -192,11 +196,11 @@ end
                             Trajectory formats
 ===============================================================================#
 
-include("Trajectories/XYZ/Reader.jl")
-include("Trajectories/XYZ/Writer.jl")
+include("XYZ/Reader.jl")
+include("XYZ/Writer.jl")
 
-include("Trajectories/NetCDF/Reader.jl")
-include("Trajectories/NetCDF/Writer.jl")
+include("NetCDF/Reader.jl")
+include("NetCDF/Writer.jl")
 
 # Dispatcher opening a trajectory. Will return an object
 # of type <TRAJ_TYPE><Reader|Writer>. The trajectory format is

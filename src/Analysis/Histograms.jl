@@ -4,6 +4,9 @@
         Basic histogram type for various averaging
  ===============================================================================#
 
+export Histogram, DensityProfile, RDF
+export update!, normalize!, write, clean!
+
 type Histogram{T<:Number}
     bins::Int
     weight::Array{T, 1}
@@ -81,5 +84,5 @@ end
 
 #==============================================================================#
 # Includes
-include("Histograms/density.jl")
-include("Histograms/rdf.jl")
+include("density.jl")
+include("rdf.jl")

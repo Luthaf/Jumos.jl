@@ -1,6 +1,10 @@
 #===============================================================================
                  Useful types for topology storage.
 ===============================================================================#
+using Base: size, show
+
+export Topology, Atom, Bond, Angle, Dihedral
+export read_topology
 
 type Atom
     name::String                # atom name
