@@ -51,40 +51,49 @@ Writer(IOWriter::AbstractWriterIO) = Writer(0, IOWriter)
 
 
 # Simulation box type
-immutable SimBox
+abstract AbstractBoxType
+type InifiniteBox <: AbstractBoxType end
+type OrthorombicBox <: AbstractBoxType end
+type TriclinicBox <: AbstractBoxType end
+
+immutable SimBox{T<:AbstractBoxType}
     length :: Vect3D{Float64}
     angles :: Vect3D{Float64}
-    box_type :: Symbol  # box_type should takes only the values :triclinic and :orthorombic
+    box_type :: T
 end
 
-function getindex(b::SimBox, i::Union(Integer, String))
-    if isa(i, Integer) && 0 < i <= 3
+function getindex(b::SimBox, i::Int)
+    if 0 < i <= 3
         return b.length[i]
-    elseif isa(i, Integer) && 3 < i <= 6
+    elseif 3 < i <= 6
         return b.angles[i-3]
-    elseif isa(i, String)
-        if lower(i) == "x"
-            return b.length[1]
-        elseif lower(i) == "y"
-            return b.length[2]
-        elseif lower(i) == "z"
-            return b.length[3]
-        elseif lower(i) == "alpha"
-            return b.angles[1]
-        elseif lower(i) == "beta"
-            return b.angles[2]
-        elseif lower(i) == "gamma"
-            return b.angles[3]
-        end
+    end
+    throw(BoundsError())
+end
+
+function getindex(b::SimBox, i::String)
+    i = lowercase(i)
+    if i == "x"
+        return b.length[1]
+    elseif i == "y"
+        return b.length[2]
+    elseif i == "z"
+        return b.length[3]
+    elseif i == "alpha"
+        return b.angles[1]
+    elseif i == "beta"
+        return b.angles[2]
+    elseif i == "gamma"
+        return b.angles[3]
     end
     throw(BoundsError())
 end
 
 function SimBox(u::Vect3D, v::Vect3D)
     if v == vect3d(90.0)
-        box_type = :orthorombic
+        box_type = OrthorombicBox()
     else
-        box_type = :triclinic
+        box_type = TriclinicBox()
     end
     return SimBox(u, v, box_type)
 end

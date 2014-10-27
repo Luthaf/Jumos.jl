@@ -3,29 +3,44 @@
 ===============================================================================#
 
 # Refine a vector using the minimal image convention
-function minimal_image!{T<:Number}(vect::Array{T, 1}, box::SimBox)
-    vect[1] -= round(vect[1]/box[1])*box[1]
-    vect[2] -= round(vect[2]/box[2])*box[2]
-    vect[3] -= round(vect[3]/box[3])*box[3]
-    return None
+@inline minimal_image(vect::Vect3D, box::SimBox{InifiniteBox}) = vect
+
+@inline function minimal_image(vect::Vect3D, box::SimBox{OrthorombicBox})
+    return vect3d(
+        vect[1] - round(vect[1]/box[1])*box[1],
+        vect[2] - round(vect[2]/box[2])*box[2],
+        vect[3] - round(vect[3]/box[3])*box[3]
+    )
 end
 
-function pbc_distance(ref::Frame, conf::Frame, i, j)
-    xx = ref.positions[i][1] - conf.positions[j][1]
-    yy = ref.positions[i][2] - conf.positions[j][2]
-    zz = ref.positions[i][3] - conf.positions[j][3]
-	# Periodic boundary conditions
-	xx -= round(xx / ref.box[1]) * ref.box[1]
-	yy -= round(yy / ref.box[2]) * ref.box[2]
-	zz -= round(zz / ref.box[3]) * ref.box[3]
-    return sqrt(xx*xx + yy*yy + zz*zz)
+@inline function minimal_image(vect::Vect3D, box::SimBox{TriclinicBox})
+    u = cart2fract(vect, box)
+    return fract2cart(vect3d(
+                         u[1] - round(u[1]),
+                         u[2] - round(u[2]),
+                         u[3] - round(u[3])),
+                      box)
 end
 
-function distance(ref::Frame, conf::Frame, i, j)
-    xx = ref.positions[i][1] - conf.positions[j][1]
-    yy = ref.positions[i][2] - conf.positions[j][2]
-    zz = ref.positions[i][3] - conf.positions[j][3]
-    return sqrt(xx*xx + yy*yy + zz*zz)
+@inline function cart2fract(vect::Vect3D, box::SimBox)
+    const z = vect[3]/box[6]
+    const y = (vect[2] - z*box[5])/box[3]
+    const x = (vect[1] - z*box[4] - y * box[2]) / box[1]
+
+    return vect3d(x, y, z)
+end
+
+@inline function fract2cart(vect::Vect3D, box::SimBox)
+    return vect3d(
+        vect[1]*box[1] + vect[2]*box[2] + vect[3]*box[4],
+        vect[2]*box[3] + vect[3]*box[5],
+        vect[3]*box[6]
+    )
+end
+
+
+@inline function distance(ref::Frame, conf::Frame, i, j)
+    return norm(minimal_image(ref.positions[i] - conf.positions[j], ref.box))
 end
 
 function distance_array(ref::Frame, conf::Frame, result = nothing)
@@ -40,18 +55,12 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
                     "should be ($(cols),$(rows))")
         end
     end
-
-    has_box = ref.box[1] != 0 && ref.box[2] != 0 && ref.box[3] != 0
-
-    for i=1:cols
-        for j=1:rows
-            if has_box
-                result[i,j] = pbc_distance(ref, conf, i, j)
-            else
-                result[i,j] = distance(ref, conf, i, j)
-            end
-        end
-    end
-
+    compute_distance_array!(result, ref, conf, rows, cols)
     return result
+end
+
+function compute_distance_array!(result, ref, conf, nrows, ncols)
+    for j=1:nrows, i=1:ncols
+       result[i,j] = distance(ref, conf, i, j)
+    end
 end
