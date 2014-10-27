@@ -48,7 +48,7 @@ function read_frame!(traj::Reader{NCReader}, step::Integer, frame::Frame)
                                start=[1,1,step],
                                count=[-1,-1,1])[:,:,1]
 
-    if false
+    if false # Todo: add a velocity parameter
         frame.velocities = NetCDF.readvar(traj.reader.file,
                                    "velocities",
                                    start=[1,1,step],

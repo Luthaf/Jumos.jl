@@ -165,7 +165,6 @@ const VDW_RADIUS = Dict{String, Int}( # Values in pm
     "Br" => 185,
     "U" => 186,
     "Ga" => 187,
-    "Ar" => 188,
     "Se" => 190,
     "In" => 193,
     "Th" => 196,

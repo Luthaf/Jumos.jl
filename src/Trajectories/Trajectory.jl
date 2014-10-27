@@ -1,7 +1,7 @@
 #===============================================================================
              Trajectories reading and writing through iterators
 ===============================================================================#
-using Base: close, write, show
+import Base: close, write, show
 
 export Reader, Writer, SimBox, Frame, InifiniteBox, OrthorombicBox, TriclinicBox
 export eachframe, read_next_frame!, read_frame!, opentraj

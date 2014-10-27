@@ -1,5 +1,5 @@
 tic()
-using MolecularAnalysis
+using Jumos
 println("Load time: $(toq())")
 using Base.Test
 

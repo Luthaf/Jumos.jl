@@ -1,7 +1,7 @@
 #===============================================================================
                  Useful types for topology storage.
 ===============================================================================#
-using Base: size, show
+import Base: size, show
 
 export Topology, Atom, Bond, Angle, Dihedral
 export read_topology
@@ -47,7 +47,7 @@ Topology() = Topology(0)
 function size(a::Dict{String, Array{Int64,1}})
     # Just count the number of dict entry
     i = 0
-    for _ in a
+    for (k, v) in a
         i += 1
     end
     return i
@@ -59,16 +59,15 @@ function show(io::IO, top::Topology)
     n_bonds = size(top.bonds, 1)
     n_angles = size(top.angles, 1)
     n_dihedrals = size(top.dihedrals, 1)
-    print(string("Topology with $n_molecules molecules, $n_residues residues, ",
+    show(io, string("Topology with $n_molecules molecules, $n_residues residues, ",
                 "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
 end
 
 include("Topologies/XYZ.jl")
 include("Topologies/LAMMPS.jl")
 
-function read_topology(filename; kwargs...)
+function read_topology(filename)
     extension = split(strip(filename), ".")[end]
-    kwargs = Dict(convert(Array{(Symbol,Any), 1}, kwargs))
     if extension == "xyz"
         info("Reading topology in XYZ format")
         return read_xyz_topology(filename)

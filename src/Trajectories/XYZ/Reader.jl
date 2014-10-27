@@ -20,6 +20,7 @@ function get_traj_infos(r::XYZReader)
     seekstart(r.file)
     nsteps = int(nlines/(natoms + 2))
     if !(nlines%(natoms + 2) == 0)
+        filename = split(r.file.name)[2][1:end-1]
         error("Wrong number of lines in file $filename")
     end
     return natoms, nsteps

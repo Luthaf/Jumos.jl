@@ -4,7 +4,6 @@
                 This is only a minimalistic test, which can
                 could be inproved.
 ===============================================================================#
-
 const TEST_DIR = dirname(Base.source_path())
 
 # NetCDF read
@@ -28,8 +27,8 @@ traj = Reader("$TEST_DIR/trjs/water.xyz", box=[15.0, 15.0, 15.0])
     for i=1:10
         read_frame!(traj, i, frame)
         push!(frames, frame)
-        write(outtraj, frames)
     end
+#    write(outtraj, frames)
 close(traj)
 close(outtraj)
 rm("$tmp.xyz")

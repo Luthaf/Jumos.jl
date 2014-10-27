@@ -72,7 +72,7 @@ function normalize!(r::RDF)
         n_particles = r.n_parts/(r.used_steps)
         rho = n_particles/V
         dr = r.values.step
-        f = i -> 4*pi/3 * (dr*(i + 1))^3
+        f = j -> 4*pi/3 * (dr*(j + 1))^3
         return rho * n_particles * r.used_steps * (f(i+1) - f(i))
     end
 
