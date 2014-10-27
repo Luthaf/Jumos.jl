@@ -23,13 +23,13 @@ function Histogram(T::DataType, bins::Integer;
 end
 
 #==============================================================================#
-# Update the histogram weight with the values from v
-function update!{T<:Number}(h::Histogram{T}, v::Array{T, 1}; weight=one(T))
+# Update the histogram weight
+function update!{T<:Number}(h::Histogram{T}, values::Array{T, 1}; weight=one(T))
     if h.step == 0
-        initialize!(h, v)
+        initialize!(h, values)
     end
 
-    for val=v
+    for val in values
         bin = ifloor(val/h.step)
         if 0 < bin <= h.bins
             h.weight[bin] += weight
