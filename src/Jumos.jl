@@ -36,5 +36,11 @@ module Jumos
         include("Analysis/Histograms.jl")
     end
 
+    @reexport module MolecularDynamics
+        using Jumos: Trajectory, Distances, SimulationBasics
+
+        include("Simulations/MolecularDynamics.jl")
+    end
+
 
 end # module
