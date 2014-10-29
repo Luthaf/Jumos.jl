@@ -49,7 +49,7 @@ module Jumos
     end
 
     @reexport module MolecularDynamics
-        using Jumos: Trajectory, Distances, SimulationBasics
+        using Jumos: Trajectories, Distances, SimulationBasics
 
         include("Simulations/MolecularDynamics.jl")
     end
