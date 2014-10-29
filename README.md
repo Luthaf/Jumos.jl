@@ -1,6 +1,6 @@
-# JuMoS
+# Jumos
 
-Julia Molecular Simulation
+Julia Molecular Simulation package. Not yet registered.
 
 ## Module Analysis
 
@@ -9,3 +9,7 @@ Julia Molecular Simulation
 Inspired by the [MDAnalysis](https://code.google.com/p/mdanalysis/) python module.
 
 No doc yet, you can have a look at Todo.md for future improvments.
+
+## Module simulation
+
+A way to run Molecular Dynamics in Julia. This is a project for the UE210 at UPMC. WIP.
