@@ -14,13 +14,7 @@ abstract TrajectoryIO
 type TrajectoryIOError <: Exception
     message::String
 end
-type NotImplementedError <: Exception
-    message::String
-end
 
-function show(io::IO, e::NotImplementedError)
-    show(io, "Not implemented : $(e.message)")
-end
 function show(io::IO, e::TrajectoryIOError)
     show(io, e.message)
 end

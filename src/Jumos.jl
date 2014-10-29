@@ -4,6 +4,18 @@ module Jumos
     # This module define some basic types like 3D vectors
     # and store periodic table informations
     @reexport module SimulationBasics
+        import Base: show
+
+        type NotImplementedError <: Exception
+            message::String
+        end
+
+        function show(io::IO, e::NotImplementedError)
+            show(io, "Not implemented : $(e.message)")
+        end
+
+        export NotImplementedError
+
         include("vect3d.jl")
         include("Periodic.jl")
     end
