@@ -21,8 +21,8 @@ type MDSimulation <: Simulation
     integrator!     ::BaseIntegrator
     enforces        ::Vector{BaseEnforce}
     checks          ::Vector{BaseCheck}
-    compute         ::Vector{BaseCompute}
-    output          ::Vector{BaseOutput}
+    computes         ::Vector{BaseCompute}
+    outputs          ::Vector{BaseOutput}
     data            ::SimulationData
 end
 
@@ -85,8 +85,9 @@ end
 
 # Output data to files : trajectories, energy as function of time, …
 function output(sim::MDSimulation)
-    for callback in sim.output
-        callback(sim.data)
+    context = sim.data
+    for output in sim.outputs
+        write(output, context)
     end
 end
 
