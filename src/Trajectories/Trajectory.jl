@@ -2,15 +2,14 @@
              Trajectories reading and writing through iterators
 ===============================================================================#
 import Base: close, write, show
+import Jumos: Frame
 
-export Reader, Writer, SimBox, Frame, InifiniteBox, OrthorombicBox, TriclinicBox
+export Reader, Writer
 export eachframe, read_next_frame!, read_frame!, opentraj, writetraj
 
-# Trajectory types
-abstract MDTrajectory
+
 abstract TrajectoryIO
 
-# Exceptions types
 type TrajectoryIOError <: Exception
     message::String
 end
@@ -21,7 +20,7 @@ end
 
 
 abstract AbstractReaderIO <: TrajectoryIO
-type Reader{T<:AbstractReaderIO} <: MDTrajectory
+type Reader{T<:AbstractReaderIO}
     natoms::Int
     nsteps::Int
     current_step::Int
@@ -39,108 +38,21 @@ function Reader(r::AbstractReaderIO, topology_filename="")
     return Reader(natoms, nsteps, 0, topology, r)
 end
 
+Frame(reader::Reader) = Frame(reader.topology)
+
 abstract AbstractWriterIO <: TrajectoryIO
-type Writer{T<:AbstractWriterIO} <: MDTrajectory
+type Writer{T<:AbstractWriterIO}
     current_step::Int
     writer::T
 end
 
 Writer(IOWriter::AbstractWriterIO) = Writer(0, IOWriter)
-
-
-# Simulation box type
-abstract AbstractBoxType
-type InifiniteBox <: AbstractBoxType end
-type OrthorombicBox <: AbstractBoxType end
-type TriclinicBox <: AbstractBoxType end
-
-immutable SimBox{T<:AbstractBoxType}
-    length :: Vect3D{Float64}
-    angles :: Vect3D{Float64}
-    box_type :: T
-end
-
-function getindex(b::SimBox, i::Int)
-    if 0 < i <= 3
-        return b.length[i]
-    elseif 3 < i <= 6
-        return b.angles[i-3]
-    end
-    throw(BoundsError())
-end
-
-function getindex(b::SimBox, i::String)
-    i = lowercase(i)
-    if i == "x"
-        return b.length[1]
-    elseif i == "y"
-        return b.length[2]
-    elseif i == "z"
-        return b.length[3]
-    elseif i == "alpha"
-        return b.angles[1]
-    elseif i == "beta"
-        return b.angles[2]
-    elseif i == "gamma"
-        return b.angles[3]
-    end
-    throw(BoundsError())
-end
-
-function SimBox(u::Vect3D, v::Vect3D)
-    if v == vect3d(90.0)
-        box_type = OrthorombicBox()
-    else
-        box_type = TriclinicBox()
-    end
-    return SimBox(u, v, box_type)
-end
-
-SimBox(u::Vector, v::Vector) = SimBox(vect3d(u), vect3d(v))
-SimBox(u::Vect3D) = SimBox(u, vect3d(90.0))
-
-function SimBox(u::Vector)
-    if length(u) == 3
-        return SimBox(vect3d(u))
-    elseif length(u) == 6
-        return SimBox(vect3d(u[1:3]), vect3d(u[4:6]))
-    else
-        throw(InexactError())
-    end
-end
-
-SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = SimBox(vect3d(Lx, Ly, Lz), vect3d(a, b, c))
-SimBox(Lx::Real, Ly::Real, Lz::Real) = SimBox(vect3d(Lx, Ly, Lz))
-SimBox(L::Real) = SimBox(L, L, L)
-SimBox() = SimBox(0.0)
-
-SimBox(b::SimBox) = b
-
-
-# The Frame type holds a frame, i.e. one step of a simulation.
-type Frame
-    step::Integer
-    box::SimBox
-    topology::Topology
-    positions::Vector{Vect3D{Float32}}
-    velocities::Vector{Vect3D{Float32}}
-end
-
-Frame(t::Topology) = Frame(0,
-                           SimBox(),
-                           t,
-                           Array(Vect3D{Float32}, size(t.atoms, 1)),
-                           Array(Vect3D{Float32}, size(t.atoms, 1)),
-                           )
-
-Frame(t::MDTrajectory) = Frame(t.topology)
-
-size(f::Frame) = size(f.positions, 1)
+Frame(writer::Writer) = Frame(writer.topology)
 
 #===============================================================================
-                    Iterator interface for trajectories
+                Iterator interface for trajectories IO
 
-All the new trajectory reader should implement the following methods:
+All the new reader/writer should implement the following methods:
 
     - read_next_frame!(t::Reader, f::Frame)
         Reads the next frame in f if their is one, update t.current_step.
