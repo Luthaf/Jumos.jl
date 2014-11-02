@@ -11,14 +11,14 @@ const N_TYPES = r"([0-9]*)\s*atom types"
 const NAMES = r"Pair Coeffs\n#\n(.*)\n\n# Bond Coeffs"s
 
 function read_lmp_topology(filename::String)
-    f = open(filename)
+    topology_file = open(filename)
 
     # Read the header
-    line = readline(f)
+    line = readline(topology_file)
     header = ""
     while !ismatch(r"Atoms", line)
         header = string(header, line)
-        line = readline(f)
+        line = readline(topology_file)
     end
 
     # Read atom names
@@ -44,7 +44,7 @@ function read_lmp_topology(filename::String)
     ndihedrals = int(match(N_DIHEDRALS, header).captures[1])
     nimpropers = int(match(N_IMPROPERS, header).captures[1])
 
-    t = Topology(natoms)
+    topology = Topology(natoms)
 
     # Read the atoms section
     i = 0
@@ -55,15 +55,15 @@ function read_lmp_topology(filename::String)
             molecule = splitted[2]
             atom_type = int(splitted[3])
 
-            t.atoms[index] = Atom(names[atom_type])
+            topology.atoms[index] = Atom(names[atom_type])
             try
-                push!(t.molecules[molecule], index)
+                push!(topology.molecules[molecule], index)
             catch
-                t.molecules[molecule] = [index]
+                topology.molecules[molecule] = [index]
             end
             i += 1
         end
-        line = readline(f)
+        line = readline(topology_file)
     end
 
 
@@ -73,10 +73,10 @@ function read_lmp_topology(filename::String)
         splitted = split(line)
         if length(splitted) >= 4
             bond = (int(splitted[3]), int(splitted[4]))
-            push!(t.bonds, bond)
+            push!(topology.bonds, bond)
             i += 1
         end
-        line = readline(f)
+        line = readline(topology_file)
     end
 
     # Read the angles section
@@ -85,10 +85,10 @@ function read_lmp_topology(filename::String)
         splitted = split(line)
         if length(splitted) >= 4
             angle = (int(splitted[3]), int(splitted[4]), int(splitted[5]))
-            push!(t.angles, angle)
+            push!(topology.angles, angle)
             i += 1
         end
-        line = readline(f)
+        line = readline(topology_file)
     end
 
     # Read the dihedrals section
@@ -98,10 +98,10 @@ function read_lmp_topology(filename::String)
         if length(splitted) >= 4
             dihedral = (int(splitted[3]), int(splitted[4]),
                     int(splitted[5]), int(splitted[6]))
-            push!(t.dihedrals, dihedral)
+            push!(topology.dihedrals, dihedral)
             i += 1
         end
-        line = readline(f)
+        line = readline(topology_file)
     end
 
     # Read the impropers section
@@ -111,12 +111,12 @@ function read_lmp_topology(filename::String)
         if length(splitted) >= 4
             improper = (int(splitted[3]), int(splitted[4]),
                     int(splitted[5]), int(splitted[6]))
-            push!(t.impropers, improper)
+            push!(topology.impropers, improper)
             i += 1
         end
-        line = readline(f)
+        line = readline(topology_file)
     end
 
-    close(f)
-    return t
+    close(topology_file)
+    return topology
 end

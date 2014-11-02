@@ -31,7 +31,7 @@ function run!(sim::MDSimulation, nsteps::Integer)
 
     check_settings(sim)
 
-    for i=1:nnsteps
+    for i=1:nsteps
         get_forces(sim)
         integrate(sim)
         enforce(sim)
@@ -86,8 +86,8 @@ end
 # Output data to files : trajectories, energy as function of time, …
 function output(sim::MDSimulation)
     context = sim.data
-    for output in sim.outputs
-        write(output, context)
+    for out in sim.outputs
+        write(out, context)
     end
 end
 
