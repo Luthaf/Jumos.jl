@@ -4,7 +4,7 @@
         Basic histogram type for various averaging
  ===============================================================================#
 
-export Histogram, DensityProfile, RDF
+export Histogram
 export update!, normalize!, write, clean!
 
 type Histogram{T<:Number}

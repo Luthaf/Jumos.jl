@@ -1,6 +1,8 @@
 #===============================================================================
         Some functions for computing radial distribution functions
 ===============================================================================#
+import Base: write
+export RDF
 
 type RDF
     values::Histogram{Float64}

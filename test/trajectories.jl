@@ -21,14 +21,14 @@ traj = Reader("$TEST_DIR/trjs/water.xyz", box=[15.0, 15.0, 15.0])
     read_frame!(traj, 500, frame)
     @test length(frame.positions) == traj.natoms
 
-    writetraj(outtraj, frame)
+    write(outtraj, frame)
 
     frames = Frame[]
     for i=1:10
         read_frame!(traj, i, frame)
         push!(frames, frame)
     end
-    writetraj(outtraj, frames)
+    write(outtraj, frames)
 close(traj)
 close(outtraj)
 rm("$tmp.xyz")

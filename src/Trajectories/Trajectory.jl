@@ -1,11 +1,11 @@
 #===============================================================================
              Trajectories reading and writing through iterators
 ===============================================================================#
-import Base: close, write, show
+import Base: close, show
 import Jumos: Frame
 
 export Reader, Writer
-export eachframe, read_next_frame!, read_frame!, opentraj, writetraj
+export eachframe, read_next_frame!, read_frame!, opentraj
 
 
 abstract TrajectoryIO

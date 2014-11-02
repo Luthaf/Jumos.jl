@@ -2,6 +2,9 @@
    This file implement some functions for computing a density profile
 ===============================================================================#
 
+import Base: write
+export DensityProfile
+
 type DensityProfile
     values::Histogram{Float64}
     atom::String
