@@ -2,7 +2,7 @@
                     Distance computing utilities
 ===============================================================================#
 
-export distance, distance_array
+export distance, distance_array, distance3d
 
 # Refine a vector using the minimal image convention
 @inline minimal_image(vect::Vect3D, box::SimBox{InifiniteBox}) = vect
@@ -40,9 +40,22 @@ end
     )
 end
 
+# Compute the distance between to particles
+@inline function distance(ref::Frame, conf::Frame, i::Integer, j::Integer)
+    return norm(minimal_image(ref.positions[j] - conf.positions[i], ref.box))
+end
 
-@inline function distance(ref::Frame, conf::Frame, i, j)
-    return norm(minimal_image(ref.positions[i] - conf.positions[j], ref.box))
+@inline function distance(ref::Frame, i::Integer, j::Integer)
+    return distance(ref, ref, i, j)
+end
+
+# Compute the vectorial distance between to particles
+@inline function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)
+    return minimal_image(ref.positions[j] - conf.positions[i], ref.box)
+end
+
+@inline function distance3d(ref::Frame, i::Integer, j::Integer)
+    return distance(ref, ref, i, j)
 end
 
 function distance_array(ref::Frame, conf::Frame, result = nothing)
