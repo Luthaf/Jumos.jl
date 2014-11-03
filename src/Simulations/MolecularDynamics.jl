@@ -61,7 +61,6 @@ end
 function check_interactions(sim::MDSimulation)
     atomic_pairs = Set{(Integer, Integer)}()
     for (i, j, potential) in sim.interactions
-        union!(atomic_types, [i, j])
         union!(atomic_pairs, (i, j))
         if potential ∉ sim.potentials
             warn("Adding the potential $(potential.potential) to the simulation")
@@ -83,7 +82,7 @@ function check_interactions(sim::MDSimulation)
         throw(SimulationConfigurationError(
             "The following atom pairs do not have any interaction:
 
-            $missing
+            $missings
             "
         ))
     end

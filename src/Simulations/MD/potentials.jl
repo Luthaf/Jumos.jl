@@ -51,13 +51,13 @@ function show(io::IO, pot::Potential)
     end
 end
 
-function call(::BasePotential, ::Float64)
+function call(pot::BasePotential, ::Float64)
     throw(NotImplementedError("No implementation provided for potential $pot."))
 end
 
 call(pot::BasePotential, r::Number) = call(pot, convert(Float64, r))
 
-function force(::BasePotential, ::Float64)
+function force(pot::BasePotential, ::Float64)
     throw(NotImplementedError("No implementation provided for potential $pot."))
 end
 
