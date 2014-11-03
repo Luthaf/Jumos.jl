@@ -42,12 +42,17 @@ function show(io::IO, pot::Potential)
     end
 end
 
-function call(pot::BasePotential, r::Float64)
+function call(::BasePotential, ::Float64)
     throw(NotImplementedError("No implementation provided for potential $pot."))
 end
 
 call(pot::BasePotential, r::Number) = call(pot, convert(Float64, r))
 
+function force(::BasePotential, ::Float64)
+    throw(NotImplementedError("No implementation provided for potential $pot."))
+end
+
+force(pot::BasePotential, r::Number) = force(pot, convert(Float64, r))
 
 #==============================================================================#
 # Null potential, for a system without interactions
@@ -58,15 +63,25 @@ end
     return 0.0
 end
 
+@inline function force(::Potential{NullPotential}, ::Float64)
+    return 0.0
+end
 
 #==============================================================================#
 # User defined potential, without any parameter
 type UserPotential <: ShortRangePotential
-    f::Function
+    potential::Function
+    force::Function
+end
+
 end
 
 @inline function call(pot::UserPotential, r::Float64)
-    return pot.potential.f(r)
+    return pot.potential.potential(r)
+end
+
+@inline function force(pot::Potential{UserPotential}, r::Float64)
+    return pot.potential.force(r)
 end
 
 
@@ -81,4 +96,9 @@ end
 @inline function call(pot::LennardJones, r::Float64)
     s6 = (pot.sigma/r)^6
     return 4.0*pot.epsilon*(s6^2 - s6)
+end
+
+@inline function force(pot::Potential{LennardJones}, r::Float64)
+    s6 = (pot.sigma/r)^6
+    return 24.0*pot.epsilon*(s6 - 2*s6^2)
 end
