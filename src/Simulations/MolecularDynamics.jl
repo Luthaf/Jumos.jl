@@ -1,7 +1,7 @@
 #===============================================================================
                     Molecular dynamic simulations
 ===============================================================================#
-
+import Base: show
 abstract Simulation
 
 include("MD/potentials.jl")
@@ -12,6 +12,16 @@ include("MD/enforce.jl")
 include("MD/check.jl")
 include("MD/compute.jl")
 include("MD/output.jl")
+
+type SimulationConfigurationError <: Exception
+    msg :: String
+end
+export SimulationConfigurationError
+
+function show(io::IO, e::SimulationConfigurationError)
+    print(io, "Simulation Configuration Error : \n")
+    print(io, e.msg)
+end
 
 type MDSimulation <: Simulation
     potentials      :: Vector{BasePotential}
