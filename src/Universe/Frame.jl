@@ -14,6 +14,7 @@ type Frame
     topology::Topology
     positions::Array3D
     velocities::NullableArray3D
+    accelerations::NullableArray3D
     forces::NullableArray3D
 end
 
@@ -23,6 +24,7 @@ Frame(t::Topology) = Frame(0,
                            Array(Vect3D{Float32}, size(t.atoms)),
                            nothing,
                            nothing,
+                           nothing
                            )
 
 size(f::Frame) = size(f.positions, 1)
