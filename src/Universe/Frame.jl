@@ -5,21 +5,24 @@
 import Base: size
 export Frame
 
+Array3D = Vector{Vect3D{Float32}}
+NullableArray3D = Union(Void, Array3D)
+
 type Frame
     step::Integer
     box::SimBox
     topology::Topology
-    positions::Vector{Vect3D{Float32}}
-    velocities::Nullable{Vector{Vect3D{Float32}}}
-    forces::Nullable{Vector{Vect3D{Float32}}}
+    positions::Array3D
+    velocities::NullableArray3D
+    forces::NullableArray3D
 end
 
 Frame(t::Topology) = Frame(0,
                            SimBox(),
                            t,
                            Array(Vect3D{Float32}, size(t.atoms)),
-                           Nullable{Vector{Vect3D{Float32}}}(),
-                           Nullable{Vector{Vect3D{Float32}}}(),
+                           nothing,
+                           nothing,
                            )
 
 size(f::Frame) = size(f.positions, 1)
