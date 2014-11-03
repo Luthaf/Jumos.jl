@@ -5,6 +5,9 @@ import Base: show
 abstract Simulation
 
 include("MD/potentials.jl")
+
+typealias Interaction Dict{(Integer, Integer), Potential}
+
 include("MD/forces.jl")
 include("MD/integrators.jl")
 
@@ -24,7 +27,7 @@ function show(io::IO, e::SimulationConfigurationError)
 end
 
 type MDSimulation <: Simulation
-    potentials      :: Vector{BasePotential}
+    interactions    :: Vector{Interaction}
     forces_computer :: BaseForcesComputer
     integrator!     :: BaseIntegrator
     enforces        :: Vector{BaseEnforce}
@@ -52,7 +55,38 @@ end
 
 # Check that everything is effectivelly defined by the user
 function check_settings(sim::MDSimulation)
-    # throw(SimulationConfigurationError)
+    check_interactions(sim)
+end
+
+function check_interactions(sim::MDSimulation)
+    atomic_pairs = Set{(Integer, Integer)}()
+    for (i, j, potential) in sim.interactions
+        union!(atomic_types, [i, j])
+        union!(atomic_pairs, (i, j))
+        if potential ∉ sim.potentials
+            warn("Adding the potential $(potential.potential) to the simulation")
+            push!(sim.potentials, potential)
+        end
+    end
+
+    all_atomic_pairs = IntSet()
+    const ntypes = size(sim.data.topology)
+    for i=1:ntypes, j=1:ntypes
+        union!(all_atomic_pairs, [(i, j), (j, i)])
+    end
+    setdiff!(all_atomic_pairs, atomic_pairs)
+    if size(all_atomic_pairs) != 0
+        missings = ""
+        for (i, j) in all_atomic_pairs
+            missings *= string(sim.atoms[i].name) * " - " * string(sim.atoms[j].name) * "\n"
+        end
+        throw(SimulationConfigurationError(
+            "The following atom pairs do not have any interaction:
+
+            $missing
+            "
+        ))
+    end
 end
 
 # Compute forces between atoms at a given step
