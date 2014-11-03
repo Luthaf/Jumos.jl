@@ -8,6 +8,6 @@ immutable VelocityVerlet <: BaseIntegrator
     timestep::Float64
 end
 
-function call(i::VelocityVerlet, data::SimulationData)
+function call(i::VelocityVerlet, data::Frame)
     const dt = i.timestep
 end

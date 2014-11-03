@@ -4,8 +4,6 @@
 
 abstract Simulation
 
-include("SimulationData.jl")
-
 include("MD/potentials.jl")
 include("MD/forces.jl")
 include("MD/integrators.jl")
@@ -16,14 +14,14 @@ include("MD/compute.jl")
 include("MD/output.jl")
 
 type MDSimulation <: Simulation
-    potentials      ::Vector{BasePotential}
-    forces_computer ::BaseForcesComputer
-    integrator!     ::BaseIntegrator
-    enforces        ::Vector{BaseEnforce}
-    checks          ::Vector{BaseCheck}
-    computes         ::Vector{BaseCompute}
-    outputs          ::Vector{BaseOutput}
-    data            ::SimulationData
+    potentials      :: Vector{BasePotential}
+    forces_computer :: BaseForcesComputer
+    integrator!     :: BaseIntegrator
+    enforces        :: Vector{BaseEnforce}
+    checks          :: Vector{BaseCheck}
+    computes        :: Vector{BaseCompute}
+    outputs         :: Vector{BaseOutput}
+    data            :: Frame
 end
 
 # Run a Molecular Dynamics simulation for nsteps steps
