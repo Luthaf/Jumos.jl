@@ -9,10 +9,11 @@ Overview
 
 TODO
 
-Content
--------
+Contents:
 
 .. toctree::
+    :maxdepth: 2
+    
     steps.rst
     usage.rst
     potentials.rst

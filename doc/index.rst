@@ -14,7 +14,7 @@ This package is a WIP (Work In Progress), and is not usable for now.
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    simulations/index.rst
    trajectories/index.rst
