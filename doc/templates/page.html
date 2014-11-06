@@ -1,0 +1,18 @@
+{% extends "!page.html" %}
+{% block extrahead -%}
+	{{ super() }}
+	<link rel="stylesheet" href="{{ pathto('_static/css/jumos.css', 1) }}" type="text/css" />
+{%- endblock %}
+
+{% block footer -%}
+	{{ super() }}
+   <script defer="defer">
+       function jumos() {
+           var logo = $(".fa-home");
+           logo.html('<img src="https://raw.githubusercontent.com/Luthaf/Jumos.jl/master/doc/static/img/logo.png">');
+       }
+       jumos();
+   </script>
+{%- endblock %}
+
+
