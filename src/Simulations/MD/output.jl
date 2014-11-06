@@ -1,6 +1,7 @@
 #===============================================================================
                         Compute interesting values
 ===============================================================================#
+export BaseOutput, TrajectoryOutput, CustomOutput
 
 const EOL="\n"
 const TAB="\t"
@@ -12,7 +13,7 @@ type TrajectoryOutput <: BaseOutput
 end
 
 function write(out::TrajectoryOutput, context::Dict)
-    writetraj(out.writer, context[:frame])
+    write(out.writer, context[:frame])
 end
 
 # Write to a file, each line containing the results of

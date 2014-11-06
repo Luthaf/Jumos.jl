@@ -1,7 +1,7 @@
 #===============================================================================
                         Compute interesting values
 ===============================================================================#
-
+export BaseCompute, ComputeTemperature, ComputeVolume, ComputePressure
 abstract BaseCompute
 
 type ComputeTemperature <: BaseCompute

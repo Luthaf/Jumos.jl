@@ -1,6 +1,7 @@
 #===============================================================================
             Enforcing various values : temperature, pressure, …
 ===============================================================================#
+export BaseEnforce, BerendsenBarostat, BerendsenThermostat
 
 abstract BaseEnforce
 

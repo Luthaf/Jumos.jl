@@ -1,7 +1,7 @@
 #===============================================================================
                     Time integration takes place here
 ===============================================================================#
-
+export BaseIntegrator, VelocityVerlet
 abstract BaseIntegrator
 
 immutable VelocityVerlet <: BaseIntegrator

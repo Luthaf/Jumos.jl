@@ -2,7 +2,7 @@
             Types for forces evaluations against all particles
                 Pair list algorithm, Ewalds summation, ...
 ===============================================================================#
-
+export BaseForcesComputer, NaiveForces
 abstract BaseForcesComputer
 
 # Naive forces computation : just get the vector between two particles, and

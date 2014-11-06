@@ -1,9 +1,9 @@
 import Base: call, show
+export PotentialError, BasePotential, ShortRangePotential, UserPotential, LennardJones
 
 type PotentialError <: Exception
     msg :: String
 end
-export PotentialError
 
 function show(io::IO, e::PotentialError)
     print(io, "Potential Error : \n")

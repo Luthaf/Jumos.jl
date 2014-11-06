@@ -2,6 +2,8 @@
                     Molecular dynamic simulations
 ===============================================================================#
 import Base: show
+export Simulation, MDSimulation, run!
+
 abstract Simulation
 
 include("MD/potentials.jl")
@@ -29,7 +31,7 @@ end
 type MDSimulation <: Simulation
     interactions    :: Vector{Interaction}
     forces_computer :: BaseForcesComputer
-    integrator!     :: BaseIntegrator
+    integrator      :: BaseIntegrator
     enforces        :: Vector{BaseEnforce}
     checks          :: Vector{BaseCheck}
     computes        :: Vector{BaseCompute}
@@ -95,7 +97,7 @@ end
 
 # Integrate the equations of motion
 function integrate(sim::MDSimulation)
-    sim.integrator!(sim.data)
+    sim.integrator(sim.data)
 end
 
 # Enforce a value like temperature or presure or volume, …

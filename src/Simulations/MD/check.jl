@@ -1,7 +1,7 @@
 #===============================================================================
                     Checking the simulation consistency
 ===============================================================================#
-
+export BaseCheck, ParticleNumberIsConstant, GlobalVelocityIsNull, TotalForceIsNull
 abstract BaseCheck
 
 type ParticleNumberIsConstant <: BaseCheck
