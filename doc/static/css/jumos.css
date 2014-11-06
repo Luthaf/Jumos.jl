@@ -47,3 +47,7 @@ div.section {
 h1,h2,h3,h4,h5,h6 {
     font-family: helvetica, arial, sans-serif;
 }
+
+h3 {
+    text-indent: 1.5em;
+}
