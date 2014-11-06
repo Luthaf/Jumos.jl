@@ -1,5 +1,5 @@
 {# TEMPLATE VAR SETTINGS #}
-{%- set css_files = css_files + ["_static/julia.css"] %}
+{%- set css_files = css_files + ["_static/css/jumos.css"] %}
 {%- set url_root = pathto('', 1) %}
 {%- if url_root == '#' %}{% set url_root = '' %}{% endif %}
 {%- if not embedded and docstitle %}
@@ -20,7 +20,7 @@
 
   {# FAVICON #}
   {% if favicon %}
-    {# <link rel="shortcut icon" href="{{ pathto('_static/' + favicon, 1) }}"/> #}
+    <link rel="shortcut icon" href="{{ pathto('_static/' + favicon, 1) }}"/>
   {% endif %}
 
   {# OPENSEARCH #}
@@ -30,6 +30,12 @@
     {% endif %}
 
   {% endif %}
+
+  {# RTD hosts this file, so just load on non RTD builds #}
+  {% if not READTHEDOCS %}
+    <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
+  {% endif %}
+
 
   {% for cssfile in css_files %}
     <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
@@ -75,7 +81,9 @@
     {# SIDE NAV, TOGGLES ON MOBILE #}
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
-        <a href="http://github.com/Luthaf/Jumos.jl"><img src="/_static/img/logo.png" class="logo" alt="logo"></a>
+        {% block sidebartitle %}
+          <a href="{{ pathto(master_doc) }}" class="jumos-logo"> <img src="{{pathto('_static/img/logo.png', 1)}}"></a>
+        {% endblock %}
         {% include "searchbox.html" %}
       </div>
 

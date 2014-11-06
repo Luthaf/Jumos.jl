@@ -15,8 +15,8 @@ $(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx in
 endif
 
 # Check for juliadoc
-ifeq ($(shell python -c "import juliadoc" >/dev/null 2>&1; echo $$?), 1)
-$(error The juliadoc module is not installed. Please install it by running pip install -r Requirements.txt)
+ifeq ($(shell python -c "import sphinx_rtd_theme" >/dev/null 2>&1; echo $$?), 1)
+$(error The main ReadTheDocs theme is not installed. Please install it by running pip install -r Requirements.txt)
 endif
 
 

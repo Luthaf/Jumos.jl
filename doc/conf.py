@@ -14,12 +14,7 @@
 
 import sys
 import os
-
-sys.path.append(os.path.join(os.getcwd(), "src", "sphinx-rtd-theme"))
 import sphinx_rtd_theme
-
-sys.path.append(os.path.join(os.getcwd(), "src", "juliadoc"))
-import juliadoc
 
 # -- General configuration ------------------------------------------------
 
@@ -32,8 +27,6 @@ import juliadoc
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
-    'juliadoc.julia',
-    'juliadoc.jlhelp'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -73,7 +66,7 @@ release = '0.1'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['build', 'src']
+exclude_patterns = ['build',]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -104,7 +97,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'julia'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -112,7 +105,7 @@ html_theme = 'julia'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [juliadoc.get_theme_dir(), sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -138,7 +131,7 @@ html_static_path = ['static']
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-#html_extra_path = []
+html_extra_path = ["static/img/logo.png"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -149,7 +142,7 @@ html_static_path = ['static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = juliadoc.default_sidebars()
+#html_sidebars = None
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
