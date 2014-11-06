@@ -20,10 +20,10 @@ fluid at :math:`300K`.
 Each simulation script should start by the ``using Jumos`` directive. This import
 the module and the exported names in current scope.
 
-Then, in this script, we create a molecular dynamics (``"MD"``) simulation, and
-a cubic box, associated to the simulation. The topology and the original
-positions are read from the same file, as an :file:`.xyz` file contains some
-topological information (mainly the atomics names).
+Then, in this script, we create a molecular dynamics (``"MD"``) simulation with
+a timestep of :math:`2\ \text{fs}`, and a cubic box, associated to the simulation.
+The topology and the original positions are read from the same file, as
+an :file:`.xyz` file contains some topological information (mainly the atomics names).
 
 The only interaction is a :ref:`Lennard-Jones <lennard-jones-potential>`
 interaction, also added to the simulation before the run. The next lines add
@@ -31,7 +31,7 @@ some outputs to the simulation, namely a :ref:`trajectory <trajectory-output>`
 and an :ref:`energy <energy-output>` output.
 
 And finally the simulation is started for 500 steps. Any parameter can easily
-be changed during the simulation: here, in line 29, we change the output frequency
+be changed during the simulation: here, in line 27, we change the output frequency
 of the trajectory output, and then run the simulation for another 5000 steps.
 
 Overwrite the algorithms

@@ -1,6 +1,7 @@
 using Jumos
 
-sim = Simulation("MD")
+# Molecular Dynamics with 2.0fs timestep
+sim = Simulation("MD", 2.0)
 
 # Create the simulation box : cubic simulation box with a width of 20A
 create_box(sim, 20.0)
@@ -12,9 +13,6 @@ create_velocities(sim, 300)  # Initialize at 300K
 
 # Add Lennard-Jones interactions between He atoms
 add_interaction(sim, LennardJones(0.3, 2.0), ("He", "He"))
-
-# Set timestep to 1.0 fs
-set_timestep(sim, 1.0)
 
 out_trajectory = TrajectryOutput("LJ-traj.xyz", 1)
 add_output(sim, out_trajectory)
