@@ -27,4 +27,7 @@ Frame(t::Topology) = Frame(0,
                            nothing
                            )
 
+# Empty frame construction
+Frame() = Frame(0,SimBox(), Topology(), Vect3D{Float32}[], nothing, nothing, nothing)
+
 size(f::Frame) = size(f.positions, 1)
