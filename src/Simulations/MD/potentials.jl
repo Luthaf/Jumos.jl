@@ -83,26 +83,11 @@ type UserPotential <: ShortRangePotential
     force::Function
 end
 
-# ForwardDiff allow automatic force generation from the potential
-# F = - grad(U)
-using ForwardDiff
+# Calculus allow automatic force computation using finite difference
+using Calculus: derivative
 
 function UserPotential(potential::Function)
-    potential_arr(x) = potential(x[1])
-    force_arr = forwarddiff_gradient(potential_arr, Float64, fadtype=:typed)
-    try
-        # Testing it with a random value. This may fail if the potential is
-        # not defined in this point, but after all it is very likely to
-        # fail at some point after.
-        force_arr([1.0])
-    catch
-        throw(PotentialError(
-            "Could not differentiate the User potential automatically.
-
-            Please provide a force function."
-        ))
-    end
-    force(x) = force_arr([x])
+    force(x) = - derivative(potential)(x)
     return UserPotential(potential, force)
 end
 
