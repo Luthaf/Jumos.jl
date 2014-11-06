@@ -58,7 +58,7 @@ end
 call(pot::BasePotential, r::Number) = call(pot, convert(Float64, r))
 
 function force(pot::BasePotential, ::Float64)
-    throw(NotImplementedError("No implementation provided for potential $pot."))
+    throw(NotImplementedError("No force method provided for potential $pot."))
 end
 
 force(pot::BasePotential, r::Number) = force(pot, convert(Float64, r))
