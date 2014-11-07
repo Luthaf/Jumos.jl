@@ -84,7 +84,7 @@ type UserPotential <: ShortRangePotential
 end
 
 # Calculus allow automatic force computation using finite difference
-using Calculus: derivative
+import Calculus: derivative
 
 function UserPotential(potential::Function)
     force(x) = - derivative(potential)(x)

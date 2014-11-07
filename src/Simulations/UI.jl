@@ -34,7 +34,7 @@ function Simulation(sim_type::String, args...)
         return MDSimulation(args...)
     else
         throw(SimulationConfigurationError(
-            "Unknown simulation type: $type"
+            "Unknown simulation type: $sim_type"
         ))
     end
 end
