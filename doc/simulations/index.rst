@@ -1,5 +1,5 @@
-Simulation module
-=================
+Simulations
+===========
 
 The simulation module is were all the simulation code falls in.
 

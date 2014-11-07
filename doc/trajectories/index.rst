@@ -1,2 +1,20 @@
-Trajectories module
-===================
+Trajectories
+============
+
+Readind and writing trajectories
+--------------------------------
+
+Supported formats
+^^^^^^^^^^^^^^^^^
+
+Adding a new format
+^^^^^^^^^^^^^^^^^^^
+
+Readind and writing topologies
+-------------------------------
+
+Supported formats for topology
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding a new format for topology files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

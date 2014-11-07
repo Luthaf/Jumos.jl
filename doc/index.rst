@@ -9,16 +9,26 @@ possible, and to make it easy to use and develop novel algorithm for each part
 of a simulation. Potential, long range interactions, pair lists computing,
 outputs, `etc.` everything can be customised !
 
-This package is a WIP (Work In Progress), and is not usable for now.
+Jumos also include some code for analysing trajectories, either during the
+simulation run or by reading frames in a file.
 
-Contents:
+.. warning::
+    This package is a work in progress, and is only usable at your own risk.
+
+Jumos is separated in 5 main modules : `Universe`, `Atoms`, `Simulations`,
+`Trajectories` and `Analysis`.
+
+If you want to start running simulations, go read the :ref:`example of usage <usage-example>`.
+You can also explore the packages with the links below.
 
 .. toctree::
-   :maxdepth: 3
+    :maxdepth: 2
 
-   simulations/index.rst
-   trajectories/index.rst
-   analysis/index.rst
+    universe/index.rst
+    atoms/index.rst
+    simulations/index.rst
+    trajectories/index.rst
+    analysis/index.rst
 
 
 
