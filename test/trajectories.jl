@@ -4,7 +4,7 @@
                 This is only a minimalistic test, which can
                 could be inproved.
 ===============================================================================#
-const TEST_DIR = dirname(Base.source_path())
+TEST_DIR = dirname(Base.source_path())
 
 # NetCDF read
 traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")

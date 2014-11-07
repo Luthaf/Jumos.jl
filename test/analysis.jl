@@ -2,7 +2,7 @@
                         Test the histograms functions
 ===============================================================================#
 
-const TEST_DIR = dirname(Base.source_path())
+TEST_DIR = dirname(Base.source_path())
 
 traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
 
