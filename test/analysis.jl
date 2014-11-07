@@ -11,7 +11,7 @@ traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
     info("Testing DensityProfile")
     @time begin
         rho = DensityProfile("O", 3)
-        for frame in eachframe(traj, start=950)
+        for frame in eachframe(traj, start=50)
             update!(rho, frame)
         end
         normalize!(rho)
@@ -21,7 +21,7 @@ traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
     info("Testing RDF")
     @time begin
         rdf = RDF("O")
-        for frame in eachframe(traj, start=950)
+        for frame in eachframe(traj, start=50)
             update!(rdf, frame)
         end
         normalize!(rdf)

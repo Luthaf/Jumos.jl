@@ -18,7 +18,7 @@ tmp = tempname()
 outtraj = Writer("$tmp.xyz")
 traj = Reader("$TEST_DIR/trjs/water.xyz", box=[15.0, 15.0, 15.0])
     frame = Frame(traj)
-    read_frame!(traj, 500, frame)
+    read_frame!(traj, 50, frame)
     @test length(frame.positions) == traj.natoms
 
     write(outtraj, frame)
