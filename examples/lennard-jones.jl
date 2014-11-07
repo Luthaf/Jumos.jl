@@ -4,7 +4,7 @@ using Jumos
 sim = Simulation("MD", 2.0)
 
 # Create the simulation box : cubic simulation box with a width of 20A
-create_box(sim, 20.0)
+set_box(sim, (20.0,))
 
 # Create the initial topology, positions and velocities
 read_topology(sim, "lennard-jones.xyz")

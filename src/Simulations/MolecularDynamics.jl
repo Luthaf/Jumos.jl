@@ -36,6 +36,8 @@ type MDSimulation <: Simulation
     checks          :: Vector{BaseCheck}
     computes        :: Vector{BaseCompute}
     outputs         :: Vector{BaseOutput}
+    topology        :: Topology
+    box             :: SimBox
     data            :: Frame
 end
 

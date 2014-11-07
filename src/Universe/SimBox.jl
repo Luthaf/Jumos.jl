@@ -42,6 +42,9 @@ function getindex(b::SimBox, i::String)
     throw(BoundsError())
 end
 
+#==============================================================================#
+# Automatic box type
+
 function SimBox(u::Vect3D, v::Vect3D)
     if v == vect3d(90.0)
         box_type = OrthorombicBox()
@@ -70,3 +73,27 @@ SimBox(L::Real) = SimBox(L, L, L)
 SimBox() = SimBox(0.0)
 
 SimBox(b::SimBox) = b
+
+#==============================================================================#
+# Manual box type
+
+SimBox{T<:AbstractBoxType}(box_type::T, u::Vector, v::Vector) = SimBox(vect3d(u), vect3d(v), box_type)
+SimBox{T<:AbstractBoxType}(box_type::T, u::Vect3D) = SimBox(u, vect3d(90.0), box_type)
+
+function SimBox{T<:AbstractBoxType}(box_type::T, u::Vector)
+    if length(u) == 3
+        return SimBox(box_type, vect3d(u))
+    elseif length(u) == 6
+        return SimBox(box_type, vect3d(u[1:3]), vect3d(u[4:6]))
+    else
+        throw(InexactError())
+    end
+end
+
+SimBox{T<:AbstractBoxType}(box_type::T,
+    Lx::Real, Ly::Real, Lz::Real,
+    a::Real, b::Real, c::Real) = SimBox{T<:Type{AbstractBoxType}}(box_type::T, vect3d(Lx, Ly, Lz), vect3d(a, b, c))
+
+SimBox{T<:AbstractBoxType}(box_type::T, Lx::Real, Ly::Real, Lz::Real) = SimBox(box_type, vect3d(Lx, Ly, Lz))
+SimBox{T<:AbstractBoxType}(box_type::T, L::Real) = SimBox(box_type, L, L, L)
+SimBox{T<:AbstractBoxType}(box_type::T) = SimBox(box_type, 0.0)

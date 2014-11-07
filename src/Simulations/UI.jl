@@ -4,7 +4,7 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction
+export add_interaction, set_box
 
 function add_interaction(sim::MDSimulation, potential::Potential, atoms::(AtomType, AtomType))
     atom_i, atom_j = get_atom_id(sim, atoms...)
@@ -49,6 +49,9 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     computes = BaseCompute[]
     outputs = BaseOutput[]
 
+    topology = Topology()
+    box = SimBox()
+
     return MDSimulation(interactions,
                         forces,
                         integrator,
@@ -56,9 +59,24 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
                         checks,
                         computes,
                         outputs,
-                        Frame()
+                        topology,
+                        box,
+                        Frame(topology)
                         )
 end
 
 # Convenient method.
 MDSimulation(timestep::Real) = MDSimulation(VelocityVerlet(timestep))
+
+
+function set_box(sim::MDSimulation, box::SimBox)
+    sim.box = box
+end
+
+function set_box(sim::MDSimulation, size)
+    return set_box(sim, SimBox(size...))
+end
+
+function set_box{T<:Type{Universe.AbstractBoxType}}(sim::MDSimulation, box_type::T, size = (0.0,))
+    return set_box(sim, SimBox(box_type(), size...))
+end
