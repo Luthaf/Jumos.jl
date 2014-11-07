@@ -5,7 +5,7 @@
 export distance, distance_array, distance3d
 
 # Refine a vector using the minimal image convention
-@inline minimal_image(vect::Vect3D, box::SimBox{InifiniteBox}) = vect
+@inline minimal_image(vect::Vect3D, box::SimBox{InfiniteBox}) = vect
 
 @inline function minimal_image(vect::Vect3D, box::SimBox{OrthorombicBox})
     return vect3d(

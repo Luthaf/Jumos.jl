@@ -2,10 +2,10 @@
                             Simulation box type
 ===============================================================================#
 
-export SimBox, InifiniteBox, OrthorombicBox, TriclinicBox
+export SimBox, InfiniteBox, OrthorombicBox, TriclinicBox
 
 abstract AbstractBoxType
-type InifiniteBox <: AbstractBoxType end
+type InfiniteBox <: AbstractBoxType end
 type OrthorombicBox <: AbstractBoxType end
 type TriclinicBox <: AbstractBoxType end
 
