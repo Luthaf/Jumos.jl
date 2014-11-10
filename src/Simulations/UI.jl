@@ -4,7 +4,7 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_box, read_topology
+export add_interaction, set_box, read_topology, read_positions
 
 function add_interaction(sim::MDSimulation, potential::Potential, atoms::(AtomType, AtomType))
     atom_i, atom_j = get_atom_id(sim, atoms...)
@@ -86,3 +86,15 @@ end
 function read_topology(sim::MDSimulation, filename::AbstractString)
     sim.topology = Topology(filename)
 end
+
+
+function read_positions(sim::MDSimulation, filename::AbstractString)
+    reader = opentraj(filename, box=sim.box, topology=sim.topology)
+    read_frame!(reader, 1, sim.data)
+
+    sim.data.box = sim.box
+    sim.data.topology = sim.topology
+end
+
+# Todo:
+# function read_velocities(sim::MDSimulation, filename::AbstractString)
