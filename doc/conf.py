@@ -58,6 +58,9 @@ release = '0.1'
 # for a list of supported languages.
 #language = None
 
+# Default code highlighting
+highlight_language = "julia"
+
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
 #today = ''

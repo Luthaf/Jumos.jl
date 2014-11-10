@@ -18,17 +18,18 @@ simulation run or by reading frames in a file.
 Jumos is separated in 5 main modules : `Universe`, `Atoms`, `Simulations`,
 `Trajectories` and `Analysis`.
 
-If you want to start running simulations, go read the :ref:`example of usage <usage-example>`.
+If you want to start running simulations, directely go to the :ref:`usage example <usage-example>`.
 You can also explore the packages with the links below.
 
 .. toctree::
     :maxdepth: 2
 
-    universe/index.rst
-    atoms/index.rst
-    simulations/index.rst
-    trajectories/index.rst
-    analysis/index.rst
+    units
+    universe/index
+    atoms/index
+    simulations/index
+    trajectories/index
+    analysis/index
 
 
 
