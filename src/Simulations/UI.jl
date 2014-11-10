@@ -4,7 +4,7 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_box
+export add_interaction, set_box, read_topology
 
 function add_interaction(sim::MDSimulation, potential::Potential, atoms::(AtomType, AtomType))
     atom_i, atom_j = get_atom_id(sim, atoms...)
@@ -79,4 +79,10 @@ end
 
 function set_box{T<:Type{Universe.AbstractBoxType}}(sim::MDSimulation, box_type::T, size = (0.0,))
     return set_box(sim, SimBox(box_type(), size...))
+end
+
+
+
+function read_topology(sim::MDSimulation, filename::AbstractString)
+    sim.topology = Topology(filename)
 end
