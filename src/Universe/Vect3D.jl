@@ -2,7 +2,7 @@
             Type Vect3D: representing 3D Vectors in an efficient way
 ===============================================================================#
 import Base: norm, show, convert
-export Vect3D, vect3d
+export Vect3D, vect3d, normalize
 
 type Vect3D{T<:Real}
    x::T
@@ -71,5 +71,6 @@ cross(u::Vect3D, v::Vect3D) = vect3d(u[2]*v[3] - u[3]*v[2],
 (^)(u::Vect3D, v::Vect3D) = cross(u, v)
 
 norm(v::Vect3D) = sqrt(v[1]*v[1] + v[2]*v[2] + v[3]*v[3])
+normalize(v::Vect3D) = v/norm(v)
 
 (==)(u::Vect3D, v::Vect3D) = u.x == v.x && u.y == v.y && u.z == v.z
