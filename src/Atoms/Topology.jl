@@ -5,6 +5,8 @@
 import Base: size, show
 
 export Topology, Bond, Angle, Dihedral
+export atomic_masses
+
 typealias Bond (Int, Int)
 typealias Angle (Int, Int, Int)
 typealias Dihedral (Int, Int, Int, Int)
@@ -39,6 +41,8 @@ function size(a::Dict{String, Array{Int64,1}})
     return i
 end
 
+size(topology::Topology) = size(topology.atoms)
+
 function show(io::IO, top::Topology)
     n_molecules = size(top.molecules)
     n_residues = size(top.residues)
@@ -47,4 +51,13 @@ function show(io::IO, top::Topology)
     n_dihedrals = size(top.dihedrals, 1)
     show(io, string("Topology with $n_molecules molecules, $n_residues residues, ",
                 "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
+end
+
+function atomic_masses(topology::Topology)
+    masses = Array(Float64, size(topology))
+    @inbounds for i=1:size(topology)
+        atom = topology.atoms[i]
+        masses[i] = atom.mass != 0.0 ? atom.mass : get_mass(atom)
+    end
+    return masses
 end
