@@ -49,6 +49,9 @@ end
 # Return True if there is still some step to read, false otherwhile
 function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
     traj.natoms = int(readline(traj.reader.file))
+
+    set_frame_size!(frame, traj.natoms)
+
     readline(traj.reader.file)  # comment
 
     for i = 1:traj.natoms
