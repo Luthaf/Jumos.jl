@@ -51,6 +51,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
 
     topology = Topology()
     box = SimBox()
+    masses = Float64[]
 
     return MDSimulation(interactions,
                         forces,
@@ -61,7 +62,8 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
                         outputs,
                         topology,
                         box,
-                        Frame(topology)
+                        Frame(topology),
+                        masses
                         )
 end
 

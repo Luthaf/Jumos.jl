@@ -29,6 +29,7 @@ function show(io::IO, e::SimulationConfigurationError)
 end
 
 type MDSimulation <: Simulation
+    # Algorithms
     interactions    :: Vector{Interaction}
     forces_computer :: BaseForcesComputer
     integrator      :: BaseIntegrator
@@ -36,13 +37,19 @@ type MDSimulation <: Simulation
     checks          :: Vector{BaseCheck}
     computes        :: Vector{BaseCompute}
     outputs         :: Vector{BaseOutput}
+    # Data
     topology        :: Topology
     box             :: SimBox
     data            :: Frame
+    masses          :: Vector{Float64}
 end
+
+include("MD/initial_velocities.jl")
 
 # Run a Molecular Dynamics simulation for nsteps steps
 function run!(sim::MDSimulation, nsteps::Integer)
+
+    sim.masses = atomic_masses(sim.topology)
 
     check_settings(sim)
 
@@ -60,6 +67,7 @@ end
 # Check that everything is effectivelly defined by the user
 function check_settings(sim::MDSimulation)
     check_interactions(sim)
+    check_masses(sim)
 end
 
 function check_interactions(sim::MDSimulation)
@@ -89,6 +97,21 @@ function check_interactions(sim::MDSimulation)
             $missings
             "
         ))
+    end
+end
+
+function check_masses(sim::MDSimulation)
+    if countnz(sim.masses) != size(sim.topology)
+        bad_masses = Set()
+        for (i, val) in enumerate(sim.masses)
+            if val == 0.0
+                union!(bad_masses, [sim.topology.atoms[i].name])
+            end
+        end
+        missing = join(bad_masses, " ")
+        throw(SimulationConfigurationError(
+                "Missing masses for the following atomic types: $missing"
+            ))
     end
 end
 
