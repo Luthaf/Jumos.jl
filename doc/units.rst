@@ -34,24 +34,29 @@ Interaction with others units systems
 All the interaction with units is based on the `SIUnits <https://github.com/Keno/SIUnits.jl>`_
 package. You can convert from and to internal representation using the following functions :
 
-.. function:: internal(value::SIValue)
+.. function:: internal(value::SIQuantity)
 
 Convert a value with unit to it's internal representation.
 
 .. code-block:: jlcon
 
-    julia> internal(2m)
-        2.0e10
-    julia> internal(3g/mol)
-        3.0
+    julia> internal(2m)         # Distance
+        1.9999999999999996e10
 
-.. function:: with_unit(value, unit::SIunit)
+    julia> internal(3kg*m/s^2)  # Force
+        7.17017208413002e-14
 
-Convert an internal value to a value with unit. The unit is not tracked in the
-code, so you can convert a position to a pressure value. ``value`` can be a
-``Number`` or a n-dimensional array of ``Number``.
+.. function:: with_unit(value::Number, target_unit::SIUnit)
+
+Convert an internal value to its value in the International System. The units are
+not tracked in the code, so you can convert a position to a pressure. All the results
+are returned in the main SI unit, without considering any power-of-ten prefix.
+This leads to weird results like:
 
 .. code-block:: jlcon
 
-    julia> with_unit(45, Milli*Joule)
-        TODO
+    julia> with_unit(45, mJ)
+        188280.0 kg m²s⁻²
+
+    julia> with_unit(45, J)
+        188280.0 kg m²s⁻²
