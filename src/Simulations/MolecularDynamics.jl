@@ -4,6 +4,8 @@
 import Base: show
 export Simulation, MDSimulation, run!
 
+Array3D = Vector{Vect3D{Float32}}
+
 abstract Simulation
 
 include("MD/potentials.jl")
@@ -42,6 +44,7 @@ type MDSimulation <: Simulation
     box             :: SimBox
     data            :: Frame
     masses          :: Vector{Float64}
+    forces          :: Array3D
 end
 
 include("MD/initial_velocities.jl")
@@ -117,12 +120,12 @@ end
 
 # Compute forces between atoms at a given step
 function get_forces(sim::MDSimulation)
-    sim.data.forces = sim.forces_computer(sim.data, sim.interactions)
+    sim.forces = sim.forces_computer(sim.data, sim.interactions)
 end
 
 # Integrate the equations of motion
 function integrate(sim::MDSimulation)
-    sim.integrator(sim.data)
+    sim.integrator(sim.data, sim.forces)
 end
 
 # Enforce a value like temperature or presure or volume, …
