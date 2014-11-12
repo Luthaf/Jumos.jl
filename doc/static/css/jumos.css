@@ -60,6 +60,7 @@ h4 {
 
 .rst-content dl:not(.docutils) {
     border-top: solid 1px #f8f8f8;
+    margin-bottom: 0;
 }
 
 .rst-content dl:not(.docutils) dt {
@@ -68,4 +69,5 @@ h4 {
     color: rgb(64, 64, 64);
     display: block;
     margin: 1px 0;
+    background-color: #f5f5f5;
 }
