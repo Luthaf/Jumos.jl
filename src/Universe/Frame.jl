@@ -1,6 +1,6 @@
 #===============================================================================
                     The Frame type holds a frame,
-            i.e. all the data form one step of a simulation.
+            i.e. all the data from one step of a simulation.
 ===============================================================================#
 import Base: size
 export Frame, set_frame_size!
