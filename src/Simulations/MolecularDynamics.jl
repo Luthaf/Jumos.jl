@@ -120,7 +120,7 @@ end
 
 # Compute forces between atoms at a given step
 function get_forces(sim::MDSimulation)
-    sim.forces = sim.forces_computer(sim.data, sim.interactions)
+    sim.forces_computer(sim.forces, sim.data, sim.interactions)
 end
 
 # Integrate the equations of motion
