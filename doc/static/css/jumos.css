@@ -51,3 +51,21 @@ h1,h2,h3,h4,h5,h6 {
 h3 {
     text-indent: 1.5em;
 }
+
+h4 {
+    font-style: italic;
+    font-size: 1em;
+    margin-bottom: .5ex;
+}
+
+.rst-content dl:not(.docutils) {
+    border-top: solid 1px #f8f8f8;
+}
+
+.rst-content dl:not(.docutils) dt {
+    background: #fdfdfd;
+    border-top: none;
+    color: rgb(64, 64, 64);
+    display: block;
+    margin: 1px 0;
+}
