@@ -4,6 +4,8 @@ Atoms
 Atom type
 ---------
 
+.. _type-Topology:
+
 Topology
 --------
 
