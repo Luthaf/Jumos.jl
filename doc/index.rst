@@ -31,6 +31,14 @@ You can also explore the packages with the links below.
     trajectories/index
     analysis/index
 
+Installation
+------------
+
+To install, simply run ``Pkg.clone(https://github.com/Luthaf/Jumos.jl)`` at
+julia prompt. You may also want to run ``Pkg.test("Jumos")`` to run the tests.
+
+Only 0.4 julia prerelease version is supported, because of all the
+breaking changes between 0.3 and 0.4.
 
 
 .. * :ref:`genindex`
