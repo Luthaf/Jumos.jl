@@ -30,7 +30,7 @@ end
 function get_mass(name::String)
     mass = 0.0
     try
-        mass = ATOMIC_MASSES[string]
+        mass = ATOMIC_MASSES[name].val
     end
     return mass
 end

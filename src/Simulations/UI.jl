@@ -42,7 +42,7 @@ end
 # This define the default values for a simulation !
 function MDSimulation(integrator=VelocityVerlet(1.0))
     interactions = Interaction[]
-    forces = NaiveForces()
+    forces_computer = NaiveForces()
 
     enforces = BaseEnforce[]
     checks = BaseCheck[]
@@ -55,7 +55,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     forces = Array3D[]
 
     return MDSimulation(interactions,
-                        forces,
+                        forces_computer,
                         integrator,
                         enforces,
                         checks,
