@@ -32,7 +32,7 @@ function update!{T<:Number}(h::Histogram{T}, values::Array{T, 1}; weight=one(T))
         initialize!(h, values)
     end
 
-    for val in values
+    @inbounds for val in values
         bin = ifloor(val/h.step)
         if 0 < bin <= h.bins
             h.weight[bin] += weight
@@ -68,7 +68,7 @@ end
 
 # normalize by a function of the current bin
 function normalize!{T<:Number}(h::Histogram{T}, norm::Function)
-    for i=1:h.bins
+    @inbounds for i=1:h.bins
         h.weight[i] /= norm(i)
     end
     return nothing

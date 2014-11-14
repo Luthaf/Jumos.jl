@@ -27,10 +27,10 @@ function update!(rdf::RDF, frame::Frame)
 
     dists = Float64[]
 
-    for i=1:natoms
+    @inbounds for i=1:natoms
         if frame.topology.atoms[i].name == rdf.atom_i
             rdf.nparticle += 1
-            for j=(i+1):natoms
+            @inbounds for j=(i+1):natoms
                 if frame.topology.atoms[j].name == rdf.atom_j
                     push!(dists, distances[i, j])
                 end

@@ -20,7 +20,7 @@ end
 
 function update!(density::DensityProfile, frame::Frame)
     positions = Float64[]
-    for (i, pos) in enumerate(frame.positions)
+    @inbounds for (i, pos) in enumerate(frame.positions)
         if frame.topology.atoms[i].name == density.atom
             pos = pos[density.dim]
             # Periodic boundary conditions
