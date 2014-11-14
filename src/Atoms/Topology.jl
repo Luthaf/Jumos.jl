@@ -41,7 +41,7 @@ function size(a::Dict{String, Array{Int64,1}})
     return i
 end
 
-size(topology::Topology) = size(topology.atoms)
+size(topology::Topology) = size(topology.atoms, 1)
 
 function show(io::IO, top::Topology)
     n_molecules = size(top.molecules)
@@ -54,10 +54,13 @@ function show(io::IO, top::Topology)
 end
 
 function atomic_masses(topology::Topology)
-    masses = Array(Float64, size(topology))
+    masses = zeros(Float64, size(topology))
     @inbounds for i=1:size(topology)
         atom = topology.atoms[i]
-        masses[i] = atom.mass != 0.0 ? atom.mass : get_mass(atom)
+        if atom.mass == 0.0
+            atom.mass = get_mass(atom)
+        end
+        masses[i] = atom.mass
     end
     return masses
 end
