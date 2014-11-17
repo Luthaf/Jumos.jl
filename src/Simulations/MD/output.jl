@@ -10,10 +10,21 @@ abstract BaseOutput
 
 type TrajectoryOutput <: BaseOutput
     writer::Writer
+    frequency::Integer
+    current::Integer
+end
+
+function TrajectoryOutput(filename::String, frequency=1)
+    writer = Writer(filename)
+    return TrajectoryOutput(writer, frequency, 0)
 end
 
 function write(out::TrajectoryOutput, context::Dict)
-    write(out.writer, context[:frame])
+    out.current += 1
+    if out.current == out.frequency
+        write(out.writer, context[:frame])
+        out.current = 0
+    end
 end
 
 # Write to a file, each line containing the results of
@@ -34,10 +45,10 @@ end
 function write(out::CustomOutput, context::Dict)
     s = ""
     for value in out.values
-        try
+        if haskey(context, value)
             s *= TAB * context[value]
-        catch KeyError
-            error("Value not found in output: $(KeyError.key)")
+        else
+            error("Value not found for output: $(KeyError.key)")
         end
     end
     write(out.file, s * EOL)

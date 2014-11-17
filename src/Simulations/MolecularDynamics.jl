@@ -189,7 +189,9 @@ end
 
 # Output data to files : trajectories, energy as function of time, …
 function output(sim::MDSimulation)
-    context = sim.data
+    # Todo: better context
+    context = Dict()
+    context[:frame] = sim.data
     for out in sim.outputs
         write(out, context)
     end

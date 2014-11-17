@@ -4,7 +4,7 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_box, read_topology, read_positions
+export add_interaction, set_box, read_topology, read_positions, add_output
 
 # Todo: Way to add a catchall interaction
 function add_interaction(sim::MDSimulation, potential::BasePotential, atoms::(AtomType, AtomType))
@@ -61,3 +61,7 @@ end
 
 # Todo:
 # function read_velocities(sim::MDSimulation, filename::AbstractString)
+
+function add_output(sim::MDSimulation, out::BaseOutput)
+    push!(sim.outputs, out)
+end
