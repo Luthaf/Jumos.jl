@@ -47,6 +47,39 @@ type MDSimulation <: Simulation
     forces          :: Array3D
 end
 
+# This define the default values for a simulation !
+function MDSimulation(integrator=VelocityVerlet(1.0))
+    interactions = Interactions()
+    forces_computer = NaiveForces()
+
+    enforces = BaseEnforce[]
+    checks = BaseCheck[]
+    computes = BaseCompute[]
+    outputs = BaseOutput[]
+
+    topology = Topology()
+    box = SimBox()
+    masses = Float64[]
+    forces = Array3D[]
+
+    return MDSimulation(interactions,
+                        forces_computer,
+                        integrator,
+                        enforces,
+                        checks,
+                        computes,
+                        outputs,
+                        topology,
+                        box,
+                        Frame(topology),
+                        masses,
+                        forces
+                        )
+end
+
+# Convenient method.
+MDSimulation(timestep::Real) = MDSimulation(VelocityVerlet(timestep))
+
 include("MD/initial_velocities.jl")
 
 # Run a Molecular Dynamics simulation for nsteps steps
