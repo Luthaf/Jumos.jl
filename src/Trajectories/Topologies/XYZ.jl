@@ -1,20 +1,20 @@
 #===============================================================================
-                Read an XYZ file and extract the atomic names.
+        Read the firt frame of an XYZ file and extract the atomic names.
 ===============================================================================#
 
 function read_xyz_topology(filename::String)
-    f = open(filename)
+    fd = open(filename)
 
-    natoms = int(readline(f))
-    t = Topology(natoms)
+    natoms = int(readline(fd))
+    topology = Topology(natoms)
 
-    readline(f)  # Comment line
+    readline(fd)  # Comment line
 
     for i=1:natoms
-        line = readline(f)
-        sp = split(line)
-        t.atoms[i] = Atom(sp[1])
+        line = readline(fd)
+        splited = split(line)
+        topology[i] = Atom(splited[1])
     end
-    close(f)
-    return t
+    close(fd)
+    return topology
 end

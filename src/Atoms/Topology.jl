@@ -2,7 +2,7 @@
                  Useful types for topology storage.
 ===============================================================================#
 
-import Base: size, show
+import Base: size, show, getindex, setindex!
 
 export Topology, Bond, Angle, Dihedral
 export atomic_masses
@@ -13,7 +13,8 @@ typealias Dihedral (Int, Int, Int, Int)
 
 
 type Topology
-    atoms::Vector{Atom}
+    atom_types::Vector{Atom}
+    atoms::Vector{Int}
     molecules::Dict{String, Array{Int,1}}
     residues::Dict{String, Array{Int,1}}
     bonds::Vector{Bond}
@@ -22,13 +23,14 @@ type Topology
     impropers::Vector{Dihedral}  # Impropers dihedrals
 end
 
-Topology(natoms::Integer) = Topology(Array(Atom, natoms),
+Topology(natoms::Integer) = Topology(Atom[],
+                                     Array(Int64, natoms),
                                      Dict(),
                                      Dict(),
-                                     Array(Bond, 0),
-                                     Array(Angle, 0),
-                                     Array(Dihedral, 0),
-                                     Array(Dihedral, 0)
+                                     Bond[],
+                                     Angle[],
+                                     Dihedral[],
+                                     Dihedral[]
                                     )
 Topology() = Topology(0)
 
@@ -53,10 +55,32 @@ function show(io::IO, top::Topology)
                 "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
 end
 
+function getindex(topology::Topology, i::Integer)
+    atom_type = topology.atoms[i]
+    return topology.atom_types[atom_type]
+end
+
+function setindex!(topology::Topology, atom::Atom, idx::Integer)
+    atom_type = 0
+    for (i, a) in enumerate(topology.atom_types)
+        if atom == a
+            atom_type = i
+        end
+    end
+
+    # The atom type is not already defined
+    if atom_type == 0
+        push!(topology.atom_types, atom)
+        atom_type = size(topology.atom_types, 1)
+    end
+
+    topology.atoms[idx] = atom_type
+end
+
 function atomic_masses(topology::Topology)
     masses = zeros(Float64, size(topology))
     @inbounds for i=1:size(topology)
-        atom = topology.atoms[i]
+        atom = topology[i]
         if atom.mass == 0.0
             atom.mass = get_mass(atom)
         end

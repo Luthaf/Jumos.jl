@@ -42,3 +42,12 @@ end
 function set_mass!(atom::Atom, mass::Number)
     atom.mass = mass
 end
+
+function (==)(this::Atom, other::Atom)
+    for name in names(Atom)
+        if getfield(this, name) != getfield(other, name)
+            return false
+        end
+    end
+    return true
+end

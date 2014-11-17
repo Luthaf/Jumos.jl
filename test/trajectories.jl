@@ -12,9 +12,10 @@ traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
     read_next_frame!(traj, frame)
     @test length(frame.positions) == traj.natoms
 
-    @test frame.topology.atoms[1].name == "O"
-    @test frame.topology.atoms[1].symbol == "O"
-    @test frame.topology.atoms[1].mass == 15.999
+    @test frame.topology[1].name == "O"
+    @test frame.topology[1].symbol == "O"
+    @test frame.topology[1].mass == 15.999
+    @test size(frame.topology.atom_types, 1) == 2
 close(traj)
 
 # XYZ read and write
@@ -25,9 +26,9 @@ traj = Reader("$TEST_DIR/trjs/water.xyz", box=[15.0, 15.0, 15.0])
     read_frame!(traj, 50, frame)
     @test length(frame.positions) == traj.natoms
 
-    @test frame.topology.atoms[4].name == "O"
-    @test frame.topology.atoms[4].symbol == "O"
-    @test frame.topology.atoms[4].mass == ATOMIC_MASSES["O"].val
+    @test frame.topology[4].name == "O"
+    @test frame.topology[4].symbol == "O"
+    @test frame.topology[4].mass == ATOMIC_MASSES["O"].val
 
 
     write(outtraj, frame)

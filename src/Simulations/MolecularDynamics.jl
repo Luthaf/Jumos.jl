@@ -108,7 +108,7 @@ function check_masses(sim::MDSimulation)
         bad_masses = Set()
         for (i, val) in enumerate(sim.masses)
             if val == 0.0
-                union!(bad_masses, [sim.topology.atoms[i].name])
+                union!(bad_masses, [sim.topology[i].name])
             end
         end
         missing = join(bad_masses, " ")

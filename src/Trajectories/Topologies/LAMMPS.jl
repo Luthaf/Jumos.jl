@@ -55,7 +55,7 @@ function read_lmp_topology(filename::String)
             molecule = splitted[2]
             atom_type = int(splitted[3])
 
-            topology.atoms[index] = Atom(names[atom_type])
+            topology[index] = Atom(names[atom_type])
             try
                 push!(topology.molecules[molecule], index)
             catch

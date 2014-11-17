@@ -37,7 +37,7 @@ end
 
 function write_xyz_data(file::IO, frame::Frame; velocities=false)
    for i=1:size(frame)
-      line = frame.topology.atoms[i].name * " "
+      line = frame.topology[i].name * " "
       line *= string(frame.positions[i][1]) * " "
       line *= string(frame.positions[i][2]) * " "
       line *= string(frame.positions[i][3])

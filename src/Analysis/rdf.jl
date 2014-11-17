@@ -29,10 +29,10 @@ function update!(rdf::RDF, frame::Frame)
     sizehint(dists, 2*natoms)
 
     @inbounds for i=1:natoms
-        if frame.topology.atoms[i].name == rdf.atom_i
+        if frame.topology[i].name == rdf.atom_i
             rdf.nparticle += 1
             @inbounds for j=(i+1):natoms
-                if frame.topology.atoms[j].name == rdf.atom_j
+                if frame.topology[j].name == rdf.atom_j
                     push!(dists, distances[i, j])
                 end
             end
