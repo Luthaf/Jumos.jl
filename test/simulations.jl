@@ -1,4 +1,4 @@
-TEST_DIR = dirname(Base.source_path())
+TEST_DIR = dirname(@__FILE__)
 
 cd(TEST_DIR); cd("../examples")
 
