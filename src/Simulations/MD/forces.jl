@@ -10,7 +10,7 @@ abstract BaseForcesComputer
 type NaiveForces <: BaseForcesComputer
 end
 
-function call(::NaiveForces, forces::Array3D, data::Frame, interactions::Vector{Interaction})
+function call(::NaiveForces, forces::Array3D, data::Frame, interactions::Interactions)
 
     # Temporary vector
     r = Vect3D()

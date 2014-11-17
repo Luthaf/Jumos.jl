@@ -10,7 +10,7 @@ abstract Simulation
 
 include("MD/potentials.jl")
 
-typealias Interaction Dict{(Integer, Integer), Potential}
+typealias Interactions Dict{(Integer, Integer), Potential}
 
 include("MD/forces.jl")
 include("MD/integrators.jl")
@@ -32,7 +32,7 @@ end
 
 type MDSimulation <: Simulation
     # Algorithms
-    interactions    :: Vector{Interaction}
+    interactions    :: Interactions
     forces_computer :: BaseForcesComputer
     integrator      :: BaseIntegrator
     enforces        :: Vector{BaseEnforce}

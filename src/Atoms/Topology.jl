@@ -5,7 +5,7 @@
 import Base: size, show, getindex, setindex!
 
 export Topology, Bond, Angle, Dihedral
-export atomic_masses
+export atomic_masses, get_id_from_name
 
 typealias Bond (Int, Int)
 typealias Angle (Int, Int, Int)
@@ -75,6 +75,16 @@ function setindex!(topology::Topology, atom::Atom, idx::Integer)
     end
 
     topology.atoms[idx] = atom_type
+end
+
+function get_id_from_name(topology::Topology, name::String)
+    # Return the first match. TODO: check for atomic names unicity
+    for (idx, atom_type) in enumerate(topology.atom_types)
+        if atom_type.name == name
+            return idx
+        end
+    end
+    throw(KeyError())
 end
 
 function atomic_masses(topology::Topology)

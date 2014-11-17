@@ -12,7 +12,7 @@ read_positions(sim, "lennard-jones.xyz")
 create_velocities(sim, 300)  # Initialize at 300K
 
 # Add Lennard-Jones interactions between He atoms
-add_interaction(sim, LennardJones(0.3, 2.0), ("He", "He"))
+add_interaction(sim, LennardJones(0.3, 2.0), "He")
 
 out_trajectory = TrajectryOutput("LJ-traj.xyz", 1)
 add_output(sim, out_trajectory)

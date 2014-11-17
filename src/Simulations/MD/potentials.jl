@@ -21,15 +21,19 @@ type Potential{T<:BasePotential}
 end
 
 # The default cutoff is set in angstroms. Others units should be added after
-function Potential(T, args...; cutoff=12.0)
-    pot = T(args...)
-    if isa(ShortRangePotential, T)
+function Potential(pot::BasePotential; cutoff=12.0)
+    if isa(ShortRangePotential, typeof(pot))
         e_cutoff = pot(cutoff)
     else
         e_cutoff = 0.0
         cutoff = 0.0
     end
     return Potential(pot, cutoff, e_cutoff)
+end
+
+function Potential(T, args...; cutoff=12.0)
+    pot = T(args...)
+    return Potential(pot, cutoff=cutoff)
 end
 
 @inline function call(pot::Potential{ShortRangePotential}, r::Number)
