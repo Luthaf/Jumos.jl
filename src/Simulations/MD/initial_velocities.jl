@@ -1,10 +1,8 @@
 #===============================================================================
                             Initialize velocities
 ===============================================================================#
-
+using Jumos.Constants: kB
 export create_velocities
-
-const kB = 3.0 # Todo: real value in internal units
 
 function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzman")
     # Allocate the velocity array

@@ -4,7 +4,10 @@ module Jumos
     @reexport module Units
         using SIUnits
         include("Units/Units.jl")
+        include("Units/Constants.jl")
     end
+
+    using Jumos.Units.Constants
 
     # This module define Atom type and store periodic table informations
     @reexport module Atoms
