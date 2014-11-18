@@ -42,9 +42,11 @@ type MDSimulation <: Simulation
     # Data
     topology        :: Topology
     box             :: SimBox
-    data            :: Frame
+    frame           :: Frame
     masses          :: Vector{Float64}
     forces          :: Array3D
+    # all other data to be shared
+    data            :: Dict{Symbol, Any}
 end
 
 # This define the default values for a simulation !
@@ -61,6 +63,8 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     box = SimBox()
     masses = Float64[]
     forces = Array3D[]
+    frame = Frame(topology)
+    data = Dict(:frame => frame)
 
     return MDSimulation(interactions,
                         forces_computer,
@@ -71,9 +75,10 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
                         outputs,
                         topology,
                         box,
-                        Frame(topology),
+                        frame,
                         masses,
-                        forces
+                        forces,
+                        data
                         )
 end
 
@@ -117,7 +122,7 @@ function check_interactions(sim::MDSimulation)
     end
 
     all_atomic_pairs = IntSet()
-    const ntypes = size(sim.data.topology)
+    ntypes = size(sim.topology)
     for i=1:ntypes, j=1:ntypes
         union!(all_atomic_pairs, [(i, j), (j, i)])
     end
@@ -153,18 +158,18 @@ end
 
 # Compute forces between atoms at a given step
 function get_forces(sim::MDSimulation)
-    sim.forces_computer(sim.forces, sim.data, sim.interactions)
+    sim.forces_computer(sim.forces, sim.frame, sim.interactions)
 end
 
 # Integrate the equations of motion
 function integrate(sim::MDSimulation)
-    sim.integrator(sim.data, sim.forces)
+    sim.integrator(sim.frame, sim.forces)
 end
 
 # Enforce a value like temperature or presure or volume, …
 function enforce(sim::MDSimulation)
     for callback in sim.enforces
-        callback(sim.data)
+        callback(sim.frame)
     end
 end
 
@@ -172,7 +177,7 @@ end
 # constant, global velocity is zero, …
 function check(sim::MDSimulation)
     for callback in sim.checks
-        callback(sim.data)
+        callback(sim.frame)
     end
 end
 
@@ -181,17 +186,13 @@ end
 # functions, diffusion coefficients, …
 function compute(sim::MDSimulation)
     for callback in sim.computes
-        callback(sim.data)
+        callback(sim)
     end
 end
 
-#TODO: find a way to link a compute and an output. A semi-global dict maybe ?
-
 # Output data to files : trajectories, energy as function of time, …
 function output(sim::MDSimulation)
-    # Todo: better context
-    context = Dict()
-    context[:frame] = sim.data
+    context = sim.data
     for out in sim.outputs
         write(out, context)
     end

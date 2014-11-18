@@ -14,35 +14,37 @@ function VelocityVerlet(timestep::Float64)
     return VelocityVerlet(timestep, accelerations)
 end
 
-function call(integrator::VelocityVerlet, data::Frame, forces::Array3D)
+function call(integrator::VelocityVerlet, frame::Frame, forces::Array3D)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
-    positions = data.positions
-    velocities = data.velocities
+    positions = frame.positions
+    velocities = frame.velocities
     accelerations = integrator.accelerations
+
+    natoms = size(frame)
 
     if size(positions) != size(accelerations, 1)
         resize!(accelerations, size(positions))
     end
 
     # Update positions at t + ∆t
-    @inbounds for i=1:size(data)
+    @inbounds for i=1:natoms
         positions[i] += velocities[i]*dt + 0.5*accelerations[i]*dt^2
     end
 
     # Update velocities at t + ∆t/2
-    @inbounds for i=1:size(data)
+    @inbounds for i=1:natoms
         velocities[i] += 0.5*accelerations[i]*dt
     end
 
     # Update accelerations at t + ∆t
-    @inbounds for i=1:size(data)
+    @inbounds for i=1:natoms
         accelerations[i] = 1/masses[i]*forces[i]
     end
 
     # Update velocities at t + ∆t
-    @inbounds for i=1:size(data)
+    @inbounds for i=1:natoms
         velocities[i] += 0.5*accelerations[i]*dt
     end
 end

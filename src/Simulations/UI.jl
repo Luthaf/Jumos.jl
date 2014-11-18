@@ -53,10 +53,10 @@ end
 
 function read_positions(sim::MDSimulation, filename::AbstractString)
     reader = opentraj(filename, box=sim.box, topology=sim.topology)
-    read_frame!(reader, 1, sim.data)
+    read_frame!(reader, 1, sim.frame)
 
-    sim.data.box = sim.box
-    sim.data.topology = sim.topology
+    sim.frame.box = sim.box
+    sim.frame.topology = sim.topology
 end
 
 # Todo:

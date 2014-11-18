@@ -8,7 +8,7 @@ const kB = 3.0 # Todo: real value in internal units
 
 function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzman")
     # Allocate the velocity array
-    sim.data.velocities = Array(Vect3D{Float32}, size(sim.data))
+    sim.frame.velocities = Array(Vect3D{Float32}, size(sim.frame))
 
     function_name = "init_" * initializer * "_velocities"
     funct = eval(symbol(function_name))
@@ -21,9 +21,9 @@ function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzm
 end
 
 function init_boltzman_velocities(sim::MDSimulation, temp::Integer)
-    velocities = sim.data.velocities
+    velocities = sim.frame.velocities
     masses = sim.masses
-    @inbounds for i=1:size(sim.data)
+    @inbounds for i=1:size(sim.frame)
         velocities[i] = vect3d(rand_vel_boltzman(masses[i], temp)...)
     end
 end
@@ -33,8 +33,8 @@ end
 end
 
 function init_random_velocities(sim::MDSimulation, temp::Integer)
-    velocities = sim.data.velocities
-    @inbounds for i=1:size(sim.data)
+    velocities = sim.frame.velocities
+    @inbounds for i=1:size(sim.frame)
         velocities[i] = vect3d(rand_vel()...)
     end
 end
