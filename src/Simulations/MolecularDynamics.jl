@@ -17,7 +17,7 @@ include("MD/integrators.jl")
 
 include("MD/enforce.jl")
 include("MD/check.jl")
-include("MD/compute.jl")
+abstract BaseCompute
 include("MD/output.jl")
 
 type SimulationConfigurationError <: Exception
@@ -85,6 +85,7 @@ end
 # Convenient method.
 MDSimulation(timestep::Real) = MDSimulation(VelocityVerlet(timestep))
 
+include("MD/compute.jl")
 include("MD/initial_velocities.jl")
 
 # Run a Molecular Dynamics simulation for nsteps steps

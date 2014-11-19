@@ -1,17 +1,33 @@
 #===============================================================================
                         Compute interesting values
 ===============================================================================#
-export BaseCompute, ComputeTemperature, ComputeVolume, ComputePressure
-abstract BaseCompute
+import Base: call
+import Jumos.Constants: kB
+export BaseCompute, TemperatureCompute, PressureCompute, VolumeCompute
 
-type ComputeTemperature <: BaseCompute
+@doc "
+Compute the temperature of a simulation frame using the relation
+	T = 1/kB * 2K/(3N - 6) with K = ∑ 1/2 m_i v_i^2 
+" ->
+type TemperatureCompute <: BaseCompute
+end
+
+function call(::TemperatureCompute, sim::MDSimulation)
+	T = 0.0
+	K = 0.0
+	natoms = size(sim.frame)
+	@inbounds for i=1:natoms
+		K += 0.5 * sim.masses[i] * norm2(sim.frame.velocities[i])
+	end
+	T = 1/kB * 2*K/(3*natoms - 6)
+	sim.data[:temperature] = T
+	return T 
+end
+
+type PressureCompute <: BaseCompute
 
 end
 
-type ComputePressure <: BaseCompute
-
-end
-
-type ComputeVolume <: BaseCompute
+type VolumeCompute <: BaseCompute
 
 end

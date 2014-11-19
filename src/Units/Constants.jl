@@ -1,4 +1,5 @@
 module Constants
-    const kB = 3.0 # Todo: real value in internal units
-
+	using SIUnits.ShortUnits
+	using Jumos.Units
+    const kB = internal(1.3806488e-23J)
 end
