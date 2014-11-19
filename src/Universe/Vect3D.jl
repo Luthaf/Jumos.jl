@@ -29,6 +29,7 @@ vect3d{T<:Real}(x::T, y::T, z::T) = Vect3D(x, y, z)
 vect3d(x::Real, y::Real, z::Real) = vect3d(promote(x, y, z)...)
 vect3d(a::Real) = vect3d(a, a, a)
 vect3d(v::RVector) = length(v)==3 ? vect3d(v[1], v[2], v[3]) : throw(InexactError())
+vect3d() = vect3d(0.0)
 
 convert{T<:Real}(::Type{Vect3D{T}}, v::Vect3D) = vect3d(convert(T, v[1]), convert(T, v[2]), convert(T, v[3]))
 convert{T<:Real}(::Type{Vect3D{T}}, v::RVector) = vect3d(v)

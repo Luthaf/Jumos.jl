@@ -1,5 +1,6 @@
 import Base: call, show
 export PotentialError, BasePotential, ShortRangePotential, UserPotential, LennardJones
+export force
 
 type PotentialError <: Exception
     msg :: String
@@ -113,11 +114,11 @@ type LennardJones <: ShortRangePotential
 end
 
 @inline function call(pot::LennardJones, r::Float64)
-    s6 = (pot.sigma/r)^6
-    return 4.0*pot.epsilon*(s6^2 - s6)
+    s6 = (pot.potential.sigma/r)^6
+    return 4.0*pot.potential.epsilon*(s6^2 - s6)
 end
 
 @inline function force(pot::Potential{LennardJones}, r::Float64)
-    s6 = (pot.sigma/r)^6
-    return 24.0*pot.epsilon*(s6 - 2*s6^2)
+    s6 = (pot.potential.sigma/r)^6
+    return 24.0*pot.potential.epsilon*(s6 - 2*s6^2)
 end

@@ -13,7 +13,7 @@ end
 function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
 
     # Temporary vector
-    r = Vect3D()
+    r = vect3d()
     natoms = size(frame)
 
     if size(forces, 1) != natoms
@@ -25,10 +25,12 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
     end
 
     @inbounds for i=1:(natoms-1), j=i:natoms
-            r = particle_distance(frame, i, j)
-            r = normalize(r)
-            potential = interactions[(i, j)]
-            forces[i] += r .* forces(potential, norm(r))
-            forces[j] -= r .* forces(potential, norm(r))
+        r = distance3d(frame, i, j)
+        r = normalize(r)
+        atom_i = frame.topology.atoms[i]
+        atom_j = frame.topology.atoms[j]
+        potential = interactions[(atom_i, atom_j)]
+        forces[i] += r * force(potential, norm(r))
+        forces[j] -= r * force(potential, norm(r))
     end
 end

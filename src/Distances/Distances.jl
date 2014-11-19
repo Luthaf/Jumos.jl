@@ -55,7 +55,7 @@ end
 end
 
 @inline function distance3d(ref::Frame, i::Integer, j::Integer)
-    return distance(ref, ref, i, j)
+    return distance3d(ref, ref, i, j)
 end
 
 function distance_array(ref::Frame, conf::Frame, result = nothing)
