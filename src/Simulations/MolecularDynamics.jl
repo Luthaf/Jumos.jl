@@ -163,7 +163,7 @@ end
 
 # Integrate the equations of motion
 function integrate(sim::MDSimulation)
-    sim.integrator(sim.frame, sim.forces)
+    sim.integrator(sim.frame, sim.masses, sim.forces)
 end
 
 # Enforce a value like temperature or presure or volume, …
