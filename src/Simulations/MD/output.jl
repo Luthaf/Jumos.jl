@@ -1,6 +1,7 @@
 #===============================================================================
                         Compute interesting values
 ===============================================================================#
+import Base: write
 export BaseOutput, TrajectoryOutput, CustomOutput
 
 const EOL="\n"
