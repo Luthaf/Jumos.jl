@@ -23,7 +23,7 @@ RDF(atom_i::String; kwargs...) = RDF(atom_i, atom_i; kwargs...)
 function update!(rdf::RDF, frame::Frame)
     const natoms = length(frame.positions)
     distances = Array(Float64, natoms, natoms)
-    distance_array(frame, frame, distances)
+    distance_array(frame, distances)
 
     dists = Float64[]
     sizehint(dists, 2*natoms)

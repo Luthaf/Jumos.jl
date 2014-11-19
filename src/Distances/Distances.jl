@@ -58,6 +58,10 @@ end
     return distance3d(ref, ref, i, j)
 end
 
+function distance_array(ref::Frame, result = nothing)
+    return distance_array(ref, ref, result)
+end
+
 function distance_array(ref::Frame, conf::Frame, result = nothing)
     cols = length(ref.positions)
     rows = length(conf.positions)
@@ -67,7 +71,9 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
     else
         if !((size(result, 1) == cols) && (size(result, 2) == rows))
             warning("Wrong pre-allocated array shape. Is $(size(result)), " *
-                    "should be ($(cols),$(rows))")
+                    "should be ($(cols),$(rows))\n" *
+                    "Resizing ...")
+            resize!(result, (cols, rows))
         end
     end
     compute_distance_array!(result, ref, conf, rows, cols)
@@ -75,7 +81,7 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
 end
 
 function compute_distance_array!(result, ref, conf, nrows, ncols)
-    for j=1:nrows, i=1:ncols
+    @inbounds for j=1:nrows, i=1:ncols
        result[i,j] = distance(ref, conf, i, j)
     end
 end
