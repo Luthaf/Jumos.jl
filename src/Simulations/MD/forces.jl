@@ -5,8 +5,10 @@
 export BaseForcesComputer, NaiveForces
 abstract BaseForcesComputer
 
-# Naive forces computation : just get the vector between two particles, and
-# call the potential for these particles.
+@doc "
+Naive forces computation : just get the vector between two particles, and
+call the force function for these particles.
+"->
 type NaiveForces <: BaseForcesComputer
 end
 

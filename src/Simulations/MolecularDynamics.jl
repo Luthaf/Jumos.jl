@@ -86,7 +86,11 @@ MDSimulation(timestep::Real) = MDSimulation(VelocityVerlet(timestep))
 include("MD/compute.jl")
 include("MD/initial_velocities.jl")
 
-# Run a Molecular Dynamics simulation for nsteps steps
+@doc "
+`run!(sim::MDSimulation, nsteps::Integer)`
+
+Run a Molecular Dynamics simulation for nsteps steps.
+" ->
 function run!(sim::MDSimulation, nsteps::Integer)
 
     sim.masses = atomic_masses(sim.topology)
@@ -104,7 +108,12 @@ function run!(sim::MDSimulation, nsteps::Integer)
     return nothing
 end
 
-# Check that everything is effectivelly defined by the user
+@doc "
+`check_settings(sim::MDSimulation)`
+
+Check that the simulation is consistent, and that every information has been
+set by the user.
+" ->
 function check_settings(sim::MDSimulation)
     check_interactions(sim)
     check_masses(sim)
@@ -154,25 +163,33 @@ function check_masses(sim::MDSimulation)
     end
 end
 
-# Compute forces between atoms at a given step
+@doc "
+Compute forces between atoms at a given step
+" ->
 function get_forces(sim::MDSimulation)
     sim.forces_computer(sim.forces, sim.frame, sim.interactions)
 end
 
-# Integrate the equations of motion
+@doc "
+Integrate the equations of motion
+" ->
 function integrate(sim::MDSimulation)
     sim.integrator(sim.frame, sim.masses, sim.forces)
 end
 
-# Enforce a value like temperature or presure or volume, …
+@doc "
+Enforce a parameter in simulation like temperature or presure or volume, …
+" ->
 function enforce(sim::MDSimulation)
     for callback in sim.enforces
         callback(sim.frame)
     end
 end
 
-# Check the physical consistency of the simulation : number of particles is
-# constant, global velocity is zero, …
+@doc "
+Check the physical consistency of the simulation : number of particles is
+constant, global velocity is zero, …
+" ->
 function check(sim::MDSimulation)
     for callback in sim.checks
         callback(sim.frame)
@@ -180,15 +197,18 @@ function check(sim::MDSimulation)
 end
 
 
-# Compute values of interest : temperature, total energy, radial distribution
-# functions, diffusion coefficients, …
+@doc "
+Compute values of interest : temperature, total energy, radial distribution
+functions, diffusion coefficients, …
+" ->
 function compute(sim::MDSimulation)
     for callback in sim.computes
         callback(sim)
     end
 end
 
-# Output data to files : trajectories, energy as function of time, …
+@doc "Output data to files : trajectories, energy as function of time, …
+" ->
 function output(sim::MDSimulation)
     context = sim.data
     for out in sim.outputs

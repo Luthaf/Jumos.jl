@@ -73,7 +73,10 @@ end
 force(pot::BasePotential, r::Number) = force(pot, convert(Float64, r))
 
 #==============================================================================#
-# Null potential, for a system without interactions
+
+@doc "
+Null potential, for a system without interactions
+" ->
 type NullPotential <: ShortRangePotential
 end
 
@@ -86,7 +89,9 @@ end
 end
 
 #==============================================================================#
-# User defined potential, without any parameter
+@doc "
+User defined potential, without any parameter
+" ->
 type UserPotential <: ShortRangePotential
     potential::Function
     force::Function
@@ -110,8 +115,10 @@ end
 
 
 #==============================================================================#
-# Lennard-Jones potential, in the
-# V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 )
+@doc "
+Lennard-Jones potential, using the following formulation 
+   \[ V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
+" ->
 type LennardJones <: ShortRangePotential
     sigma::Float64
     epsilon::Float64

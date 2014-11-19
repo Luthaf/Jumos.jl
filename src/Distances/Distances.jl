@@ -4,7 +4,11 @@
 
 export distance, distance_array, distance3d, minimal_image, minimal_image!
 
-# Refine a vector using the minimal image convention
+@doc "
+`minimal_image(vect::Vect3D, box::SimBox)`
+
+Refine a vector using the minimal image convention
+" ->
 minimal_image(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
 minimal_image!(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
 
@@ -78,24 +82,81 @@ function fract2cart!(vect::AbstractVector, box::SimBox)
     return vect
 end
 
-# Compute the distance between to particles
+@doc "
+`distance(ref::Frame, conf::Frame, i::Integer, j::Integer)`
+
+Compute the distance between to particles, using the minimal image conventions.
+
+i and j are particle index, the computed distance is ref[j] - conf[i]
+" ->
 function distance(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
     return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box))
 end
 
+@doc "
+`distance(ref::Frame, conf::Frame, i::Integer)`
+
+Compute the distance between the same particle in two frames
+" ->
+function distance(ref::Frame, conf::Frame, i::Integer)
+    return distance(ref, ref, i, i)
+end
+
+@doc "
+`distance(ref::Frame, i::Integer, j::Integer)`
+
+Compute the distance between two particles in the same frame
+" ->
 function distance(ref::Frame, i::Integer, j::Integer)
     return distance(ref, ref, i, j)
 end
 
-# Compute the vectorial distance between to particles
+@doc "
+`distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)`
+
+Compute the vector between two particles in two frames.
+i and j are particle index, the computed distance is ref[j] - conf[i]
+" ->
 function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
     return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box)
 end
 
+@doc "
+`distance3d(ref::Frame, i::Integer, j::Integer)`
+
+Compute the vector between the two particle in the same frame.
+" ->
+function distance3d(ref::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
+    return distance3d(ref, conf, i, i, work)
+end
+
+@doc "
+`distance3d(ref::Frame, conf::Frame, i::Integer)`
+
+Compute the vector between the same particle in the two frames.
+" ->
+function distance3d(ref::Frame, conf::Frame, i::Integer, work=[0., 0., 0.])
+    return distance3d(ref, conf, i, i, work)
+end
+
+
+@doc "
+`distance3d(ref::Frame, i::Integer, j::Integer)`
+
+Compute the vector between two particles in the same frame.
+" ->
 function distance3d(ref::Frame, i::Integer, j::Integer)
     return distance3d(ref, ref, i, j)
 end
 
+
+@doc "
+`distance_array(ref::Frame, conf::Frame, result = nothing)`
+
+Compute all the distances between particles in the same frame.
+Result can be a pre-allocated array for result storage. After the function,
+    result[i, j] = distance(ref, i, j)
+" ->
 function distance_array(ref::Frame, result = nothing)
     return distance_array(ref, ref, result)
 end
