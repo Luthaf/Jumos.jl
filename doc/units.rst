@@ -1,3 +1,5 @@
+.. _intenal_units:
+
 Internal units
 ==============
 
