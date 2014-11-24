@@ -38,7 +38,11 @@ function Potential(T, args...; cutoff=12.0)
 end
 
 @inline function call(pot::Potential{ShortRangePotential}, r::Number)
-    r > pot.cutoff ? 0.0 : pot.potential(r)
+    r > pot.cutoff ? 0.0 : pot.potential(r) + pot.e_cutoff
+end
+
+@inline function force(pot::Potential{ShortRangePotential}, r::Number)
+    r > pot.cutoff ? 0.0 : pot.force(r)
 end
 
 # Todo: long range potentials
