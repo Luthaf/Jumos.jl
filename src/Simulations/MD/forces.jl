@@ -24,13 +24,15 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         forces[i] = vect3d(0.0)
     end
 
-    @inbounds for i=1:(natoms-1), j=i:natoms
+    @inbounds for i=1:natoms, j=(i+1):natoms
         r = distance3d(frame, i, j)
         r = normalize(r)
         atom_i = frame.topology.atoms[i]
         atom_j = frame.topology.atoms[j]
         potential = interactions[(atom_i, atom_j)]
-        forces[i] += r * force(potential, norm(r))
-        forces[j] -= r * force(potential, norm(r))
+
+        r *= force(potential, norm(r))
+        forces[i] += r
+        forces[j] -= r
     end
 end
