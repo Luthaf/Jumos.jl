@@ -2,7 +2,7 @@
                     Distance computing utilities
 ===============================================================================#
 
-export distance, distance_array, distance3d
+export distance, distance_array, distance3d, minimal_image
 
 # Refine a vector using the minimal image convention
 @inline minimal_image(vect::Vect3D, box::SimBox{InfiniteBox}) = vect

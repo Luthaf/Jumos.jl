@@ -54,7 +54,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     interactions = Interactions()
     forces_computer = NaiveForces()
 
-    enforces = BaseEnforce[]
+    enforces = BaseEnforce[WrapParticles()]
     checks = BaseCheck[]
     computes = BaseCompute[]
     outputs = BaseOutput[]
