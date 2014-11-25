@@ -1,10 +1,10 @@
 using Jumos
 
-# Molecular Dynamics with 2.0fs timestep
-sim = Simulation("MD", 2.0)
+# Molecular Dynamics with 1.0fs timestep
+sim = Simulation("MD", 1.0)
 
-# Create the simulation box : cubic simulation box with a width of 20A
-set_box(sim, (20.0,))
+# Create the simulation box : cubic simulation box with a width of 10A
+set_box(sim, (10.0,))
 
 # Create the initial topology, positions and velocities
 read_topology(sim, "lennard-jones.xyz")
@@ -16,7 +16,6 @@ add_interaction(sim, LennardJones(0.3, 2.0), "He")
 
 out_trajectory = TrajectoryOutput("LJ-traj.xyz", 1)
 add_output(sim, out_trajectory)
-
 add_output(sim, EnergyOutput(sim, 10))
 
 run!(sim, 500)
