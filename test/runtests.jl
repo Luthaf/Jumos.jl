@@ -1,8 +1,7 @@
 using Jumos
 using Base.Test
 
-const tests_available = Dict(:vect3d => "3D vector class",
-                             :trajectories => "TrajectoriesIO capacities",
+const tests_available = Dict(:trajectories => "TrajectoriesIO capacities",
                              :analysis => "Trajectories analysis",
                              :units => "Units conversions",
                              :simulations => "Running MD Simulations"

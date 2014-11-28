@@ -5,39 +5,38 @@
 export distance, distance_array, distance3d, minimal_image
 
 # Refine a vector using the minimal image convention
-@inline minimal_image(vect::Vect3D, box::SimBox{InfiniteBox}) = vect
+@inline minimal_image(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
 
-@inline function minimal_image(vect::Vect3D, box::SimBox{OrthorombicBox})
-    return vect3d(
+@inline function minimal_image(vect::AbstractVector, box::SimBox{OrthorombicBox})
+    return [
         vect[1] - round(vect[1]/box[1])*box[1],
         vect[2] - round(vect[2]/box[2])*box[2],
         vect[3] - round(vect[3]/box[3])*box[3]
-    )
+    ]
 end
 
-@inline function minimal_image(vect::Vect3D, box::SimBox{TriclinicBox})
+@inline function minimal_image(vect::AbstractVector, box::SimBox{TriclinicBox})
     u = cart2fract(vect, box)
-    return fract2cart(vect3d(
-                         u[1] - round(u[1]),
-                         u[2] - round(u[2]),
-                         u[3] - round(u[3])),
+    return fract2cart([u[1] - round(u[1]),
+                       u[2] - round(u[2]),
+                       u[3] - round(u[3])],
                       box)
 end
 
-@inline function cart2fract(vect::Vect3D, box::SimBox)
+@inline function cart2fract(vect::AbstractVector, box::SimBox)
     const z = vect[3]/box[6]
     const y = (vect[2] - z*box[5])/box[3]
     const x = (vect[1] - z*box[4] - y * box[2]) / box[1]
 
-    return vect3d(x, y, z)
+    return [x, y, z]
 end
 
-@inline function fract2cart(vect::Vect3D, box::SimBox)
-    return vect3d(
+@inline function fract2cart(vect::AbstractVector, box::SimBox)
+    return [
         vect[1]*box[1] + vect[2]*box[2] + vect[3]*box[4],
         vect[2]*box[3] + vect[3]*box[5],
         vect[3]*box[6]
-    )
+    ]
 end
 
 # Compute the distance between to particles

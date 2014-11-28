@@ -5,7 +5,7 @@
 import Base: size
 export Frame, set_frame_size!
 
-Array3D = Vector{Vect3D{Float32}}
+# TODO: use Array3D with size of 0 instead ?
 NullableArray3D = Union(Void, Array3D)
 
 type Frame
@@ -19,11 +19,11 @@ end
 Frame(t::Topology) = Frame(0,
                            SimBox(),
                            t,
-                           Array(Vect3D{Float32}, size(t.atoms)),
+                           Array3D(Float32, size(t.atoms)),
                            nothing)
 
 # Empty frame construction
-Frame() = Frame(0,SimBox(), Topology(), Vect3D{Float32}[], nothing)
+Frame() = Frame(0,SimBox(), Topology(), Array3D(Float32, 0), nothing)
 
 size(f::Frame) = size(f.positions, 1)
 

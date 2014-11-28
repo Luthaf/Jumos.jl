@@ -6,7 +6,7 @@ export create_velocities
 
 function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzman")
     # Allocate the velocity array
-    sim.frame.velocities = Array(Vect3D{Float32}, size(sim.frame))
+    sim.frame.velocities = Array3D(Float32, size(sim.frame))
 
     function_name = "init_" * initializer * "_velocities"
     funct = eval(symbol(function_name))
@@ -22,7 +22,7 @@ function init_boltzman_velocities(sim::MDSimulation, temp::Integer)
     velocities = sim.frame.velocities
     masses = sim.masses
     @inbounds for i=1:size(sim.frame)
-        velocities[i] = vect3d(rand_vel_boltzman(masses[i], temp)...)
+        velocities[i] = rand_vel_boltzman(masses[i], temp)
     end
 end
 
@@ -33,7 +33,7 @@ end
 function init_random_velocities(sim::MDSimulation, temp::Integer)
     velocities = sim.frame.velocities
     @inbounds for i=1:size(sim.frame)
-        velocities[i] = vect3d(rand_vel()...)
+        velocities[i] = rand_vel()
     end
 end
 

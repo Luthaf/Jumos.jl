@@ -10,7 +10,7 @@ type VelocityVerlet <: BaseIntegrator
 end
 
 function VelocityVerlet(timestep::Float64)
-    accelerations = Vect3D{Float32}[]
+    accelerations = Array3D{Float32}
     return VelocityVerlet(timestep, accelerations)
 end
 
@@ -28,7 +28,7 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
         resize!(accelerations, size(positions, 1))
         # initialize the accelerations
         for i=1:natoms
-            accelerations[i] = vect3d()
+            accelerations[i] = zeros(Float32, 3)
         end
     end
 

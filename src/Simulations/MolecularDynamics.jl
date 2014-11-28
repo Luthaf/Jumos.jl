@@ -4,8 +4,6 @@
 import Base: show
 export Simulation, MDSimulation, run!
 
-Array3D = Vector{Vect3D{Float32}}
-
 abstract Simulation
 
 include("MD/potentials.jl")

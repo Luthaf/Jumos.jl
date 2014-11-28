@@ -13,7 +13,7 @@ end
 function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
 
     # Temporary vector
-    r = vect3d()
+    r = Vector(Float32, 3)
     natoms = size(frame)
 
     if size(forces, 1) != natoms
@@ -21,7 +21,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
     end
 
     @inbounds for i=1:natoms
-        forces[i] = vect3d(0.0)
+        forces[i] = zeros(Float32, 3)
     end
 
     @inbounds for i=1:natoms, j=(i+1):natoms

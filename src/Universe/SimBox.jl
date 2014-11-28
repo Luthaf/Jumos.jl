@@ -9,66 +9,57 @@ type InfiniteBox <: AbstractBoxType end
 type OrthorombicBox <: AbstractBoxType end
 type TriclinicBox <: AbstractBoxType end
 
-immutable SimBox{T<:AbstractBoxType}
-    length :: Vect3D{Float64}
-    angles :: Vect3D{Float64}
+type SimBox{T<:AbstractBoxType}
+    x :: Float64
+    y :: Float64
+    z :: Float64
+    alpha :: Float64
+    beta  :: Float64
+    gamma :: Float64
     box_type :: T
 end
 
 function getindex(b::SimBox, i::Int)
-    if 0 < i <= 3
-        return b.length[i]
-    elseif 3 < i <= 6
-        return b.angles[i-3]
+    if i == 1
+        return b.x
+    elseif i == 2
+        return b.y
+    elseif i == 3
+        return b.z
+    elseif i == 4
+        return b.alpha
+    elseif i == 5
+        return b.beta
+    elseif i == 6
+        return b.gamma
     end
     throw(BoundsError())
 end
 
-function getindex(b::SimBox, i::String)
-    i = lowercase(i)
-    if i == "x"
-        return b.length[1]
-    elseif i == "y"
-        return b.length[2]
-    elseif i == "z"
-        return b.length[3]
-    elseif i == "alpha"
-        return b.angles[1]
-    elseif i == "beta"
-        return b.angles[2]
-    elseif i == "gamma"
-        return b.angles[3]
-    end
-    throw(BoundsError())
-end
 
 #==============================================================================#
 # Automatic box type
 
-function SimBox(u::Vect3D, v::Vect3D)
-    if v == vect3d(90.0)
+function SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
+    if a == 90.0 && b == 90.0 && c == 90.0
         box_type = OrthorombicBox()
     else
         box_type = TriclinicBox()
     end
-    return SimBox(u, v, box_type)
+    return SimBox(Lx, Ly, Lz, a, b, c, box_type)
 end
 
-SimBox(u::Vector, v::Vector) = SimBox(vect3d(u), vect3d(v))
-SimBox(u::Vect3D) = SimBox(u, vect3d(90.0))
+SimBox(Lx::Real, Ly::Real, Lz::Real) = SimBox(Lx, Ly, Lz, 90., 90., 90.)
 
 function SimBox(u::Vector)
-    if length(u) == 3
-        return SimBox(vect3d(u))
-    elseif length(u) == 6
-        return SimBox(vect3d(u[1:3]), vect3d(u[4:6]))
+    if length(u) == 3 || length(u) == 6
+        return SimBox(u...)
     else
         throw(InexactError())
     end
 end
 
-SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real) = SimBox(vect3d(Lx, Ly, Lz), vect3d(a, b, c))
-SimBox(Lx::Real, Ly::Real, Lz::Real) = SimBox(vect3d(Lx, Ly, Lz))
+
 SimBox(L::Real) = SimBox(L, L, L)
 SimBox() = SimBox(0.0)
 
@@ -77,23 +68,15 @@ SimBox(b::SimBox) = b
 #==============================================================================#
 # Manual box type
 
-SimBox{T<:AbstractBoxType}(box_type::T, u::Vector, v::Vector) = SimBox(vect3d(u), vect3d(v), box_type)
-SimBox{T<:AbstractBoxType}(box_type::T, u::Vect3D) = SimBox(u, vect3d(90.0), box_type)
+SimBox(Lx::Real, Ly::Real, Lz::Real, btype::AbstractBoxType) = SimBox(Lx, Ly, Lz, 90., 90., 90., btype)
 
-function SimBox{T<:AbstractBoxType}(box_type::T, u::Vector)
-    if length(u) == 3
-        return SimBox(box_type, vect3d(u))
-    elseif length(u) == 6
-        return SimBox(box_type, vect3d(u[1:3]), vect3d(u[4:6]))
+function SimBox(u::Vector, btype::AbstractBoxType)
+    if length(u) == 3 || length(u) == 6
+        return SimBox(u..., btype)
     else
         throw(InexactError())
     end
 end
 
-SimBox{T<:AbstractBoxType}(box_type::T,
-    Lx::Real, Ly::Real, Lz::Real,
-    a::Real, b::Real, c::Real) = SimBox{T<:Type{AbstractBoxType}}(box_type::T, vect3d(Lx, Ly, Lz), vect3d(a, b, c))
-
-SimBox{T<:AbstractBoxType}(box_type::T, Lx::Real, Ly::Real, Lz::Real) = SimBox(box_type, vect3d(Lx, Ly, Lz))
-SimBox{T<:AbstractBoxType}(box_type::T, L::Real) = SimBox(box_type, L, L, L)
-SimBox{T<:AbstractBoxType}(box_type::T) = SimBox(box_type, 0.0)
+SimBox(L::Real, btype::AbstractBoxType) = SimBox(L, L, L, btype)
+SimBox(btype::AbstractBoxType) = SimBox(0.0, btype)
