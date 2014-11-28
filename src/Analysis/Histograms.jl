@@ -33,7 +33,7 @@ function update!{T<:Number}(h::Histogram{T}, values::Array{T, 1}; weight=one(T))
     end
 
     @inbounds for val in values
-        bin = ifloor(val/h.step)
+        bin = floor(Int64, val/h.step)
         if 0 < bin <= h.bins
             h.weight[bin] += weight
             h.used += 1
