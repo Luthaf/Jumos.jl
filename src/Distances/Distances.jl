@@ -82,13 +82,13 @@ function fract2cart!(vect::AbstractVector, box::SimBox)
     return vect
 end
 
-@doc "
-`distance(ref::Frame, conf::Frame, i::Integer, j::Integer)`
-
-Compute the distance between to particles, using the minimal image conventions.
-
-i and j are particle index, the computed distance is ref[j] - conf[i]
-" ->
+# @doc "
+# `distance(ref::Frame, conf::Frame, i::Integer, j::Integer)`
+#
+# Compute the distance between to particles, using the minimal image conventions.
+#
+# i and j are particle index, the computed distance is ref[j] - conf[i]
+# " ->
 function distance(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
     return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box))
 end
@@ -111,12 +111,12 @@ function distance(ref::Frame, i::Integer, j::Integer)
     return distance(ref, ref, i, j)
 end
 
-@doc "
-`distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)`
+# @doc "
+# `distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)`
 
-Compute the vector between two particles in two frames.
-i and j are particle index, the computed distance is ref[j] - conf[i]
-" ->
+# Compute the vector between two particles in two frames.
+# i and j are particle index, the computed distance is ref[j] - conf[i]
+# " ->
 function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
     return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box)
 end
