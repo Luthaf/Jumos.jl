@@ -60,7 +60,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     topology = Topology()
     box = SimBox()
     masses = Float64[]
-    forces = Array3D[]
+    forces = Array3D(Float32, 0)
     frame = Frame(topology)
     data = Dict(:frame => frame)
 

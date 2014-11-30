@@ -2,58 +2,97 @@
                     Distance computing utilities
 ===============================================================================#
 
-export distance, distance_array, distance3d, minimal_image
+export distance, distance_array, distance3d, minimal_image, minimal_image!
 
 # Refine a vector using the minimal image convention
-@inline minimal_image(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
+minimal_image(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
+minimal_image!(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
 
-@inline function minimal_image(vect::AbstractVector, box::SimBox{OrthorombicBox})
-    return [
-        vect[1] - round(vect[1]/box[1])*box[1],
-        vect[2] - round(vect[2]/box[2])*box[2],
-        vect[3] - round(vect[3]/box[3])*box[3]
-    ]
+function minimal_image(vect, box::SimBox)
+    tmp = copy(vect)
+    return minimal_image!(tmp, box)
 end
 
-@inline function minimal_image(vect::AbstractVector, box::SimBox{TriclinicBox})
-    u = cart2fract(vect, box)
-    return fract2cart([u[1] - round(u[1]),
-                       u[2] - round(u[2]),
-                       u[3] - round(u[3])],
-                      box)
+function minimal_image!(vect::AbstractVector, box::SimBox{OrthorombicBox})
+    vect[1] -= floor(vect[1]/box.x)*box.x
+    vect[2] -= floor(vect[2]/box.y)*box.y
+    vect[3] -= floor(vect[3]/box.z)*box.z
+    return vect
 end
 
-@inline function cart2fract(vect::AbstractVector, box::SimBox)
-    const z = vect[3]/box[6]
-    const y = (vect[2] - z*box[5])/box[3]
-    const x = (vect[1] - z*box[4] - y * box[2]) / box[1]
-
-    return [x, y, z]
+function minimal_image!(vect::AbstractVector, box::SimBox{TriclinicBox})
+    cart2fract!(vect, box)
+    vect[1] -= round(vect[1])
+    vect[2] -= round(vect[2])
+    vect[3] -= round(vect[3])
+    return fract2cart!(vect, box)
 end
 
-@inline function fract2cart(vect::AbstractVector, box::SimBox)
-    return [
-        vect[1]*box[1] + vect[2]*box[2] + vect[3]*box[4],
-        vect[2]*box[3] + vect[3]*box[5],
-        vect[3]*box[6]
-    ]
+function minimal_image!(a::Array3D, box::SimBox)
+    @inbounds for i=1:length(a)
+        minimal_image!(a[i], box)
+    end
+end
+
+function minimal_image!(a::Matrix, box::SimBox)
+    cols, rows = size(a)
+    cols == 3 || error("Wrong size for matrix a. Should be (3, N)")
+    @inbounds for i=rows
+        minimal_image!(a[:, i], box)
+    end
+end
+
+function cart2fract!(vect::AbstractVector, box::SimBox)
+    const z = vect[3]/box.gamma
+    const y = (vect[2] - z*box.beta)/box.z
+    const x = (vect[1] - z*box.alpha - y * box.y) / box[1]
+
+    vect[1] = x
+    vect[2] = y
+    vect[3] = z
+
+    return vect
+end
+
+function cart2fract(vect::AbstractVector, box::SimBox)
+    tmp = copy(vect)
+    return cart2fract!(tmp, box)
+end
+
+function fract2cart!(vect::AbstractVector, box::SimBox)
+    vect[1] = vect[1]*box[1] + vect[2]*box.y + vect[3]*box.alpha
+    vect[2] = vect[2]*box.z + vect[3]*box.beta
+    vect[3] = vect[3]*box.gamma
+    return vect
+end
+
+function cart2fract(vect::AbstractVector, box::SimBox)
+    tmp = copy(vect)
+    return cart2fract!(tmp, box)
+end
+
+function fract2cart!(vect::AbstractVector, box::SimBox)
+    vect[1] = vect[1]*box[1] + vect[2]*box.y + vect[3]*box.alpha
+    vect[2] = vect[2]*box.z + vect[3]*box.beta
+    vect[3] = vect[3]*box.gamma
+    return vect
 end
 
 # Compute the distance between to particles
-@inline function distance(ref::Frame, conf::Frame, i::Integer, j::Integer)
-    return norm(minimal_image(ref.positions[j] - conf.positions[i], ref.box))
+function distance(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
+    return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box))
 end
 
-@inline function distance(ref::Frame, i::Integer, j::Integer)
+function distance(ref::Frame, i::Integer, j::Integer)
     return distance(ref, ref, i, j)
 end
 
 # Compute the vectorial distance between to particles
-@inline function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)
-    return minimal_image(ref.positions[j] - conf.positions[i], ref.box)
+function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
+    return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box)
 end
 
-@inline function distance3d(ref::Frame, i::Integer, j::Integer)
+function distance3d(ref::Frame, i::Integer, j::Integer)
     return distance3d(ref, ref, i, j)
 end
 
@@ -79,8 +118,14 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
     return result
 end
 
+using Distances
+
 function compute_distance_array!(result, ref, conf, nrows, ncols)
-    @inbounds for j=1:nrows, i=1:ncols
-       result[i,j] = distance(ref, conf, i, j)
-    end
+    ref_tmp = copy(ref.positions.data)
+    conf_tmp = copy(conf.positions.data)
+    minimal_image!(ref_tmp, ref.box)
+    minimal_image!(conf_tmp, conf.box)
+
+    pairwise!(result, Euclidean(), ref_tmp, conf_tmp)
+    return result
 end

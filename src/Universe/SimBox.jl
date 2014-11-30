@@ -59,6 +59,13 @@ function SimBox(u::Vector)
     end
 end
 
+function SimBox(u::Vector, v::Vector)
+    if length(u) == 3 && length(v) == 3
+        return SimBox(u..., v...)
+    else
+        throw(InexactError())
+    end
+end
 
 SimBox(L::Real) = SimBox(L, L, L)
 SimBox() = SimBox(0.0)

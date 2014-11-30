@@ -19,20 +19,20 @@ end
 Frame(t::Topology) = Frame(0,
                            SimBox(),
                            t,
-                           Array3D(Float32, size(t.atoms)),
+                           Array3D(Float32, size(t.atoms, 1)),
                            nothing)
 
 # Empty frame construction
-Frame() = Frame(0,SimBox(), Topology(), Array3D(Float32, 0), nothing)
+Frame() = Frame(0,SimBox(), Topology(), Array3D(Float64, 0), nothing)
 
 size(f::Frame) = size(f.positions, 1)
 
 
 function set_frame_size!(frame::Frame, wanted_size::Integer)
     if size(frame) != wanted_size
-        resize!(frame.positions, wanted_size)
-        if getfield(frame, :velocities) != nothing
-            resize!(getfield(frame, field), wanted_size)
+        frame.positions = Array3D(Float32, wanted_size)
+        if frame.velocities != nothing
+            frame.velocities = Array3D(Float32, wanted_size)
         end
     end
     return frame
