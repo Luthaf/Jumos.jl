@@ -10,7 +10,7 @@ type VelocityVerlet <: BaseIntegrator
 end
 
 function VelocityVerlet(timestep::Float64)
-    accelerations = Array3D{Float32}
+    accelerations = Array3D(Float32, 0)
     return VelocityVerlet(timestep, accelerations)
 end
 
@@ -24,9 +24,10 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
 
     natoms = size(frame)
 
-    if size(positions, 1) != size(accelerations, 1)
-        resize!(accelerations, size(positions, 1))
-        # initialize the accelerations
+    if length(accelerations) != natoms
+        integrator.accelerations = resize(accelerations, natoms)
+        accelerations = integrator.accelerations
+        # re-initialize the accelerations
         for i=1:natoms
             accelerations[i] = zeros(Float32, 3)
         end
@@ -34,21 +35,21 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
 
     # Update positions at t + ∆t
     @inbounds for i=1:natoms
-        positions[i] += velocities[i]*dt + 0.5*accelerations[i]*dt^2
+        positions[i] .+= velocities[i].*dt .+ 0.5.*accelerations[i].*dt^2
     end
 
     # Update velocities at t + ∆t/2
     @inbounds for i=1:natoms
-        velocities[i] += 0.5*accelerations[i]*dt
+        velocities[i] .+= 0.5.*accelerations[i].*dt
     end
 
     # Update accelerations at t + ∆t
     @inbounds for i=1:natoms
-        accelerations[i] = 1/masses[i]*forces[i]
+        accelerations[i] = 1/masses[i].*forces[i]
     end
 
     # Update velocities at t + ∆t
     @inbounds for i=1:natoms
-        velocities[i] += 0.5*accelerations[i]*dt
+        velocities[i] .+= 0.5.*accelerations[i].*dt
     end
 end

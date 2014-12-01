@@ -4,7 +4,7 @@
 importall Base
 
 export Array3D, Vector3D
-export cross, norm, unit!, substract!
+export cross, norm, unit!, substract!, resize
 
 immutable SubVector{T, A<:Array} <: AbstractArray{T, 1}
     a::A
@@ -16,6 +16,7 @@ getindex(s::SubVector, i::Int) = unsafe_load(s.ptr, i)
 setindex!(s::SubVector, v, i::Int) = unsafe_store!(s.ptr, v, i)
 size(s::SubVector) = (3,)
 length(s::SubVector) = 3
+copy(s::SubVector) = [s[1], s[2], s[3]]
 
 function view{T}(a::Array{T}, ::Colon, j::Int)
     SubVector{T,Array{T}}(a, (j - 1)*3)
@@ -23,13 +24,24 @@ end
 
 (+){T}(a::SubVector{T}, b::SubVector{T}) = T[a[1]+b[1], a[2]+b[2], a[3]+b[3]]
 (-){T}(a::SubVector{T}, b::SubVector{T}) = T[a[1]-b[1], a[2]-b[2], a[3]-b[3]]
-
+(.*){T}(a::SubVector{T}, b::Real) = T[a[1]*b, a[2]*b, a[3]*b]
+(.*){T}(a::Real, b::SubVector{T}) = (.*)(b, a)
+(./){T}(a::SubVector{T}, b::Real) = T[a[1]/b, a[2]/b, a[3]/b]
 
 norm(a::SubVector) = sumabs2(a)
 cross{T}(u::SubVector{T}, v::SubVector{T}) = [u[2]*v[3] - u[3]*v[2],
     u[3]*v[1] - u[1]*v[3],
     u[1]*v[2] - u[2]*v[1]]
 function unit!{T}(a::SubVector{T})
+    n = norm(a)
+    @inbounds begin
+        a[1] /= n
+        a[2] /= n
+        a[3] /= n
+    end
+    return a
+end
+function unit!(a::Vector)
     n = norm(a)
     @inbounds begin
         a[1] /= n
@@ -98,6 +110,13 @@ function getindex{T, N}(A::Array3D{T, N}, i::Integer)
         throw(BoundsError())
     end
     return view(A.data, :, i)
+end
+
+function resize(A::Array3D, size::Integer)
+    tmp = reshape(A.data, 3*length(A))
+    resize!(tmp, 3*size)
+    tmp = reshape(tmp, 3, size)
+    return Array3D(tmp)
 end
 
 # Function for show

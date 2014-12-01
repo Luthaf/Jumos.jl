@@ -42,7 +42,7 @@ type MDSimulation <: Simulation
     box             :: SimBox
     frame           :: Frame
     masses          :: Vector{Float64}
-    forces          :: Array3D
+    forces          :: Array3D{Float32}
     # all other data to be shared
     data            :: Dict{Symbol, Any}
 end
@@ -167,7 +167,7 @@ end
 Compute forces between atoms at a given step
 " ->
 function get_forces(sim::MDSimulation)
-    sim.forces_computer(sim.forces, sim.frame, sim.interactions)
+    sim.forces = sim.forces_computer(sim.forces, sim.frame, sim.interactions)
 end
 
 @doc "

@@ -117,7 +117,7 @@ end
 #==============================================================================#
 # @doc "
 # Lennard-Jones potential, using the following formulation
-#    V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 )
+#    \[ V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
 # " ->
 type LennardJones <: ShortRangePotential
     sigma::Float64

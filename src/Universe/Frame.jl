@@ -25,7 +25,7 @@ Frame(t::Topology) = Frame(0,
 # Empty frame construction
 Frame() = Frame(0,SimBox(), Topology(), Array3D(Float64, 0), nothing)
 
-size(f::Frame) = size(f.positions, 1)
+size(f::Frame) = length(f.positions)
 
 
 function set_frame_size!(frame::Frame, wanted_size::Integer)
