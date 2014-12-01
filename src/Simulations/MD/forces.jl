@@ -17,6 +17,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
     # Temporary vector
     r = Array(Float32, 3)
     natoms = size(frame)
+    dist = 0.0
 
     if length(forces) != natoms
         # Allocating new memory as needed
@@ -29,12 +30,13 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
 
     @inbounds for i=1:natoms, j=(i+1):natoms
         r = distance3d(frame, i, j)
+        dist = norm(r)
         unit!(r)
         atom_i = frame.topology.atoms[i]
         atom_j = frame.topology.atoms[j]
         potential = interactions[(atom_i, atom_j)]
+        r *= force(potential, dist)
 
-        r *= force(potential, norm(r))
         forces[i] .+= r
         forces[j] .-= r
     end

@@ -23,7 +23,7 @@ end
 
 # The default cutoff is set in angstroms. Others units should be added after
 function Potential(pot::BasePotential; cutoff=12.0)
-    if isa(ShortRangePotential, typeof(pot))
+    if typeof(pot) <: ShortRangePotential
         e_cutoff = pot(cutoff)
     else
         e_cutoff = 0.0
@@ -37,16 +37,16 @@ function Potential(T, args...; cutoff=12.0)
     return Potential(pot, cutoff=cutoff)
 end
 
-@inline function call(pot::Potential{ShortRangePotential}, r::Number)
+@inline function call{T<:ShortRangePotential}(pot::Potential{T}, r::Real)
     r > pot.cutoff ? 0.0 : pot.potential(r) + pot.e_cutoff
 end
 
-@inline function force(pot::Potential{ShortRangePotential}, r::Number)
-    r > pot.cutoff ? 0.0 : pot.force(r)
+@inline function force{T<:ShortRangePotential}(pot::Potential{T}, r::Real)
+    r > pot.cutoff ? 0.0 : force(pot.potential, r)
 end
 
 # Todo: long range potentials
-@inline function call(pot::Potential{LongRangePotential}, r::Number)
+@inline function call(pot::Potential{LongRangePotential}, r::Real)
     throw(NotImplementedError("Long range potential not implemented"))
 end
 
@@ -60,17 +60,17 @@ function show(io::IO, pot::Potential)
     end
 end
 
-function call(pot::BasePotential, ::Float64)
+function call(pot::BasePotential, ::Real)
     throw(NotImplementedError("No implementation provided for potential $pot."))
 end
 
-call(pot::BasePotential, r::Number) = call(pot, convert(Float64, r))
+call(pot::BasePotential, r::Real) = call(pot, convert(Float64, r))
 
-function force(pot::BasePotential, ::Float64)
+function force(pot::BasePotential, ::Real)
     throw(NotImplementedError("No force method provided for potential $pot."))
 end
 
-force(pot::BasePotential, r::Number) = force(pot, convert(Float64, r))
+force(pot::BasePotential, r::Real) = force(pot, convert(Float64, r))
 
 #==============================================================================#
 
@@ -84,7 +84,7 @@ end
     return 0.0
 end
 
-@inline function force(::Potential{NullPotential}, ::Float64)
+@inline function force(::NullPotential, ::Float64)
     return 0.0
 end
 
@@ -105,12 +105,12 @@ function UserPotential(potential::Function)
     return UserPotential(potential, force)
 end
 
-@inline function call(pot::UserPotential, r::Float64)
-    return pot.potential.potential(r)
+@inline function call(pot::UserPotential, r::Real)
+    return pot.potential(r)
 end
 
-@inline function force(pot::Potential{UserPotential}, r::Float64)
-    return pot.potential.force(r)
+@inline function force(pot::UserPotential, r::Real)
+    return pot.force(r)
 end
 
 
@@ -120,16 +120,16 @@ end
 #    \[ V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
 # " ->
 type LennardJones <: ShortRangePotential
-    sigma::Float64
     epsilon::Float64
+    sigma::Float64
 end
 
-@inline function call(pot::LennardJones, r::Float64)
-    s6 = (pot.potential.sigma/r)^6
-    return 4.0*pot.potential.epsilon*(s6^2 - s6)
+@inline function call(pot::LennardJones, r::Real)
+    s6 = (pot.sigma/r)^6
+    return 4.0*pot.epsilon*(s6^2 - s6)
 end
 
-@inline function force(pot::Potential{LennardJones}, r::Float64)
-    s6 = (pot.potential.sigma/r)^6
-    return 24.0*pot.potential.epsilon*(s6 - 2*s6^2)
+@inline function force(pot::LennardJones, r::Real)
+    s6 = (pot.sigma/r)^6
+    return 24.0*pot.epsilon*(s6 - 2*s6^2)
 end
