@@ -1,3 +1,5 @@
+.. _simulation-steps:
+
 Usual simulation steps
 ======================
 

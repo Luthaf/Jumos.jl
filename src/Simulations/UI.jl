@@ -19,6 +19,8 @@ end
 
 add_interaction(sim::MDSimulation, pot::BasePotential, at_i::AtomType) = add_interaction(sim, pot, (at_i, at_i))
 
+# TODO: add interaction while specifing the cutoff.
+
 function get_atom_id(sim::MDSimulation, atom_i::AtomType, atom_j::AtomType)
     i = isa(atom_i, Integer) ? atom_i : get_id_from_name(sim.topology, atom_i)
     j = isa(atom_j, Integer) ? atom_j : get_id_from_name(sim.topology, atom_j)

@@ -1,4 +1,4 @@
-.. _usage-example:
+.. _simulation-usage:
 
 Usage example
 =============
