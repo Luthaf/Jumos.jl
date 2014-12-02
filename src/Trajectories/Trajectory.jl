@@ -118,10 +118,10 @@ function opentraj(filename; mode="r", kwargs...)
         # TODO: Use a dict to associate extensions and Readers
         if extension == "xyz"
             info(".xyz extension, assuming XYZ trajectory")
-            if !(haskey(kwargs, :box))
-                warn("No box size while opening XYZ trajectories")
+            if !(haskey(kwargs, :cell))
+                warn("No cell size while opening XYZ trajectories")
             end
-            IOreader = XYZReader(filename, kwargs[:box])
+            IOreader = XYZReader(filename, kwargs[:cell])
             return Reader(IOreader, filename)
         elseif extension == "nc"
             info(".nc extension, assuming NetCDF trajectory")

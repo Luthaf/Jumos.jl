@@ -33,7 +33,7 @@ module Jumos
         export NotImplementedError
 
         include("Universe/Array3D.jl")
-        include("Universe/SimBox.jl")
+        include("Universe/UnitCell.jl")
         include("Universe/Frame.jl")
     end
 

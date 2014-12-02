@@ -7,14 +7,14 @@ export BaseEnforce, BerendsenBarostat, BerendsenThermostat, WrapParticle
 abstract BaseEnforce
 
 @doc "
-Wrap all the particles in the simulation box to prevent them from going out.
+Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
 type WrapParticles <: BaseEnforce
 end
 
 function call(::WrapParticles, frame::Frame)
     @inbounds for i=1:size(frame)
-        frame.positions[i] = minimal_image(frame.positions[i], frame.box)
+        frame.positions[i] = minimal_image(frame.positions[i], frame.cell)
     end
 end
 

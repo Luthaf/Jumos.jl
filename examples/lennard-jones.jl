@@ -3,8 +3,8 @@ using Jumos
 # Molecular Dynamics with 1.0fs timestep
 sim = Simulation("MD", 1.0)
 
-# Create the simulation box : cubic simulation box with a width of 10A
-set_box(sim, (10.0,))
+# Create the simulation cell : cubic simulation cell with a width of 10A
+set_cell(sim, (10.0,))
 
 # Create the initial topology, positions and velocities
 read_topology(sim, "lennard-jones.xyz")

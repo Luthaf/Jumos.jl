@@ -9,7 +9,7 @@
 
 type XYZReader <: AbstractReaderIO
     file::IOStream
-    box::SimBox
+    cell::UnitCell
 end
 
 
@@ -26,9 +26,9 @@ function get_traj_infos(r::XYZReader)
     return natoms, nsteps
 end
 # Constructor of XYZReader: open the file and get some informations
-function XYZReader(filename::String, box=0.0)
+function XYZReader(filename::String, cell=0.0)
     file = open(filename, "r")
-    return XYZReader(file, SimBox(box))
+    return XYZReader(file, UnitCell(cell))
 end
 
 # Read a given step of am XYZ Trajectory
@@ -59,7 +59,7 @@ function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
         position = read_atom_from_line(line)
         frame.positions[i] = position
     end
-    frame.box = traj.reader.box
+    frame.cell = traj.reader.cell
     frame.step = traj.current_step
     traj.current_step += 1
     if traj.current_step >= traj.nsteps

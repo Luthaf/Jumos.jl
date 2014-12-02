@@ -5,51 +5,51 @@
 export distance, distance_array, distance3d, minimal_image, minimal_image!
 
 @doc "
-`minimal_image(vect::Vect3D, box::SimBox)`
+`minimal_image(vect::Vect3D, cell::UnitCell)`
 
 Refine a vector using the minimal image convention
 " ->
-minimal_image(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
-minimal_image!(vect::AbstractVector, box::SimBox{InfiniteBox}) = vect
+minimal_image(vect::AbstractVector, cell::UnitCell{InfiniteCell}) = vect
+minimal_image!(vect::AbstractVector, cell::UnitCell{InfiniteCell}) = vect
 
-function minimal_image(vect, box::SimBox)
+function minimal_image(vect, cell::UnitCell)
     tmp = copy(vect)
-    return minimal_image!(tmp, box)
+    return minimal_image!(tmp, cell)
 end
 
-function minimal_image!(vect::AbstractVector, box::SimBox{OrthorombicBox})
-    vect[1] -= floor(vect[1]/box.x)*box.x
-    vect[2] -= floor(vect[2]/box.y)*box.y
-    vect[3] -= floor(vect[3]/box.z)*box.z
+function minimal_image!(vect::AbstractVector, cell::UnitCell{OrthorombicCell})
+    vect[1] -= floor(vect[1]/cell.x)*cell.x
+    vect[2] -= floor(vect[2]/cell.y)*cell.y
+    vect[3] -= floor(vect[3]/cell.z)*cell.z
     return vect
 end
 
-function minimal_image!(vect::AbstractVector, box::SimBox{TriclinicBox})
-    cart2fract!(vect, box)
+function minimal_image!(vect::AbstractVector, cell::UnitCell{TriclinicCell})
+    cart2fract!(vect, cell)
     vect[1] -= round(vect[1])
     vect[2] -= round(vect[2])
     vect[3] -= round(vect[3])
-    return fract2cart!(vect, box)
+    return fract2cart!(vect, cell)
 end
 
-function minimal_image!(a::Array3D, box::SimBox)
+function minimal_image!(a::Array3D, cell::UnitCell)
     @inbounds for i=1:length(a)
-        minimal_image!(a[i], box)
+        minimal_image!(a[i], cell)
     end
 end
 
-function minimal_image!(a::Matrix, box::SimBox)
+function minimal_image!(a::Matrix, cell::UnitCell)
     cols, rows = size(a)
     cols == 3 || error("Wrong size for matrix a. Should be (3, N)")
     @inbounds for i=rows
-        minimal_image!(a[:, i], box)
+        minimal_image!(a[:, i], cell)
     end
 end
 
-function cart2fract!(vect::AbstractVector, box::SimBox)
-    const z = vect[3]/box.gamma
-    const y = (vect[2] - z*box.beta)/box.z
-    const x = (vect[1] - z*box.alpha - y * box.y) / box[1]
+function cart2fract!(vect::AbstractVector, cell::UnitCell)
+    const z = vect[3]/cell.gamma
+    const y = (vect[2] - z*cell.beta)/cell.z
+    const x = (vect[1] - z*cell.alpha - y * cell.y) / cell[1]
 
     vect[1] = x
     vect[2] = y
@@ -58,27 +58,27 @@ function cart2fract!(vect::AbstractVector, box::SimBox)
     return vect
 end
 
-function cart2fract(vect::AbstractVector, box::SimBox)
+function cart2fract(vect::AbstractVector, cell::UnitCell)
     tmp = copy(vect)
-    return cart2fract!(tmp, box)
+    return cart2fract!(tmp, cell)
 end
 
-function fract2cart!(vect::AbstractVector, box::SimBox)
-    vect[1] = vect[1]*box[1] + vect[2]*box.y + vect[3]*box.alpha
-    vect[2] = vect[2]*box.z + vect[3]*box.beta
-    vect[3] = vect[3]*box.gamma
+function fract2cart!(vect::AbstractVector, cell::UnitCell)
+    vect[1] = vect[1]*cell[1] + vect[2]*cell.y + vect[3]*cell.alpha
+    vect[2] = vect[2]*cell.z + vect[3]*cell.beta
+    vect[3] = vect[3]*cell.gamma
     return vect
 end
 
-function cart2fract(vect::AbstractVector, box::SimBox)
+function cart2fract(vect::AbstractVector, cell::UnitCell)
     tmp = copy(vect)
-    return cart2fract!(tmp, box)
+    return cart2fract!(tmp, cell)
 end
 
-function fract2cart!(vect::AbstractVector, box::SimBox)
-    vect[1] = vect[1]*box[1] + vect[2]*box.y + vect[3]*box.alpha
-    vect[2] = vect[2]*box.z + vect[3]*box.beta
-    vect[3] = vect[3]*box.gamma
+function fract2cart!(vect::AbstractVector, cell::UnitCell)
+    vect[1] = vect[1]*cell[1] + vect[2]*cell.y + vect[3]*cell.alpha
+    vect[2] = vect[2]*cell.z + vect[3]*cell.beta
+    vect[3] = vect[3]*cell.gamma
     return vect
 end
 
@@ -90,7 +90,7 @@ end
 # i and j are particle index, the computed distance is ref[j] - conf[i]
 # " ->
 function distance(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
-    return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box))
+    return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.cell))
 end
 
 @doc "
@@ -118,7 +118,7 @@ end
 # i and j are particle index, the computed distance is ref[j] - conf[i]
 # " ->
 function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
-    return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.box)
+    return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.cell)
 end
 
 @doc "
@@ -184,8 +184,8 @@ using Distances
 function compute_distance_array!(result, ref, conf, nrows, ncols)
     ref_tmp = copy(ref.positions.data)
     conf_tmp = copy(conf.positions.data)
-    minimal_image!(ref_tmp, ref.box)
-    minimal_image!(conf_tmp, conf.box)
+    minimal_image!(ref_tmp, ref.cell)
+    minimal_image!(conf_tmp, conf.cell)
 
     pairwise!(result, Euclidean(), ref_tmp, conf_tmp)
     return result

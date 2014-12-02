@@ -4,7 +4,7 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_box, read_topology, read_positions, add_output
+export add_interaction, set_cell, read_topology, read_positions, add_output
 
 # Todo: Way to add a catchall interaction
 function add_interaction(sim::MDSimulation, potential::BasePotential, atoms::(AtomType, AtomType))
@@ -37,16 +37,16 @@ function Simulation(sim_type::String, args...)
     end
 end
 
-function set_box(sim::MDSimulation, box::SimBox)
-    sim.box = box
+function set_cell(sim::MDSimulation, cell::UnitCell)
+    sim.cell = cell
 end
 
-function set_box(sim::MDSimulation, size)
-    return set_box(sim, SimBox(size...))
+function set_cell(sim::MDSimulation, size)
+    return set_cell(sim, UnitCell(size...))
 end
 
-function set_box{T<:Type{Universe.AbstractBoxType}}(sim::MDSimulation, box_type::T, size = (0.0,))
-    return set_box(sim, SimBox(box_type(), size...))
+function set_cell{T<:Type{Universe.AbstractCellType}}(sim::MDSimulation, cell_type::T, size = (0.0,))
+    return set_cell(sim, UnitCell(cell_type(), size...))
 end
 
 function read_topology(sim::MDSimulation, filename::AbstractString)
@@ -54,10 +54,10 @@ function read_topology(sim::MDSimulation, filename::AbstractString)
 end
 
 function read_positions(sim::MDSimulation, filename::AbstractString)
-    reader = opentraj(filename, box=sim.box, topology=sim.topology)
+    reader = opentraj(filename, cell=sim.cell, topology=sim.topology)
     read_frame!(reader, 1, sim.frame)
 
-    sim.frame.box = sim.box
+    sim.frame.cell = sim.cell
     sim.frame.topology = sim.topology
 end
 

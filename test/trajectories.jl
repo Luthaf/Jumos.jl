@@ -21,7 +21,7 @@ close(traj)
 # XYZ read and write
 tmp = tempname()
 outtraj = Writer("$tmp.xyz")
-traj = Reader("$TEST_DIR/trjs/water.xyz", box=[15.0, 15.0, 15.0])
+traj = Reader("$TEST_DIR/trjs/water.xyz", cell=[15.0, 15.0, 15.0])
     frame = Frame(traj)
     read_frame!(traj, 50, frame)
     @test length(frame.positions) == traj.natoms

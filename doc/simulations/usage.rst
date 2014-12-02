@@ -23,7 +23,7 @@ Each simulation script should start by the ``using Jumos`` directive. This impor
 the module and the exported names in current scope.
 
 Then, in this script, we create a molecular dynamics (``"MD"``) simulation with
-a timestep of :math:`2\ \text{fs}`, and a cubic box, associated to the simulation.
+a timestep of :math:`2\ \text{fs}`, and a cubic cell, associated to the simulation.
 The topology and the original positions are read from the same file, as
 an :file:`.xyz` file contains some topological information (mainly the atomics names).
 

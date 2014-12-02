@@ -24,13 +24,13 @@ function update!(density::DensityProfile, frame::Frame)
         if frame.topology[i].name == density.atom
             pos = pos[density.dim]
             # Periodic boundary conditions
-            # Todo: handle non orthorombic boxes here
-            pos -= floor(pos/frame.box[density.dim])*frame.box[density.dim]
+            # Todo: handle non orthorombic cells here
+            pos -= floor(pos/frame.cell[density.dim])*frame.cell[density.dim]
             push!(positions, pos)
         end
     end
-    # Todo: handle non orthorombic boxes here
-    V = frame.box[1] * frame.box[2] * frame.box[3]
+    # Todo: handle non orthorombic cells here
+    V = frame.cell[1] * frame.cell[2] * frame.cell[3]
     update!(density.values, positions; weight=1/V)
     density.used_steps += 1
     return nothing

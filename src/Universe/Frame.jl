@@ -7,20 +7,20 @@ export Frame, set_frame_size!
 
 type Frame
     step::Integer
-    box::SimBox
+    cell::UnitCell
     topology::Topology
     positions::Array3D
     velocities::Array3D
 end
 
 Frame(t::Topology) = Frame(0,
-                           SimBox(),
+                           UnitCell(),
                            t,
                            Array3D(Float32, size(t.atoms, 1)),
                            Array3D(Float32, 0))
 
 # Empty frame construction
-Frame() = Frame(0,SimBox(), Topology(), Array3D(Float64, 0), Array3D(Float32, 0))
+Frame() = Frame(0,UnitCell(), Topology(), Array3D(Float64, 0), Array3D(Float32, 0))
 
 size(f::Frame) = length(f.positions)
 

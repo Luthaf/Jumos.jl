@@ -10,12 +10,12 @@ type RDF
     atom_j::String
     used_steps::Int
     nparticle::BigInt
-    box::SimBox
+    cell::UnitCell
 end
 
 function RDF(atom_i::String, atom_j::String; bins=200)
     hist = Histogram(Float64, bins)
-    return RDF(hist, atom_i, atom_j, 0, 0, SimBox())
+    return RDF(hist, atom_i, atom_j, 0, 0, UnitCell())
 end
 
 RDF(atom_i::String; kwargs...) = RDF(atom_i, atom_i; kwargs...)
@@ -39,7 +39,7 @@ function update!(rdf::RDF, frame::Frame)
         end
     end
 
-    if rdf.box == SimBox(0.0) initialize!(rdf, frame) end
+    if rdf.cell == UnitCell(0.0) initialize!(rdf, frame) end
 
     update!(rdf.values, dists, weight=2.0)
     rdf.used_steps += 1
@@ -47,10 +47,10 @@ function update!(rdf::RDF, frame::Frame)
 end
 
 function initialize!(rdf::RDF, frame::Frame)
-    @assert frame.box != SimBox(0.0) "The simulation box can not be null for RDF computations"
-    rdf.box = frame.box
+    @assert frame.cell != UnitCell(0.0) "The simulation cell can not be null for RDF computations"
+    rdf.cell = frame.cell
     rdf.values.min = 0.0
-    rdf.values.max = 0.5*min(rdf.box.length[1], rdf.box.length[2], rdf.box.length[3])
+    rdf.values.max = 0.5*min(rdf.cell.length[1], rdf.cell.length[2], rdf.cell.length[3])
 end
 
 function write(rdf::RDF, trajname::String; outname="")
@@ -70,9 +70,9 @@ function write(rdf::RDF, trajname::String; outname="")
 end
 
 function normalize!(rdf::RDF)
-    # Todo: handle non orthorombic boxes here
+    # Todo: handle non orthorombic celles here
     function norm(i::Integer)
-        V = rdf.box[1]*rdf.box[2]*rdf.box[3]
+        V = rdf.cell[1]*rdf.cell[2]*rdf.cell[3]
         n_particles = rdf.nparticle/(rdf.used_steps)
         rho = n_particles/V
         dr = rdf.values.step

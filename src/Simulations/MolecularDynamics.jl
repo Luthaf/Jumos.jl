@@ -39,7 +39,7 @@ type MDSimulation <: Simulation
     outputs         :: Vector{BaseOutput}
     # Data
     topology        :: Topology
-    box             :: SimBox
+    cell             :: UnitCell
     frame           :: Frame
     masses          :: Vector{Float64}
     forces          :: Array3D{Float32}
@@ -58,7 +58,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     outputs = BaseOutput[]
 
     topology = Topology()
-    box = SimBox()
+    cell = UnitCell()
     masses = Float64[]
     forces = Array3D(Float32, 0)
     frame = Frame(topology)
@@ -72,7 +72,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
                         computes,
                         outputs,
                         topology,
-                        box,
+                        cell,
                         frame,
                         masses,
                         forces,

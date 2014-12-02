@@ -36,7 +36,7 @@ Setting the simulation
 ----------------------
 
 Here, one is building his simulation. The order of the steps doesn't
-matter that much: you should start by defining the simulation box, and you have
+matter that much: you should start by defining the simulation cell, and you have
 to define a topology before defining the initial positions, but you can setup
 the interactions at any time.
 
@@ -106,13 +106,13 @@ Enforce
 
 If the time integration does not force the value of external parameters, like
 temperature or pressure or volume, this step can enforce them. Here will act the
-berendsen thermostat, the velocity rescaling, the particle wrapping to the box.
+berendsen thermostat, the velocity rescaling, the particle wrapping to the cell.
 
 Check
 ^^^^^
 
 During the run, one can check for simulation consistency. For example, the number
-of particle in the box may have be constant, the global momentum have to be zero,
+of particle in the cell may have be constant, the global momentum have to be zero,
 and so on.
 
 Compute
