@@ -9,11 +9,11 @@ when needed. Conversion from SI units is always supported.
 +---------------+-------------------------------------------------+-------------------------+
 |    Quantity   | Internal unit                                   | Supported conversions   |
 +===============+=================================================+=========================+
-| Distances     | Ångtröm (:math:`Å`)                             |  (bohr)                 |
+| Distances     | Ångtröm (:math:`A`)                             |  (bohr)                 |
 +---------------+-------------------------------------------------+-------------------------+
 | Time          | Femptosecond (:math:`fs`)                       |                         |
 +---------------+-------------------------------------------------+-------------------------+
-| Velocities    | Ångtröm/Femptosecond (:math:`Å/fs`)             |                         |
+| Velocities    | Ångtröm/Femptosecond (:math:`A/fs`)             |                         |
 +---------------+-------------------------------------------------+-------------------------+
 | Mass          | Unified atomic mass (:math:`u` or :math:`Da`)   | :math:`g/mol`           |
 +---------------+-------------------------------------------------+-------------------------+
@@ -22,7 +22,7 @@ when needed. Conversion from SI units is always supported.
 | Energy        | Kilo-calorie/Mole (:math:`kcal/mol`)            | :math:`eV`,             |
 |               |                                                 | :math:`Ry`              |
 +---------------+-------------------------------------------------+-------------------------+
-| Force         | Kilo-calorie/(Mole-Ångtröm) :math:`kcal/(mol Å)`|                         |
+| Force         | Kilo-calorie/(Mole-Ångtröm) :math:`kcal/(mol A)`|                         |
 +---------------+-------------------------------------------------+-------------------------+
 | Pressure      | :math:`bar`                                     |  :math:`atm`            |
 +---------------+-------------------------------------------------+-------------------------+
@@ -58,7 +58,7 @@ This leads to weird results like:
 .. code-block:: jlcon
 
     julia> with_unit(45, mJ)
-        188280.0 kg m²s⁻²
+        188280.0 kg m²/s²
 
     julia> with_unit(45, J)
-        188280.0 kg m²s⁻²
+        188280.0 kg m²/s²

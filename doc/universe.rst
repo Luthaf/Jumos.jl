@@ -89,8 +89,8 @@ You can acces to the box size and angles either directely, or by integer indexin
 
 .. function:: getindex(b::SimBox, i::Int)
 
-Calling ``b[i]`` will return the corresponding length or angle : for ``i ∈ [1:3]``,
-you get the ``i``:superscript:`th` lenght, and for ``i ∈ [4:6]``, you get the
+Calling ``b[i]`` will return the corresponding length or angle : for ``i in [1:3]``,
+you get the ``i``:superscript:`th` lenght, and for ``i in [4:6]``, you get the
 angles.
 
 If you make a lot of call to this kind of indexing, direct field access should be

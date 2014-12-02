@@ -183,38 +183,41 @@ htmlhelp_basename = 'Jumosdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+with open(os.path.join("templates", "preamble.tex")) as f:
+    preamble = f.read()
+
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+'papersize': 'a4paper',
 
 # The font size ('10pt', '11pt' or '12pt').
 #'pointsize': '10pt',
 
 # Additional stuff for the LaTeX preamble.
-#'preamble': '',
+'preamble': preamble,
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Jumos.tex', u'Jumos Documentation',
-   u'Guillaume Fraux', 'manual'),
+  ('index', 'Jumos.tex', u'Main Documentation',
+   u'Guillaume Fraux', 'howto'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+latex_logo = os.path.join('static', 'img', 'logo.pdf')
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
 #latex_use_parts = False
 
 # If true, show page references after internal links.
-#latex_show_pagerefs = False
+latex_show_pagerefs = True
 
 # If true, show URL addresses after external links.
-#latex_show_urls = False
+latex_show_urls = True
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []

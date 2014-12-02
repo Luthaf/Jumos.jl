@@ -2,11 +2,11 @@
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="300px" height="124.75px" viewBox="0 35.75 300 124.75" enable-background="new 0 35.75 300 124.75" xml:space="preserve">
-<line fill="none" stroke="#000000" stroke-width="5" x1="243.55" y1="58.177" x2="189.365" y2="126.285"/>
-<line fill="none" stroke="#000000" stroke-width="5" x1="269.974" y1="137.768" x2="189.365" y2="126.285"/>
-<circle fill="#D66661" stroke="#C93D39" stroke-width="3" cx="189.361" cy="126.286" r="19.962"/>
-<circle fill="#6BAB5B" stroke="#3B972E" stroke-width="3" cx="239.869" cy="61.858" r="19.962"/>
-<circle fill="#AA7DC0" stroke="#945BB0" stroke-width="3" cx="269.213" cy="135.821" r="19.96"/>
-<text transform="matrix(1 0 0 1 10.8271 85.9297)" font-family="'AvenirNext-Bold'" font-size="60">Jumos</text>
+	 width="300px" height="124.75px" viewBox="0 0 300 124.75" enable-background="new 0 0 300 124.75" xml:space="preserve">
+<line fill="none" stroke="#000000" stroke-width="5" x1="243.55" y1="24.146" x2="189.365" y2="92.254"/>
+<line fill="none" stroke="#000000" stroke-width="5" x1="269.975" y1="103.736" x2="189.365" y2="92.254"/>
+<circle fill="#D66661" stroke="#C93D39" stroke-width="3" cx="189.361" cy="92.255" r="19.962"/>
+<circle fill="#6BAB5B" stroke="#3B972E" stroke-width="3" cx="239.869" cy="27.827" r="19.962"/>
+<circle fill="#AA7DC0" stroke="#945BB0" stroke-width="3" cx="269.213" cy="101.79" r="19.96"/>
+<text transform="matrix(1 0 0 1 10.8271 51.8984)" font-family="'AvenirNext-Bold'" font-size="60">Jumos</text>
 </svg>
