@@ -42,25 +42,25 @@ Else, it is a ``TriclinicBox``.
 
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
 
-Creates a box of side lenghts ``Lx, Ly, Lz``, and angles ``a, b, c``.
+    Creates a box of side lenghts ``Lx, Ly, Lz``, and angles ``a, b, c``.
 
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real)
 
-Creates an orthorombic box of side lenghts ``Lx, Ly, Lz``.
+    Creates an orthorombic box of side lenghts ``Lx, Ly, Lz``.
 
 .. function:: SimBox(L::Real)
 
-Creates cubic box of side lenght ``L``.
+    Creates cubic box of side lenght ``L``.
 
 .. function:: SimBox()
 
-Creates cubic box of side lenght ``0.0``.
+    Creates cubic box of side lenght ``0.0``.
 
 .. function:: SimBox(u::Vector)
 .. function:: SimBox(u::Vector, v::Vector)
 
-If the size match, these functions expands the vectors and return one of the
-previous constructors, *e.g.* if ``u == [30, 40, 30]``, ``SimBox(u) == SimBox(30, 40, 30)``.
+    If the size match, these functions expands the vectors and return one of the
+    previous constructors, *e.g.* if ``u == [30, 40, 30]``, ``SimBox(u) == SimBox(30, 40, 30)``.
 
 Manualy defined box type
 """"""""""""""""""""""""
@@ -71,7 +71,7 @@ to be constructed.
 
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, btype::Type{AbstractBoxType})
 
-Create a box with lenghts ``Lx, Ly, Lz``, angles ``a, b, c``, and type ``btype``.
+    Create a box with lenghts ``Lx, Ly, Lz``, angles ``a, b, c``, and type ``btype``.
 
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, btype)
 .. function:: SimBox(L::Real, btype)
@@ -79,8 +79,8 @@ Create a box with lenghts ``Lx, Ly, Lz``, angles ``a, b, c``, and type ``btype``
 .. function:: SimBox(u::Vector, v::Vector, btype)
 .. function:: SimBox(u::Vector, btype)
 
-All these functions have the same behaviour than the one with automatic box type,
-excepted than the box type is taken to be equal to ``btype``.
+    All these functions have the same behaviour than the one with automatic box type,
+    excepted than the box type is taken to be equal to ``btype``.
 
 Indexing simulation box
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -144,12 +144,12 @@ The Frame type have the following constructors:
 
 .. function:: Frame(::Topology)
 
-Create a frame given a topology. The arrays are pre-allocated to store data
-according to the topology.
+    Create a frame given a topology. The arrays are pre-allocated to store data
+    according to the topology.
 
 .. function:: Frame()
 
-Create an empty frame, with a 0-atoms topology.
+    Create an empty frame, with a 0-atoms topology.
 
 Reding and writing frames from files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

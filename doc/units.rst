@@ -38,7 +38,7 @@ package. You can convert from and to internal representation using the following
 
 .. function:: internal(value::SIQuantity)
 
-Convert a value with unit to it's internal representation.
+    Convert a value with unit to it's internal representation.
 
 .. code-block:: jlcon
 
@@ -50,10 +50,10 @@ Convert a value with unit to it's internal representation.
 
 .. function:: with_unit(value::Number, target_unit::SIUnit)
 
-Convert an internal value to its value in the International System. The units are
-not tracked in the code, so you can convert a position to a pressure. All the results
-are returned in the main SI unit, without considering any power-of-ten prefix.
-This leads to weird results like:
+    Convert an internal value to its value in the International System. The units are
+    not tracked in the code, so you can convert a position to a pressure. All the results
+    are returned in the main SI unit, without considering any power-of-ten prefix.
+    This leads to weird results like:
 
 .. code-block:: jlcon
 
