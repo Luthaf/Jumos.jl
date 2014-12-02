@@ -16,9 +16,19 @@ run, the three main steps are computing the forces from the potentials,
 integrating the movement and outputing the quantities of interest : trajectories,
 energy, temperature, pressure, `etc.`
 
-These two parts are summarised in the figure below.
+These two parts are summarised in the figure :ref:`fig-MD_steps`.
 
-.. image:: /static/img/MD_steps.*
+.. _fig-MD_steps:
+.. figure:: /static/img/MD_steps.*
+    :alt: Usual steps in a molecular dynamic simulation
+    :align: center
+
+    Usual steps in a molecular dynamic simulation
+
+    A molecular dynamics simulation is usally build around two main parts, these
+    part being separated in various steps. The first part is the setting part,
+    creating all the needed informations about the simulation. The second part
+    is the run part, effectivelly running the simulation.
 
 Setting the simulation
 ----------------------
