@@ -5,9 +5,9 @@
 export SimBox, InfiniteBox, OrthorombicBox, TriclinicBox
 
 abstract AbstractBoxType
-type InfiniteBox <: AbstractBoxType end
-type OrthorombicBox <: AbstractBoxType end
-type TriclinicBox <: AbstractBoxType end
+immutable InfiniteBox <: AbstractBoxType end
+immutable OrthorombicBox <: AbstractBoxType end
+immutable TriclinicBox <: AbstractBoxType end
 
 type SimBox{T<:AbstractBoxType}
     x :: Float64
@@ -16,7 +16,6 @@ type SimBox{T<:AbstractBoxType}
     alpha :: Float64
     beta  :: Float64
     gamma :: Float64
-    box_type :: T
 end
 
 function getindex(b::SimBox, i::Int)
@@ -42,11 +41,11 @@ end
 
 function SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
     if a == 90.0 && b == 90.0 && c == 90.0
-        box_type = OrthorombicBox()
+        box_type = OrthorombicBox
     else
-        box_type = TriclinicBox()
+        box_type = TriclinicBox
     end
-    return SimBox(Lx, Ly, Lz, a, b, c, box_type)
+    return SimBox{box_type}(Lx, Ly, Lz, a, b, c)
 end
 
 SimBox(Lx::Real, Ly::Real, Lz::Real) = SimBox(Lx, Ly, Lz, 90., 90., 90.)
@@ -74,10 +73,10 @@ SimBox(b::SimBox) = b
 
 #==============================================================================#
 # Manual box type
+SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, btype::Type{AbstractBoxType}) = SimBox{btype}(Lx, Ly, Lz, a, b, c)
+SimBox(Lx::Real, Ly::Real, Lz::Real, btype::Type{AbstractBoxType}) = SimBox(Lx, Ly, Lz, 90., 90., 90., btype)
 
-SimBox(Lx::Real, Ly::Real, Lz::Real, btype::AbstractBoxType) = SimBox(Lx, Ly, Lz, 90., 90., 90., btype)
-
-function SimBox(u::Vector, btype::AbstractBoxType)
+function SimBox(u::Vector, btype::Type{AbstractBoxType})
     if length(u) == 3 || length(u) == 6
         return SimBox(u..., btype)
     else
@@ -85,5 +84,13 @@ function SimBox(u::Vector, btype::AbstractBoxType)
     end
 end
 
-SimBox(L::Real, btype::AbstractBoxType) = SimBox(L, L, L, btype)
-SimBox(btype::AbstractBoxType) = SimBox(0.0, btype)
+function SimBox(u::Vector, v::Vector, btype::Type{AbstractBoxType})
+    if length(u) == 3 && length(v) == 3
+        return SimBox(u..., v...)
+    else
+        throw(InexactError())
+    end
+end
+
+SimBox(L::Real, btype::Type{AbstractBoxType}) = SimBox(L, L, L, btype)
+SimBox(btype::Type{AbstractBoxType}) = SimBox(0.0, btype)
