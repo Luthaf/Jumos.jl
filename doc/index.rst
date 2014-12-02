@@ -26,6 +26,7 @@ You can also explore the packages with the links below.
 
     units
     universe/index
+    distances
     atoms/index
     simulations/index
     trajectories/index

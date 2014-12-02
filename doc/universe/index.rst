@@ -4,43 +4,15 @@ Universe
 The Universe module defines some basic types for holding informations about a
 simulation.
 
-Vect3D
-------
+Array3D
+-------
 
-3-dimensionals vectors are very commons in molecular simulations. The ``Vect3D``
-type is made to provide an easy interface to this kind of vector, implementing
-all the usual operation : ``+, -`` between vector or with scalars; ``*, /`` with
-scalars; dot (``*``) and cross (``^``) product between vectors; ``norm`` and
-``normalize`` function.
-
-.. Even if this class is convenient, it may be at the origin of a 10-100 slowdown
-   function f()
-      a = rand(3, 100)
-      tic()
-      for _=1:10^6
-        for i=1:100
-            a[1, i] += a[2, i]
-            a[2, i] += a[3, i]
-            a[3, i] += a[1, i]
-        end
-      end
-      toc()
-   end
-   function g()
-      a = Vect3D[Vect3D(rand(), rand(), rand()) for i=1:100]
-      tic()
-      for _=1:10^6
-        for i=1:100
-            a[i].x += a[i].y
-            a[i].y += a[i].z
-            a[i].z += a[i].x
-        end
-      end
-      toc()
-   end
-   f();g()
-   f() -> elapsed time: 0.003867119 seconds
-   g() -> elapsed time: 0.477103004 seconds
+3-dimensionals vectors are very commons in molecular simulations. The ``Array3D``
+type implement arrays of this kind of vectors, implementing all the usual
+operations between it's components. If ``A`` is an ``Array3D`` and ``i`` an integer,
+``A[i]`` is a 3-dimensional vector implementing ``+, -`` between vector,
+``.+, .-, .*, */`` between vectors and scalars; ``dot`` and ``cross`` products,
+and the ``unit!`` function, normalizing its argument.
 
 .. _type-SimBox:
 
@@ -68,14 +40,9 @@ These constructors try to guess the box type according the following algorithm:
 if the box angles are all :math:`90°`, then the box is an ``OrthorombicBox``.
 Else, it is a ``TriclinicBox``.
 
-.. function:: SimBox(u::Vector, v::Vector)
-
-Creates a box with automatic type, with side lenghts from ``u`` and angles from
-``v``.
-
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
 
-Creates an orthorombic box of side lenghts ``Lx, Ly, Lz``, and angles ``a, b, c``.
+Creates a box of side lenghts ``Lx, Ly, Lz``, and angles ``a, b, c``.
 
 .. function:: SimBox(Lx::Real, Ly::Real, Lz::Real)
 
@@ -89,6 +56,12 @@ Creates cubic box of side lenght ``L``.
 
 Creates cubic box of side lenght ``0.0``.
 
+.. function:: SimBox(u::Vector)
+.. function:: SimBox(u::Vector, v::Vector)
+
+If the size match, these functions expands the vectors and return one of the
+previous constructors, *e.g.* if ``u == [30, 40, 30]``, ``SimBox(u) == SimBox(30, 40, 30)``.
+
 Manualy defined box type
 """"""""""""""""""""""""
 
@@ -96,28 +69,33 @@ For all these constructors, the box type is specified as the first argument. Thi
 allow for ``InfiniteBox`` and ``TriclinicBox`` with initial angles of :math:`90°`
 to be constructed.
 
-.. function:: SimBox(box_type, u::Vector, v::Vector)
+.. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, btype::Type{AbstractBoxType})
 
-Create a box by taking the lenghts from ``u`` and the angles from ``v``.
+Create a box with lenghts ``Lx, Ly, Lz``, angles ``a, b, c``, and type ``btype``.
 
-.. function:: SimBox(box_type, Lx::Real, Ly::Real, Lz::Real)
+.. function:: SimBox(Lx::Real, Ly::Real, Lz::Real, btype)
+.. function:: SimBox(L::Real, btype)
+.. function:: SimBox(btype)
+.. function:: SimBox(u::Vector, v::Vector, btype)
+.. function:: SimBox(u::Vector, btype)
 
-Create a box with side lenghts of ``Lx, Ly, Lz`` and angles of ``90°``.
-
-.. function:: SimBox(box_type, L::Real)
-
-Creates cubic box of side lenght ``L``.
-
-.. function:: SimBox(box_type)
-
-Creates cubic box of side lenght ``0.0``.
+All these functions have the same behaviour than the one with automatic box type,
+excepted than the box type is taken to be equal to ``btype``.
 
 Indexing simulation box
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: getindex(b::SimBox, i::String)
+You can acces to the box size and angles either directely, or by integer indexing.
 
 .. function:: getindex(b::SimBox, i::Int)
+
+Calling ``b[i]`` will return the corresponding length or angle : for ``i ∈ [1:3]``,
+you get the ``i``:superscript:`th` lenght, and for ``i ∈ [4:6]``, you get the
+angles.
+
+If you make a lot of call to this kind of indexing, direct field access should be
+more efficient. The internal fields of a box are : the three lenghts ``x, y, z``,
+and the three angles ``a, b, c``.
 
 Boundary conditions and boxes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -131,9 +109,8 @@ Distances and boxes
 
 The distance between two particle depends on the box type. In all cases, the
 minimal image convention is used: the distance between two particles is the
-minimal distance between all the images of theses particles.
-
-TODO: link to distance function doc
+minimal distance between all the images of theses particles. This is explicited
+in the :ref:`distances` part of this documentation.
 
 
 Frame
@@ -143,22 +120,18 @@ A ``Frame`` object holds the data from one step of a simulation. It is defined a
 
 .. code-block:: julia
 
-    Array3D = Vector{Vect3D{Float32}}
-    NullableArray3D = Union(Void, Array3D)
-
     type Frame
         step::Integer
         box::SimBox
         topology::Topology
         positions::Array3D
-        velocities::NullableArray3D
+        velocities::Array3D
     end
 
 `i.e.` it contains informations about the current step, the current
 :ref:`box <type-SimBox>` shape, the current :ref:`topology <type-Topology>`, the
-current positions, and maybe the current velocities. As the ``velocities`` field
-may be ``nothing``, one should check for it's existency before using it in some
-algorithm.
+current positions, and maybe the current velocities. If there is no velocities
+information, the velocities ``Array3D`` is a 0-sized array.
 
 Creating frames
 ^^^^^^^^^^^^^^^
@@ -181,4 +154,5 @@ Create an empty frame, with a 0-atoms topology.
 Reding and writing frames from files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TODO
+The main goal of the ``Trajectories``module is to read or write frames from or to
+files. See the :ref:`documentation <trajectories>` for more informations.

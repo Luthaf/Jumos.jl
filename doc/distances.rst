@@ -1,0 +1,6 @@
+.. _distances:
+
+Distances computations
+======================
+
+
