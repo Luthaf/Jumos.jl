@@ -11,13 +11,13 @@ type NCReader <: AbstractReaderIO
     file::NcFile
 end
 
-function NCReader(filename::String)
+register_reader(extension="nc", filetype="Amber NetCDF", reader=NCReader)
+
+function NCReader(filename::String; kwargs...)
     file = NetCDF.open(filename)
     is_AMBER = false
     try
         is_AMBER = contains(file.gatts["Conventions"], "AMBER")
-    catch
-        is_AMBER = false
     end
     if !is_AMBER
         error("This software can only read AMBER convention for NetCDF files.")
@@ -26,9 +26,8 @@ function NCReader(filename::String)
 end
 
 function get_traj_infos(r::NCReader)
-    # int() convert to machine integers
-    natoms = int(r.file.dim["atom"].dimlen)
-    nsteps = int(r.file.dim["frame"].dimlen)
+    natoms = Int(r.file.dim["atom"].dimlen)
+    nsteps = Int(r.file.dim["frame"].dimlen)
     return natoms, nsteps
 end
 

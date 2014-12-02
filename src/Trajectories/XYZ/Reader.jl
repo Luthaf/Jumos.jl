@@ -12,6 +12,19 @@ type XYZReader <: AbstractReaderIO
     cell::UnitCell
 end
 
+register_reader(extension="xyz", filetype="XYZ", reader=XYZReader)
+
+# Constructor of XYZReader: open the file and get some informations
+function XYZReader(filename::String; kwargs...)
+
+    cell = UnitCell(get_in_kwargs(kwargs, :cell, UnitCell()))
+    if cell == UnitCell()
+        warn("No unit cell size while opening XYZ trajectories")
+    end
+
+    file = open(filename, "r")
+    return XYZReader(file, cell)
+end
 
 function get_traj_infos(r::XYZReader)
     natoms = int(readline(r.file))
@@ -24,11 +37,6 @@ function get_traj_infos(r::XYZReader)
         error("Wrong number of lines in file $filename")
     end
     return natoms, nsteps
-end
-# Constructor of XYZReader: open the file and get some informations
-function XYZReader(filename::String, cell=0.0)
-    file = open(filename, "r")
-    return XYZReader(file, UnitCell(cell))
 end
 
 # Read a given step of am XYZ Trajectory

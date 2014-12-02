@@ -5,7 +5,7 @@
 import Base: size, show, getindex, setindex!
 
 export Topology, Bond, Angle, Dihedral
-export atomic_masses, get_id_from_name
+export atomic_masses, get_id_from_name, dummy_topology
 
 typealias Bond (Int, Int)
 typealias Angle (Int, Int, Int)
@@ -33,6 +33,13 @@ Topology(natoms::Integer) = Topology(Atom[],
                                      Dihedral[]
                                     )
 Topology() = Topology(0)
+
+function dummy_topology(natoms::Integer)
+    topology = Topology(natoms)
+    push!(topology.atom_types, Atom("Dummy"))
+    fill!(topology.atoms, 1)
+    return topology
+end
 
 function size(a::Dict{String, Array{Int64,1}})
     # Just count the number of dict entry
