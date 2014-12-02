@@ -15,8 +15,8 @@ simulation run or by reading frames in a file.
 .. warning::
     This package is a work in progress, and is only usable at your own risk.
 
-Jumos is separated in 5 main modules : `Universe`, `Atoms`, `Simulations`,
-`Trajectories` and `Analysis`.
+Jumos is separated in 7 main modules : `Units`, `Universe`, `Atoms`, `Simulations`,
+`Trajectories`, `Distances` and `Analysis`.
 
 If you want to start running simulations, directely go to the :ref:`usage example <usage-example>`.
 You can also explore the packages with the links below.
@@ -25,9 +25,9 @@ You can also explore the packages with the links below.
     :maxdepth: 2
 
     units
-    universe/index
+    universe
     distances
-    atoms/index
+    atoms
     simulations/index
     trajectories/index
     analysis/index
@@ -40,7 +40,3 @@ julia prompt. You may also want to run ``Pkg.test("Jumos")`` to run the tests.
 
 Only 0.4 julia prerelease version is supported, because of all the
 breaking changes between 0.3 and 0.4.
-
-
-.. * :ref:`genindex`
-   * :ref:`search`

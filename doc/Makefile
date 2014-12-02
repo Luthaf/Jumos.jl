@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = build
+BUILDDIR      = __build__
 
 VIRTUALENV_COMMANDS = pyvenv virtualenv
 
