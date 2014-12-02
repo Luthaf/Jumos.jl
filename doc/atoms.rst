@@ -45,8 +45,14 @@ Topology functions
 
 .. function:: size(::Topology)
 
+This function return the number of atoms in the topology.
+
 .. function:: atomic_masses(::Topology)
-TODO
+
+This function return a ``Vector{Float64}`` containing the mass of all the atoms
+in the system. If no masses where provided, it uses the ``ATOMIC_MASSES``
+dictionnary to try to gess the values. If no value is found, the mass is set to
+:math:`0.0`. All the values are in :ref:`internal units <intenal_units>`.
 
 Periodic table informations
 ---------------------------
@@ -57,6 +63,3 @@ atoms:
 	  and atomic masses, in :ref:`internal units <intenal_units>` ;
 	- ``VDW_RADIUS`` is a ``Dict{String, Integer}`` associating atoms symbols
 	  and Van der Waals radii, in :ref:`internal units <intenal_units>`.
-
-
-
