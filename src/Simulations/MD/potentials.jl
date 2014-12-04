@@ -72,7 +72,6 @@ end
 
 force(pot::BasePotential, r::Real) = force(pot, convert(Float64, r))
 
-#==============================================================================#
 
 @doc "
 Null potential, for a system without interactions
@@ -88,7 +87,7 @@ end
     return 0.0
 end
 
-#==============================================================================#
+
 @doc "
 User defined potential, without any parameter
 " ->
@@ -114,14 +113,13 @@ end
 end
 
 
-#==============================================================================#
 # @doc "
 # Lennard-Jones potential, using the following formulation
-#    \[ V = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
+#    \[ V(r) = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
 # " ->
 type LennardJones <: ShortRangePotential
-    epsilon::Float64
-    sigma::Float64
+    epsilon :: Float64
+    sigma   :: Float64
 end
 
 @inline function call(pot::LennardJones, r::Real)
@@ -132,4 +130,29 @@ end
 @inline function force(pot::LennardJones, r::Real)
     s6 = (pot.sigma/r)^6
     return 24.0*pot.epsilon*(s6 - 2*s6^2)
+end
+
+
+# @doc "
+# Harmonic potential, with the following definition :
+#     \[ V(r) = \frac12 k (r - r_0) - D_0 \]
+#
+# `Harmonic(k, r0, depth=0.0)`
+#
+#     This function creates an instance of an Harmonic potential.
+# " ->
+type Harmonic <: ShortRangePotential
+    k     :: Float64
+    r0    :: Float64
+    depth :: Float64
+end
+
+Harmonic(k::Real, r0::Real) = Harmonic(k, r0, 0.0)
+
+@inline function call(pot::Harmonic, r::Real)
+    return 0.5 * pot.k * (r - pot.r0)^2 + pot.depth
+end
+
+@inline function force(pot::Harmonic, r::Real)
+    return pot.k * (r - pot.r0)
 end
