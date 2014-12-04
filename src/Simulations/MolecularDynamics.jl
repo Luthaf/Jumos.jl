@@ -104,6 +104,7 @@ function run!(sim::MDSimulation, nsteps::Integer)
         check(sim)
         compute(sim)
         output(sim)
+        sim.frame.step += 1
     end
     return nothing
 end
