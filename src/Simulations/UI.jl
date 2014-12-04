@@ -4,7 +4,8 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_cell, read_topology, read_positions, add_output
+export add_interaction, set_cell, read_topology, read_positions, add_output ,
+       set_frame
 
 # Todo: Way to add a catchall interaction
 function add_interaction(sim::MDSimulation, potential::BasePotential, atoms::(AtomType, AtomType))
@@ -66,4 +67,15 @@ end
 
 function add_output(sim::MDSimulation, out::BaseOutput)
     push!(sim.outputs, out)
+end
+
+@doc "
+`set_frame(sim::MDSimulation, frame::Frame)`
+
+Set the simulation frame to `frame`, and update internal values
+" ->
+function set_frame(sim::MDSimulation, frame::Frame)
+    sim.frame = frame
+    sim.data[:frame] = sim.frame
+    sim.topology = sim.frame.topology
 end
