@@ -13,16 +13,12 @@ type Frame
     velocities::Array3D
 end
 
-Frame(t::Topology) = Frame(0,
-                           UnitCell(),
-                           t,
-                           Array3D(Float32, size(t.atoms, 1)),
-                           Array3D(Float32, 0))
+Frame(topology::Topology) = Frame(1, UnitCell(), topology, Array3D(Float32, size(topology)), Array3D(Float32, 0))
 
 # Empty frame construction
-Frame() = Frame(0,UnitCell(), Topology(), Array3D(Float64, 0), Array3D(Float32, 0))
+Frame() = Frame(1, UnitCell(), Topology(), Array3D(Float32, 0), Array3D(Float32, 0))
 
-size(f::Frame) = length(f.positions)
+size(frame::Frame) = length(frame.positions)
 
 
 function set_frame_size!(frame::Frame, wanted_size::Integer; velocities=false)

@@ -53,13 +53,15 @@ end
 size(topology::Topology) = size(topology.atoms, 1)
 
 function show(io::IO, top::Topology)
+    n_atoms = size(top.atoms, 1)
     n_molecules = size(top.molecules)
     n_residues = size(top.residues)
     n_bonds = size(top.bonds, 1)
     n_angles = size(top.angles, 1)
     n_dihedrals = size(top.dihedrals, 1)
-    show(io, string("Topology with $n_molecules molecules, $n_residues residues, ",
-                "$n_bonds bonds, $n_angles angles, $n_dihedrals dihedrals."))
+    show(io, "Topology with $n_atoms atoms, $n_molecules molecules, " *
+             "$n_residues residues, $n_bonds bonds, $n_angles angles, " *
+             "$n_dihedrals dihedrals.")
 end
 
 function getindex(topology::Topology, i::Integer)
