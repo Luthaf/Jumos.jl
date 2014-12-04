@@ -1,5 +1,5 @@
 import Base: call, show
-export PotentialError, BasePotential, ShortRangePotential
+export PotentialError, BasePotential, ShortRangePotential, Potential
 export UserPotential, LennardJones, Harmonic
 export force
 
@@ -155,5 +155,5 @@ Harmonic(k::Real, r0::Real) = Harmonic(k, r0, 0.0)
 end
 
 @inline function force(pot::Harmonic, r::Real)
-    return pot.k * (r - pot.r0)
+    return - pot.k * (r - pot.r0)
 end

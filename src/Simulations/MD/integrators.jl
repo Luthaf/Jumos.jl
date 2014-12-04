@@ -45,7 +45,7 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
 
     # Update accelerations at t + ∆t
     @inbounds for i=1:natoms
-        accelerations[i] = 1/masses[i].*forces[i]
+        accelerations[i] = forces[i] ./ masses[i]
     end
 
     # Update velocities at t + ∆t
