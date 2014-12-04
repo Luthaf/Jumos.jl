@@ -1,7 +1,24 @@
-TEST_DIR = dirname(@__FILE__)
 
-cd(TEST_DIR); cd("../examples")
+sim = Simulation("MD", 1.0)
 
-include("../examples/lennard-jones.jl")
+set_cell(sim, (8.0,))
 
-cd(TEST_DIR)
+top = Topology(2)
+top[1] = Atom("He")
+top[2] = Atom("He")
+
+frame = Frame(top)
+frame.positions[1] = [2., 2., 2.]
+frame.positions[2] = [2., 2., 4.]
+frame.cell = sim.cell
+
+set_frame(sim, frame)
+
+create_velocities(sim, 300)
+
+add_interaction(sim, LennardJones(0.3, 2.0), "He")
+
+out_trajectory = TrajectoryOutput("traj.xyz", 1)
+add_output(sim, out_trajectory)
+
+run!(sim, 500)
