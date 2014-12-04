@@ -1,11 +1,14 @@
 using Jumos
 using Base.Test
 
-const tests_available = Dict(:trajectories => "TrajectoriesIO capacities",
-                             :analysis => "Trajectories analysis",
-                             :units => "Units conversions",
-                             :simulations => "Running MD Simulations"
-                             )
+const tests_available = Dict(
+    :distances => "Distances computations",
+    :units => "Units conversions",
+    :trajectories => "TrajectoriesIO capacities",
+    :analysis => "Trajectories analysis",
+    :simulations => "Running MD Simulations"
+)
+
 const SEP = "   "
 
 function main()
