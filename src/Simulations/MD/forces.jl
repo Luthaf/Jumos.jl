@@ -46,8 +46,8 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         potential = interactions[(atom_i, atom_j)]
         r *= force(potential, dist)
 
-        forces[i] .+= r
-        forces[j] .+= -r
+        forces[i] .+= -r
+        forces[j] .+= r
     end
     force_array_to_internal!(forces)
     return forces

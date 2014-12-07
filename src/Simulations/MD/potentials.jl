@@ -130,7 +130,7 @@ end
 
 @inline function force(pot::LennardJones, r::Real)
     s6 = (pot.sigma/r)^6
-    return 24.0*pot.epsilon*(s6 - 2*s6^2)
+    return -24.*pot.epsilon*(s6 - 2*s6^2)/r
 end
 
 
