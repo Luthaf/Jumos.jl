@@ -1,8 +1,6 @@
 #===============================================================================
                         Topologie read and write
 ===============================================================================#
-import Jumos.Atoms: Topology
-
 export read_topology
 
 include("Topologies/XYZ.jl")
@@ -21,4 +19,5 @@ function read_topology(filename)
     end
 end
 
+import Jumos: Topology
 Topology(filename::String) = read_topology(filename)

@@ -2,7 +2,6 @@
              Trajectories reading and writing through iterators
 ===============================================================================#
 import Base: close, show
-import Jumos: Frame
 
 export Reader, Writer
 export eachframe, read_next_frame!, read_frame!, opentraj
@@ -36,6 +35,7 @@ function Reader(r::AbstractReaderIO, topology=Topology())
     return Reader(natoms, nsteps, 0, topology, r)
 end
 
+import Jumos: Frame
 Frame(reader::Reader) = Frame(reader.topology)
 
 abstract AbstractWriterIO <: TrajectoryIO
