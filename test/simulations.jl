@@ -31,6 +31,7 @@ short = Potential(lj, cutoff=8.0)
 @test short(9) == 0.0
 @test short(3.) == lj(3.0) + short.e_cutoff
 
+# Test the simulations
 sim = Simulation("MD", 1.0)
 
 set_cell(sim, (8.0,))
@@ -40,17 +41,31 @@ top[1] = Atom("He")
 top[2] = Atom("He")
 
 frame = Frame(top)
-frame.positions[1] = [2., 2., 2.] + 0.1 .* rand(3)
-frame.positions[2] = [2., 2., 4.] + 0.1 .* rand(3)
+frame.positions[1] = [2., 2., 2.]
+frame.positions[2] = [2., 2., 4.2]
 frame.cell = sim.cell
 
 set_frame(sim, frame)
 
-create_velocities(sim, 300)
+# Setup null velocities
+create_velocities(sim, 0)
 
 add_interaction(sim, Harmonic(30, 2.0, -0.5), "He")
 
-out_trajectory = TrajectoryOutput("traj.xyz", 1)
+run!(sim, 1)
+
+@test sim.forces[1] .+ sim.forces[2] == [0.0, 0.0, 0.0]
+@test isapprox([sim.forces[1]...], [0.0, 0.0, -6.0])
+
+m = sim.masses[1]
+@test m == ATOMIC_MASSES["He"].val
+
+@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*-6.0/m])
+
+tmpname = tempname() * ".xyz"
+out_trajectory = TrajectoryOutput(tmpname, 1)
 add_output(sim, out_trajectory)
 
 run!(sim, 500)
+
+rm(tmpname)

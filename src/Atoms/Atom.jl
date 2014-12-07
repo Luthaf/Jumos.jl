@@ -30,6 +30,7 @@ end
 function get_mass(name::String)
     mass = 0.0
     try
+        # TODO: fix the method error is internal(ATOMIC_MASSES[name])
         mass = ATOMIC_MASSES[name].val
     end
     return mass

@@ -78,4 +78,6 @@ function set_frame(sim::MDSimulation, frame::Frame)
     sim.frame = frame
     sim.data[:frame] = sim.frame
     sim.topology = sim.frame.topology
+    natoms = size(sim.frame)
+    sim.frame.velocities = Array3D(Float32, natoms)
 end

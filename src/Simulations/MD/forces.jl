@@ -38,7 +38,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         r *= force(potential, dist)
 
         forces[i] .+= r
-        forces[j] .-= r
+        forces[j] .+= -r
     end
     return forces
 end
