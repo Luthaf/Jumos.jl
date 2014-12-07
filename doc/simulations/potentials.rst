@@ -120,4 +120,6 @@ TODO
 
 Example: LJ second form.
 
+Attention : unit system
+
 .. TODO : LongRangePotential

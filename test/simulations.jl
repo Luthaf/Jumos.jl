@@ -5,14 +5,13 @@ harmonic = Harmonic(30, 2.0, -0.5)
 @test harmonic(2.0) == -0.5
 @test harmonic(4.0) == 59.5
 @test force(harmonic, 2.0) == 0.0
-@test force(harmonic, 3.0) == -30.0
+@test force(harmonic, 3.0) == -30.0 # force in kJ/(mol*A)
 
-lj = LennardJones(0.4, 2.0)
+lj = LennardJones(0.8, 2.0)
 @test lj(2.0) == 0.0
-@test lj(2.5) == -0.3094792372224001
-# TODO: get LJ minimum
-#@test force(lj, 2.0) == 0.0
-#@test force(lj, 3.0) == 30.0
+@test lj(2.5) == -0.6189584744448002
+@test isapprox(force(lj, 2^(1./6.)*2.0), 0.0, atol=1e-15)
+@test isapprox(force(lj, 2.5), -0.95773475733504, atol=1e-15) # force in kJ/(mol*A)
 
 f(x) = 3*(x-3.5)^4
 g(x) = 12*(x-3.5)^3
@@ -55,12 +54,12 @@ add_interaction(sim, Harmonic(30, 2.0, -0.5), "He")
 run!(sim, 1)
 
 @test sim.forces[1] .+ sim.forces[2] == [0.0, 0.0, 0.0]
-@test isapprox([sim.forces[1]...], [0.0, 0.0, -6.0])
+@test isapprox([sim.forces[1]...], [0.0, 0.0, -6.0e-4])
 
 m = sim.masses[1]
 @test m == ATOMIC_MASSES["He"].val
 
-@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*-6.0/m])
+@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*-6.0e-4/m])
 
 tmpname = tempname() * ".xyz"
 out_trajectory = TrajectoryOutput(tmpname, 1)

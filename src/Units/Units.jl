@@ -37,6 +37,9 @@ const amu = AtomicMass
 const bar = Bar
 const atm = Atmosphere
 
+const NA = 6.02214129e23
+const mol = 1/NA
+
 
 #==============================================================================#
 # Conversions from NonSIUnit
@@ -63,7 +66,8 @@ const INTERNAL_UNITS = Dict(
     typeof(Second) => Femto*Second,
     typeof(Meter/Second) => Angstrom/(Femto*Second),
     typeof(KiloGram) => AtomicMass,
-    typeof(Joule) => kcal,
+    # Using non typed mol constant to allow for conversions
+    typeof(Joule) => Kilo*Joule/mol,
     typeof(KiloGram*Meter/Second^2) => kcal/Angstrom,
     typeof(Kelvin) => Kelvin,
 )

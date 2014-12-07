@@ -5,6 +5,15 @@
 export BaseForcesComputer, NaiveForces
 abstract BaseForcesComputer
 
+function force_array_to_internal!(a::Array3D)
+    for i=1:3
+        for j=1:length(a)
+            a.data[i, j] *= 1e-4
+        end
+    end
+    return a
+end
+
 @doc "
 Naive forces computation : just get the vector between two particles, and
 call the force function for these particles.
@@ -40,5 +49,6 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         forces[i] .+= r
         forces[j] .+= -r
     end
+    force_array_to_internal!(forces)
     return forces
 end
