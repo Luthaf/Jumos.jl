@@ -6,7 +6,7 @@ export create_velocities
 
 function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzman")
     # Allocate the velocity array
-    sim.frame.velocities = Array3D(Float32, size(sim.frame))
+    sim.frame.velocities = Array3D(Float64, size(sim.frame))
 
     function_name = "init_" * initializer * "_velocities"
     funct = eval(symbol(function_name))

@@ -42,7 +42,7 @@ type MDSimulation <: Simulation
     cell             :: UnitCell
     frame           :: Frame
     masses          :: Vector{Float64}
-    forces          :: Array3D{Float32}
+    forces          :: Array3D{Float64}
     # all other data to be shared
     data            :: Dict{Symbol, Any}
 end
@@ -60,7 +60,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     topology = Topology()
     cell = UnitCell()
     masses = Float64[]
-    forces = Array3D(Float32, 0)
+    forces = Array3D(Float64, 0)
     frame = Frame(topology)
     data = Dict(:frame => frame)
 
