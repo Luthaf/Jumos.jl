@@ -17,7 +17,7 @@ and the ``unit!`` function, normalizing its argument.
 .. _type-UnitCell:
 
 Simulation Cell
---------------
+---------------
 
 A simulation cell (``UnitCell`` type) is the virtual container in which all the
 particles of a simulation moves. There are three differents types of simulation
@@ -31,10 +31,10 @@ cells :
   3 angles.
 
 Creating simulation cell
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Automatic cell types
-"""""""""""""""""""
+""""""""""""""""""""
 
 These constructors try to guess the cell type according the following algorithm:
 if the cell angles are all :math:`90°`, then the cell is an ``OrthorombicCell``.
@@ -63,7 +63,7 @@ Else, it is a ``TriclinicCell``.
     previous constructors, *e.g.* if ``u == [30, 40, 30]``, ``UnitCell(u) == UnitCell(30, 40, 30)``.
 
 Manualy defined cell type
-""""""""""""""""""""""""
+"""""""""""""""""""""""""
 
 For all these constructors, the cell type is specified as the first argument. This
 allow for ``InfiniteCell`` and ``TriclinicCell`` with initial angles of :math:`90°`
@@ -83,7 +83,7 @@ to be constructed.
     excepted than the cell type is taken to be equal to ``celltype``.
 
 Indexing simulation cell
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can acces to the cell size and angles either directely, or by integer indexing.
 
@@ -154,5 +154,5 @@ The Frame type have the following constructors:
 Reding and writing frames from files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The main goal of the ``Trajectories``module is to read or write frames from or to
+The main goal of the ``Trajectories`` module is to read or write frames from or to
 files. See the :ref:`documentation <trajectories>` for more informations.

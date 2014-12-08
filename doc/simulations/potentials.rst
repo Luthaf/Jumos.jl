@@ -7,8 +7,8 @@ Existing potentials
 
 In molecular simulations, there is two main kind of potential : short-range
 potential and long-range potential. Short-range potential goes to zero faster
-than the :math:`1/r` function, and long-range potentials goes to zero at the
-same speed or slower than :math:`1/r`. Typical long-range potential is the
+than the :math:`1/r^3` function, and long-range potentials goes to zero at the
+same speed or slower than :math:`1/r^3`. Typical long-range potential is the
 Coulomb potential between charged paricles.
 
 For now, Jumos only implement computations on short-range pair potentials, using a
