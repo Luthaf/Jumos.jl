@@ -49,17 +49,18 @@ set_frame(sim, frame)
 # Setup null velocities
 create_velocities(sim, 0)
 
-add_interaction(sim, Harmonic(30, 2.0, -0.5), "He")
+add_interaction(sim, LennardJones(0.8, 2.0), "He")
 
 run!(sim, 1)
 
 @test sim.forces[1] .+ sim.forces[2] == [0.0, 0.0, 0.0]
-@test isapprox([sim.forces[1]...], [0.0, 0.0, 6.0e-4])
+fval = -0.6352381559296235e-4
+@test isapprox([sim.forces[1]...], [0.0, 0.0, fval])
 
 m = sim.masses[1]
 @test m == ATOMIC_MASSES["He"].val
 
-@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*6.0e-4/m])
+@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*fval/m])
 
 tmpname = tempname() * ".xyz"
 out_trajectory = TrajectoryOutput(tmpname, 1)
