@@ -2,12 +2,13 @@
                         Compute interesting values
 ===============================================================================#
 import Base: write
-export BaseOutput, TrajectoryOutput, CustomOutput
+export BaseOutput
+export TrajectoryOutput, CustomOutput
+
+# abstract BaseOutput -> Defined in MolecularDynamics.jl
 
 const EOL="\n"
 const TAB="\t"
-
-abstract BaseOutput
 
 type TrajectoryOutput <: BaseOutput
     writer::Writer

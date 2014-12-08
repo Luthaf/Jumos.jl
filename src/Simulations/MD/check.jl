@@ -1,8 +1,10 @@
 #===============================================================================
                     Checking the simulation consistency
 ===============================================================================#
-export BaseCheck, ParticleNumberIsConstant, GlobalVelocityIsNull, TotalForceIsNull
-abstract BaseCheck
+import Base: show, call
+export BaseCheck
+export ParticleNumberIsConstant, GlobalVelocityIsNull, TotalForceIsNull
+# abstract BaseCheck -> Defined in MolecularDynamics.jl
 
 type ParticleNumberIsConstant <: BaseCheck
 end

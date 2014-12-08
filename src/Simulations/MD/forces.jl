@@ -3,7 +3,8 @@
                 Pair list algorithm, Ewalds summation, ...
 ===============================================================================#
 export BaseForcesComputer, NaiveForces
-abstract BaseForcesComputer
+
+# abstract BaseForcesComputer -> Defined in MolecularDynamics.jl
 
 function force_array_to_internal!(a::Array3D)
     for i=1:3

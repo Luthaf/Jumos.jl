@@ -4,7 +4,7 @@
 import Base: call
 export BaseEnforce, BerendsenBarostat, BerendsenThermostat, WrapParticle
 
-abstract BaseEnforce
+# abstract BaseEnforce -> Defined in MolecularDynamics.jl
 
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.

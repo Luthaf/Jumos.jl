@@ -2,7 +2,7 @@
                     Time integration takes place here
 ===============================================================================#
 export BaseIntegrator, VelocityVerlet
-abstract BaseIntegrator
+# abstract BaseIntegrator -> Defined in MolecularDynamics.jl
 
 type VelocityVerlet <: BaseIntegrator
     timestep::Float64

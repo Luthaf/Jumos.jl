@@ -3,7 +3,10 @@
 ===============================================================================#
 import Base: call
 import Jumos.Constants: kB
-export BaseCompute, TemperatureCompute, PressureCompute, VolumeCompute
+export BaseCompute
+export TemperatureCompute, PressureCompute, VolumeCompute
+
+# abstract BaseCompute -> Defined in MolecularDynamics.jl
 
 @doc "
 Compute the temperature of a simulation frame using the relation

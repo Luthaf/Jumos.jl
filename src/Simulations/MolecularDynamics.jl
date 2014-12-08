@@ -5,18 +5,16 @@ import Base: show
 export Simulation, MDSimulation, run!
 
 abstract Simulation
+abstract BaseForcesComputer
+abstract BaseIntegrator
+abstract BaseEnforce
+abstract BaseCheck
+abstract BaseCompute
+abstract BaseOutput
 
 include("MD/potentials.jl")
 
 typealias Interactions Dict{(Integer, Integer), Potential}
-
-include("MD/forces.jl")
-include("MD/integrators.jl")
-
-include("MD/enforce.jl")
-include("MD/check.jl")
-abstract BaseCompute
-include("MD/output.jl")
 
 type SimulationConfigurationError <: Exception
     msg :: String
@@ -83,8 +81,15 @@ end
 # Convenient method.
 MDSimulation(timestep::Real) = MDSimulation(VelocityVerlet(timestep))
 
+
+include("MD/forces.jl")
+include("MD/integrators.jl")
+include("MD/enforce.jl")
+include("MD/check.jl")
 include("MD/compute.jl")
+include("MD/output.jl")
 include("MD/initial_velocities.jl")
+
 
 @doc "
 `run!(sim::MDSimulation, nsteps::Integer)`
