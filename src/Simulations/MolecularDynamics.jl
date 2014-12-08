@@ -51,7 +51,7 @@ function MDSimulation(integrator=VelocityVerlet(1.0))
     forces_computer = NaiveForces()
 
     enforces = BaseEnforce[WrapParticles()]
-    checks = BaseCheck[]
+    checks = BaseCheck[AllPositionsAreDefined(), ]
     computes = BaseCompute[]
     outputs = BaseOutput[]
 
@@ -198,7 +198,7 @@ constant, global velocity is zero, …
 " ->
 function check(sim::MDSimulation)
     for callback in sim.checks
-        callback(sim.frame)
+        callback(sim)
     end
 end
 
