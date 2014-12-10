@@ -9,8 +9,8 @@ export distance, distance_array, distance3d, minimal_image, minimal_image!
 
 Refine a vector using the minimal image convention
 " ->
-minimal_image(vect::AbstractVector, cell::UnitCell{InfiniteCell}) = vect
-minimal_image!(vect::AbstractVector, cell::UnitCell{InfiniteCell}) = vect
+minimal_image(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
+minimal_image!(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
 
 function minimal_image(vect, cell::UnitCell)
     tmp = copy(vect)
@@ -99,7 +99,7 @@ end
 Compute the distance between the same particle in two frames
 " ->
 function distance(ref::Frame, conf::Frame, i::Integer)
-    return distance(ref, ref, i, i)
+    return distance(ref, conf, i, i)
 end
 
 @doc "
@@ -127,7 +127,7 @@ end
 Compute the vector between the two particle in the same frame.
 " ->
 function distance3d(ref::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
-    return distance3d(ref, conf, i, i, work)
+    return distance3d(ref, ref, i, j, work)
 end
 
 @doc "
@@ -175,13 +175,13 @@ function distance_array(ref::Frame, conf::Frame, result = nothing)
             resize!(result, (cols, rows))
         end
     end
-    compute_distance_array!(result, ref, conf, rows, cols)
+    compute_distance_array!(result, ref, conf)
     return result
 end
 
 using Distances
 
-function compute_distance_array!(result, ref, conf, nrows, ncols)
+function compute_distance_array!(result, ref, conf)
     ref_tmp = copy(ref.positions.data)
     conf_tmp = copy(conf.positions.data)
     minimal_image!(ref_tmp, ref.cell)

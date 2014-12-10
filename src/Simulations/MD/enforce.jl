@@ -2,7 +2,7 @@
             Enforcing various values : temperature, pressure, …
 ===============================================================================#
 import Base: call
-export BaseEnforce, BerendsenBarostat, BerendsenThermostat, WrapParticle
+export BaseEnforce, BerendsenBarostat, BerendsenThermostat, WrapParticles
 
 # abstract BaseEnforce -> Defined in MolecularDynamics.jl
 

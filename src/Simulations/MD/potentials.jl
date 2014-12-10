@@ -47,7 +47,7 @@ end
 end
 
 # Todo: long range potentials
-@inline function call(pot::Potential{LongRangePotential}, r::Real)
+function call(::Potential{LongRangePotential}, ::Real)
     throw(NotImplementedError("Long range potential not implemented"))
 end
 
@@ -80,7 +80,7 @@ Null potential, for a system without interactions
 type NullPotential <: ShortRangePotential
 end
 
-@inline function call(pot::NullPotential, r::Float64)
+function call(::NullPotential, ::Float64)
     return 0.0
 end
 
@@ -98,7 +98,7 @@ type UserPotential <: ShortRangePotential
 end
 
 # Calculus allow automatic force computation using finite difference
-using Calculus: derivative
+using Calculus # derivative
 
 function UserPotential(potential::Function)
     force(x) = - derivative(potential)(x)

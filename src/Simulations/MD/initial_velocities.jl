@@ -1,7 +1,7 @@
 #===============================================================================
                             Initialize velocities
 ===============================================================================#
-using Jumos.Constants: kB
+using Jumos.Constants # kB
 export create_velocities
 
 function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzman")
@@ -9,7 +9,7 @@ function create_velocities(sim::MDSimulation, temp::Integer; initializer="boltzm
     sim.frame.velocities = Array3D(Float64, size(sim.frame))
 
     function_name = "init_" * initializer * "_velocities"
-    funct = eval(symbol(function_name))
+    funct = eval(Symbol(function_name))
 
     # Get masses for the simulation
     sim.masses = atomic_masses(sim.topology)
@@ -30,7 +30,7 @@ end
     return sqrt(kB*T/m)*randn(3)
 end
 
-function init_random_velocities(sim::MDSimulation, temp::Integer)
+function init_random_velocities(sim::MDSimulation, ::Integer)
     velocities = sim.frame.velocities
     @inbounds for i=1:size(sim.frame)
         velocities[i] = rand_vel()

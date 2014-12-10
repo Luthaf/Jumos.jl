@@ -3,7 +3,7 @@
 ===============================================================================#
 importall Base
 
-export Array3D, Vector3D
+export Array3D
 export cross, norm, unit!, substract!, resize
 
 immutable SubVector{T, A<:Array} <: AbstractArray{T, 1}
@@ -14,8 +14,8 @@ end
 
 getindex(s::SubVector, i::Int) = unsafe_load(s.ptr, i)
 setindex!(s::SubVector, v, i::Int) = unsafe_store!(s.ptr, v, i)
-size(s::SubVector) = (3,)
-length(s::SubVector) = 3
+size(::SubVector) = (3,)
+length(::SubVector) = 3
 copy(s::SubVector) = [s[1], s[2], s[3]]
 
 function view{T}(a::Array{T}, ::Colon, j::Int)
@@ -94,14 +94,14 @@ function show(io::IO, A::Array3D)
     return show(io, A.data)
 end
 
-eltype{T, N}(A::Array3D{T, N}) = T
-length{T, N}(A::Array3D{T, N}) = N
-ndims(A::Array3D) = 1
-size{T, N}(A::Array3D{T, N}) = (3, N)
+eltype{T, N}(::Array3D{T, N}) = T
+length{T, N}(::Array3D{T, N}) = N
+ndims(::Array3D) = 1
+size{T, N}(::Array3D{T, N}) = (3, N)
 copy(A::Array3D) = Array3D(copy(A.data))
 
 # Iterator interface
-start(A::Array3D) = 1
+start(::Array3D) = 1
 next(A::Array3D, state::Int) = (A[state], state+1)
 done(A::Array3D, state::Int) = length(A) < state
 

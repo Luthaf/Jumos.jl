@@ -105,12 +105,12 @@ function eachframe(t::Reader; start=1)
     return Task(_it)
 end
 
-function read_next_frame!{T<:AbstractReaderIO}(t::Reader{T}, f::Frame)
+function read_next_frame!{T<:AbstractReaderIO}(t::Reader{T}, ::Frame)
    throw(NotImplementedError("Method read_next_frame! not implemented for "*
                              "$(typeof(t.reader)) trajectory type"))
 end
 
-function read_frame!{T<:AbstractReaderIO}(t::Reader{T}, step::Integer, f::Frame)
+function read_frame!{T<:AbstractReaderIO}(t::Reader{T}, ::Integer, ::Frame)
     throw(NotImplementedError("Method read_frame! not implemented for "*
                               "$(typeof(t.reader)) trajectory type"))
 end

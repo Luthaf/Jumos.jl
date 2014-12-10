@@ -26,7 +26,7 @@ function update!(rdf::RDF, frame::Frame)
     distance_array(frame, distances)
 
     dists = Float64[]
-    sizehint(dists, 2*natoms)
+    sizehint!(dists, 2*natoms)
 
     @inbounds for i=1:natoms
         if frame.topology[i].name == rdf.atom_i

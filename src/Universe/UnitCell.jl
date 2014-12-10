@@ -86,7 +86,7 @@ end
 
 function UnitCell(u::Vector, v::Vector, celltype::Type{AbstractCellType})
     if length(u) == 3 && length(v) == 3
-        return UnitCell(u..., v...)
+        return UnitCell(u..., v..., celltype)
     else
         throw(InexactError())
     end
