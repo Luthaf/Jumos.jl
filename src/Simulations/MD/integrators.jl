@@ -19,15 +19,16 @@ function VelocityVerlet(timestep::Float64)
     return VelocityVerlet(timestep, accelerations)
 end
 
-function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64}, forces::Array3D)
+function call(integrator::VelocityVerlet, sim::MDSimulation)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
-    positions = frame.positions
-    velocities = frame.velocities
+    positions = sim.frame.positions
+    velocities = sim.frame.velocities
     accelerations = integrator.accelerations
+    masses = sim.masses
 
-    natoms = size(frame)
+    natoms = size(sim.frame)
 
     if length(accelerations) != natoms
         integrator.accelerations = resize(accelerations, natoms)
@@ -48,9 +49,11 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
         velocities[i] .+= 0.5.*accelerations[i].*dt
     end
 
+    get_forces!(sim)
+
     # Update accelerations at t + ∆t
     @inbounds for i=1:natoms
-        accelerations[i] = forces[i] ./ masses[i]
+        accelerations[i] = sim.forces[i] ./ masses[i]
     end
 
     # Update velocities at t + ∆t
@@ -73,12 +76,12 @@ function Verlet(timestep::Float64)
     return Verlet(timestep, prevpos)
 end
 
-function call(integrator::Verlet, frame::Frame, masses::Vector{Float64}, forces::Array3D)
+function call(integrator::Verlet, sim::MDSimulation)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
-    positions = frame.positions
-    velocities = frame.velocities
+    positions = sim.frame.positions
+    velocities = sim.frame.velocities
     prevpos = integrator.prevpos
 
     natoms = size(sim.frame)
@@ -98,6 +101,8 @@ function call(integrator::Verlet, frame::Frame, masses::Vector{Float64}, forces:
     @inbounds for i=1:natoms
         current[i] = positions[i]
     end
+
+    get_forces!(sim)
 
     # Update positions
     @inbounds for i=1:natoms

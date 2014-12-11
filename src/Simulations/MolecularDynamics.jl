@@ -103,7 +103,6 @@ function run!(sim::MDSimulation, nsteps::Integer)
     check_settings(sim)
 
     for i=1:nsteps
-        get_forces(sim)
         integrate(sim)
         enforce(sim)
         check(sim)
@@ -170,17 +169,14 @@ function check_masses(sim::MDSimulation)
 end
 
 @doc "
-Compute forces between atoms at a given step
-" ->
-function get_forces(sim::MDSimulation)
-    sim.forces = sim.forces_computer(sim.forces, sim.frame, sim.interactions)
-end
-
-@doc "
 Integrate the equations of motion
 " ->
 function integrate(sim::MDSimulation)
-    sim.integrator(sim.frame, sim.masses, sim.forces)
+    sim.integrator(sim)
+end
+
+function get_forces!(sim::MDSimulation)
+    sim.forces = sim.forces_computer(sim.forces, sim.frame, sim.interactions)
 end
 
 @doc "
