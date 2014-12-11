@@ -14,10 +14,10 @@ const Angstrom = NonSIUnit{typeof(Meter),:Å}()
 convert(::Type{SIQuantity},::typeof(Angstrom)) = 0.1Nano*Meter
 
 const AtomicMass = NonSIUnit{typeof(KiloGram),:amu}()
-convert(::Type{SIQuantity},::typeof(AtomicMass)) = 1.660538921*10^(-27)KiloGram
+convert(::Type{SIQuantity},::typeof(AtomicMass)) = 1.660538921e-27KiloGram
 
 const Bar = NonSIUnit{typeof(Pascal),:bar}()
-convert(::Type{SIQuantity},::typeof(Bar)) = 10^(5)Pascal
+convert(::Type{SIQuantity},::typeof(Bar)) = 1e5Pascal
 
 const Atmosphere = NonSIUnit{typeof(Pascal),:atm}()
 convert(::Type{SIQuantity},::typeof(Bar)) = 101325Pascal
@@ -67,7 +67,7 @@ const INTERNAL_UNITS = Dict(
     typeof(Meter/Second) => Angstrom/(Femto*Second),
     typeof(KiloGram) => AtomicMass,
     # Using non typed mol constant to allow for conversions
-    typeof(Joule) => Kilo*Joule/mol,
+    typeof(Joule) => Kilo*Joule/NA,
     typeof(KiloGram*Meter/Second^2) => kcal/Angstrom,
     typeof(Kelvin) => Kelvin,
 )

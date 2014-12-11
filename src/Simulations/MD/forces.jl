@@ -6,6 +6,7 @@ export BaseForcesComputer, NaiveForces
 
 # abstract BaseForcesComputer -> Defined in MolecularDynamics.jl
 
+# TODO: More thought about this
 function force_array_to_internal!(a::Array3D)
     for i=1:3
         for j=1:length(a)
@@ -25,7 +26,7 @@ end
 function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
 
     # Temporary vector
-    r = Array(Float32, 3)
+    r = Array(Float64, 3)
     natoms = size(frame)
     dist = 0.0
 
@@ -35,7 +36,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
     end
 
     @inbounds for i=1:natoms
-        forces[i] = zeros(Float32, 3)
+        forces[i] = zeros(Float64, 3)
     end
 
     @inbounds for i=1:natoms, j=(i+1):natoms

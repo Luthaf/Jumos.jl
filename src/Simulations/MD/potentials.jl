@@ -1,6 +1,6 @@
 import Base: call, show
 export PotentialError, BasePotential, ShortRangePotential, Potential
-export UserPotential, LennardJones, Harmonic
+export UserPotential, LennardJones, Harmonic, NullPotential
 export force
 
 type PotentialError <: Exception

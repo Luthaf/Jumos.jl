@@ -34,7 +34,7 @@ function call(integrator::VelocityVerlet, frame::Frame, masses::Vector{Float64},
         accelerations = integrator.accelerations
         # re-initialize the accelerations
         for i=1:natoms
-            accelerations[i] = zeros(Float32, 3)
+            accelerations[i] = zeros(Float64, 3)
         end
     end
 
@@ -88,7 +88,7 @@ function call(integrator::Verlet, frame::Frame, masses::Vector{Float64}, forces:
         prevpos = integrator.prevpos
         # re-initialize the previous positions
         for i=1:natoms
-            prevpos[i] = zeros(Float32, 3)
+            prevpos[i] = zeros(Float64, 3)
         end
     end
 

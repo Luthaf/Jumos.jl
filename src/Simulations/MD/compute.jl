@@ -2,7 +2,8 @@
                         Compute interesting values
 ===============================================================================#
 import Base: call
-import Jumos.Constants: kB
+using Jumos.Constants #kB
+
 export BaseCompute
 export TemperatureCompute, PressureCompute, VolumeCompute
 
@@ -10,7 +11,7 @@ export TemperatureCompute, PressureCompute, VolumeCompute
 
 @doc "
 Compute the temperature of a simulation frame using the relation
-	T = 1/kB * 2K/(3N - 6) with K = ∑ 1/2 m_i v_i^2
+	T = 1/kB * 2K/(3N) with K = ∑ 1/2 m_i \vec v_i^2
 " ->
 type TemperatureCompute <: BaseCompute
 end
@@ -22,7 +23,7 @@ function call(::TemperatureCompute, sim::MDSimulation)
 	@inbounds for i=1:natoms
 		K += 0.5 * sim.masses[i] * dot(sim.frame.velocities[i], sim.frame.velocities[i])
 	end
-	T = 1/kB * 2*K/(3*natoms - 6)
+	T = 1/kB * 2*K/(3*natoms)
 	sim.data[:temperature] = T
 	return T
 end
