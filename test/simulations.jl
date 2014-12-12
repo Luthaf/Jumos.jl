@@ -33,39 +33,46 @@ short = Potential(lj, cutoff=8.0)
 # Test the simulations
 sim = Simulation("MD", 1.0)
 
-set_cell(sim, (8.0,))
-
-top = Topology(2)
-top[1] = Atom("He")
-top[2] = Atom("He")
+top = Topology(4)
+for i=1:4
+    top[i] = Atom("He")
+end
 
 frame = Frame(top)
-frame.positions[1] = [2., 2., 2.]
-frame.positions[2] = [2., 2., 4.2]
-frame.cell = sim.cell
+for i=1:4
+    frame.positions[i] = [2.*i, 2.*(i%2), 2.*(i%3)]
+end
 
+cell = UnitCell(8.0)
+frame.cell = cell
 set_frame(sim, frame)
-
-# Setup null velocities
-create_velocities(sim, 0)
 
 add_interaction(sim, LennardJones(0.8, 2.0), "He")
 
-run!(sim, 1)
+Simulations.get_forces!(sim)
+tot_force = sim.forces[1] .+ sim.forces[2] .+ sim.forces[3] .+ sim.forces[4]
+@test isapprox(tot_force, [0.0, 0.0, 0.0])
 
-@test sim.forces[1] .+ sim.forces[2] == [0.0, 0.0, 0.0]
-fval = -0.6352381559296235e-4
-@test isapprox([sim.forces[1]...], [0.0, 0.0, fval])
-
-m = sim.masses[1]
-@test m == ATOMIC_MASSES["He"].val
-
-@test isapprox([sim.frame.velocities[1]...], [0.0, 0.0, 0.5*fval/m])
+create_velocities(sim, 300)
 
 tmpname = tempname() * ".xyz"
 out_trajectory = TrajectoryOutput(tmpname, 1)
 add_output(sim, out_trajectory)
 
+energy = EnergyCompute()
+T = TemperatureCompute()
+
+# This is a pretty large interval, but there are few atoms here
+@test 10 < T(sim) < 1000
+
+Ekin, Epot, Etot = energy(sim)
+
+@test Ekin + Epot == Etot
+
 run!(sim, 500)
+
+Ekin_f, Epot_f, Etot_f = energy(sim)
+
+@test isapprox(Etot_f, Etot, rtol=1e-3)
 
 rm(tmpname)
