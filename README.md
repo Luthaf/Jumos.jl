@@ -1,6 +1,7 @@
 # Jumos
 
 ![Build Status](https://travis-ci.org/Luthaf/Jumos.jl.svg?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/Luthaf/Jumos.jl.svg)](https://coveralls.io/r/Luthaf/Jumos.jl)
 
 Julia Molecular Simulation package. Not yet registered.
 

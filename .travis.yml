@@ -1,4 +1,6 @@
 language: julia
 julia:
     - nightly
-
+script: ./travis-test.sh
+after_success:
+- julia -e 'cd(Pkg.dir("Jumos")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
