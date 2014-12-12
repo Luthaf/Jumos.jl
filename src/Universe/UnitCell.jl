@@ -44,7 +44,7 @@ end
 # Automatic cell type
 
 function UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
-    if a == 90.0 && b == 90.0 && c == 90.0
+    if a == pi/2 && b == pi/2 && c == pi/2
         cell_type = OrthorombicCell
     else
         cell_type = TriclinicCell
@@ -52,7 +52,7 @@ function UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
     return UnitCell{cell_type}(Lx, Ly, Lz, a, b, c)
 end
 
-UnitCell(Lx::Real, Ly::Real, Lz::Real) = UnitCell(Lx, Ly, Lz, 90., 90., 90.)
+UnitCell(Lx::Real, Ly::Real, Lz::Real) = UnitCell(Lx, Ly, Lz, pi/2, pi/2, pi/2)
 
 function UnitCell(u::Vector)
     if length(u) == 3 || length(u) == 6
@@ -79,7 +79,7 @@ UnitCell(b::UnitCell) = b
 # Manual cell type
 UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, celltype::T) = UnitCell{celltype}(Lx, Ly, Lz, a, b, c)
 
-UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, celltype::T) = UnitCell(Lx, Ly, Lz, 90., 90., 90., celltype)
+UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, celltype::T) = UnitCell(Lx, Ly, Lz, pi/2, pi/2, pi/2, celltype)
 
 function UnitCell{T<:Type{AbstractCellType}}(u::Vector, celltype::T)
     if length(u) == 3 || length(u) == 6

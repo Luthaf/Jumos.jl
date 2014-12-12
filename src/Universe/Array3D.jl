@@ -66,7 +66,7 @@ function add!{T}(a::SubVector{T}, b::SubVector{T}, res::Vector)
     return res
 end
 
-(==){T}(u::SubVector{T}, v::SubVector{T}) = u.x == v.x && u.y == v.y && u.z == v.z
+(==){T}(u::SubVector{T}, v::SubVector{T}) = u[1] == v[1] && u[2] == v[2] && u[3] == v[3]
 
 
 @doc """
