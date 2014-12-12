@@ -73,10 +73,11 @@ UnitCell(b::UnitCell) = b
 
 #==============================================================================#
 # Manual cell type
-UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, celltype::Type{AbstractCellType}) = UnitCell{celltype}(Lx, Ly, Lz, a, b, c)
-UnitCell(Lx::Real, Ly::Real, Lz::Real, celltype::Type{AbstractCellType}) = UnitCell(Lx, Ly, Lz, 90., 90., 90., celltype)
+UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, celltype::T) = UnitCell{celltype}(Lx, Ly, Lz, a, b, c)
 
-function UnitCell(u::Vector, celltype::Type{AbstractCellType})
+UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, celltype::T) = UnitCell(Lx, Ly, Lz, 90., 90., 90., celltype)
+
+function UnitCell{T<:Type{AbstractCellType}}(u::Vector, celltype::T)
     if length(u) == 3 || length(u) == 6
         return UnitCell(u..., celltype)
     else
@@ -84,7 +85,7 @@ function UnitCell(u::Vector, celltype::Type{AbstractCellType})
     end
 end
 
-function UnitCell(u::Vector, v::Vector, celltype::Type{AbstractCellType})
+function UnitCell{T<:Type{AbstractCellType}}(u::Vector, v::Vector, celltype::T)
     if length(u) == 3 && length(v) == 3
         return UnitCell(u..., v..., celltype)
     else
@@ -92,5 +93,5 @@ function UnitCell(u::Vector, v::Vector, celltype::Type{AbstractCellType})
     end
 end
 
-UnitCell(L::Real, celltype::Type{AbstractCellType}) = UnitCell(L, L, L, celltype)
-UnitCell(celltype::Type{AbstractCellType}) = UnitCell(0.0, celltype)
+UnitCell{T<:Type{AbstractCellType}}(L::Real, celltype::T) = UnitCell(L, L, L, celltype)
+UnitCell{T<:Type{AbstractCellType}}(celltype::T) = UnitCell(0.0, celltype)
