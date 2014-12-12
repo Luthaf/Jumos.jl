@@ -18,7 +18,7 @@ end
 
 function call(::TemperatureCompute, sim::MDSimulation)
 	T = 0.0
-    K = kinetic_energy(sim)
+    K = kinetic_energy(sim)*1e-4
     natoms = size(sim.frame)
 	T = 1/kB * 2*K/(3*natoms)
 	sim.data[:temperature] = T
@@ -50,7 +50,7 @@ function kinetic_energy(sim::MDSimulation)
 	@inbounds for i=1:natoms
 		K += 0.5 * sim.masses[i] * dot(sim.frame.velocities[i], sim.frame.velocities[i])
 	end
-    return K
+    return K*1e4  # TODO: better handling of energy conversions
 end
 
 function potential_energy(sim::MDSimulation)

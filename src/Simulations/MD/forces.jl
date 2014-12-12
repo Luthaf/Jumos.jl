@@ -39,7 +39,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         forces[i] = zeros(Float64, 3)
     end
 
-    @inbounds for i=1:natoms, j=(i+1):natoms
+    @inbounds for i=1:(natoms-1), j=(i+1):natoms
         r = distance3d(frame, i, j)
         dist = norm(r)
         unit!(r)
