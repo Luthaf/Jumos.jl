@@ -37,7 +37,7 @@ type MDSimulation <: Simulation
     outputs         :: Vector{BaseOutput}
     # Data
     topology        :: Topology
-    cell             :: UnitCell
+    cell            :: UnitCell
     frame           :: Frame
     masses          :: Vector{Float64}
     forces          :: Array3D{Float64}

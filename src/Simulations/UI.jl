@@ -76,8 +76,10 @@ Set the simulation frame to `frame`, and update internal values
 " ->
 function set_frame(sim::MDSimulation, frame::Frame)
     sim.frame = frame
+    sim.cell = frame.cell
     sim.data[:frame] = sim.frame
     sim.topology = sim.frame.topology
     natoms = size(sim.frame)
     sim.frame.velocities = Array3D(Float64, natoms)
+    return nothing
 end
