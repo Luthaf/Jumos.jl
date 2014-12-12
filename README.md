@@ -1,5 +1,7 @@
 # Jumos
 
+![Build Status](https://travis-ci.org/Luthaf/Jumos.jl.svg?branch=master)
+
 Julia Molecular Simulation package. Not yet registered.
 
 ##  Analysis module
