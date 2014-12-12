@@ -17,10 +17,14 @@ function minimal_image(vect, cell::UnitCell)
     return minimal_image!(tmp, cell)
 end
 
+function nint(a::Real)
+    a >= 0.0 ? floor(a+0.5) : ceil(a-0.5)
+end
+
 function minimal_image!(vect::AbstractVector, cell::UnitCell{OrthorombicCell})
-    vect[1] -= floor(vect[1]/cell.x)*cell.x
-    vect[2] -= floor(vect[2]/cell.y)*cell.y
-    vect[3] -= floor(vect[3]/cell.z)*cell.z
+    vect[1] = vect[1] - nint(vect[1]/cell.x)*cell.x
+    vect[2] = vect[2] - nint(vect[2]/cell.y)*cell.y
+    vect[3] = vect[3] - nint(vect[3]/cell.z)*cell.z
     return vect
 end
 
