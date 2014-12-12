@@ -1,7 +1,7 @@
 #===============================================================================
                             Simulation cell type
 ===============================================================================#
-
+import Base: ==
 export UnitCell, InfiniteCell, OrthorombicCell, TriclinicCell
 
 abstract AbstractCellType
@@ -33,6 +33,10 @@ function getindex(b::UnitCell, i::Int)
         return b.gamma
     end
     throw(BoundsError())
+end
+
+function ==(a::UnitCell, b::UnitCell)
+    return a.x == b.x && a.y == b.y && a.z == b.z && a.alpha == b.alpha && a.beta == b.beta && a.gamma == b.gamma
 end
 
 
