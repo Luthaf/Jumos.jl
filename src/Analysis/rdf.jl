@@ -50,7 +50,7 @@ function initialize!(rdf::RDF, frame::Frame)
     @assert frame.cell != UnitCell(0.0) "The simulation cell can not be null for RDF computations"
     rdf.cell = frame.cell
     rdf.values.min = 0.0
-    rdf.values.max = 0.5*min(rdf.cell.length[1], rdf.cell.length[2], rdf.cell.length[3])
+    rdf.values.max = 0.5*min(rdf.cell.x, rdf.cell.y, rdf.cell.z)
 end
 
 function write(rdf::RDF, trajname::String; outname="")
