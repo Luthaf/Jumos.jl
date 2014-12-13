@@ -83,15 +83,7 @@ thermostat or barostat to use, `etc.`
 Running the simulation
 ----------------------
 
-The order of the steps in a simulation run can not be changed.
-
-Get forces
-^^^^^^^^^^
-
-The first step, and the more time consuming one, is to get the forces octing on
-each one of the atoms. Various way to do this computation exist, depening on the
-type of potentials (short range or long range), and some ticks can speed up the
-computation (pairs list, short range potential truncation).
+The order of the steps in a simulation run is always the same, and can not be changed.
 
 Integrate
 ^^^^^^^^^
@@ -100,6 +92,17 @@ Using the forces, one can now integrate the Newton's equations of motions.
 The greatest variety of algorithm exists here: from simple volecity-Verlet to
 complex multi-timestep RESPA algorithm. At the end, postions and velocities are
 updated to the new step.
+
+Get forces
+^^^^^^^^^^
+
+During the integration steps, forces acting on the atoms will be needed. This
+forces computing step is the more time consuming one. Various way to do this
+computation exists, depening on the type of potentials (short range or long range),
+and some ticks can speed up the computation (pairs list, short range potential truncation).
+
+The algorithm used for integration have the responsability to call this step when
+and as many times as needed.
 
 Enforce
 ^^^^^^^

@@ -19,8 +19,8 @@ Contents:
     steps
     usage
     potentials
-    forces
     integrator
+    forces
     enforce
     compute
     output
