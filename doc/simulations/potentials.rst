@@ -2,6 +2,8 @@
 Potentials
 **********
 
+.. _potentials:
+
 Existing potentials
 ===================
 

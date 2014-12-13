@@ -35,8 +35,3 @@ and an :ref:`energy <energy-output>` output.
 And finally the simulation is started for 500 steps. Any parameter can easily
 be changed during the simulation: here, in line 27, we change the output frequency
 of the trajectory output, and then run the simulation for another 5000 steps.
-
-Overwrite the algorithms
-------------------------
-
-TODO: Default values for the algorithms

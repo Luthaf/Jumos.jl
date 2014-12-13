@@ -9,11 +9,16 @@ Existing outputs
 Trajectory output
 ^^^^^^^^^^^^^^^^^
 
+TODO
+
 
 .. _energy-output:
 Energy output
 ^^^^^^^^^^^^^
 
+TODO
 
 Defining a new output
 ------------------------
+
+TODO

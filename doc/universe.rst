@@ -112,6 +112,7 @@ minimal image convention is used: the distance between two particles is the
 minimal distance between all the images of theses particles. This is explicited
 in the :ref:`distances` part of this documentation.
 
+.. _type-Frame:
 
 Frame
 -----
