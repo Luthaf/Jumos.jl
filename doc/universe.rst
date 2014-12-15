@@ -9,10 +9,12 @@ Array3D
 
 3-dimensionals vectors are very commons in molecular simulations. The ``Array3D``
 type implement arrays of this kind of vectors, implementing all the usual
-operations between it's components. If ``A`` is an ``Array3D`` and ``i`` an integer,
-``A[i]`` is a 3-dimensional vector implementing ``+, -`` between vector,
-``.+, .-, .*, */`` between vectors and scalars; ``dot`` and ``cross`` products,
-and the ``unit!`` function, normalizing its argument.
+operations between it's components.
+
+If ``A`` is an ``Array3D`` and ``i`` an integer, ``A[i]`` is a 3-dimensional
+vector implementing ``+, -`` between vector, ``.+, .-, .*, */`` between vectors
+and scalars; ``dot`` and ``cross`` products, and the ``unit!`` function,
+normalizing its argument.
 
 .. _type-UnitCell:
 
@@ -42,7 +44,7 @@ Else, it is a ``TriclinicCell``.
 
 .. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
 
-    Creates a cell of side lenghts ``Lx, Ly, Lz``, and angles ``a, b, c``.
+    Creates a cell of side lenghts ``Lx, Ly, Lz``, and angles ``alpha, beta, gamma``.
 
 .. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real)
 
@@ -95,7 +97,7 @@ angles.
 
 If you make a lot of call to this kind of indexing, direct field access should be
 more efficient. The internal fields of a cell are : the three lenghts ``x, y, z``,
-and the three angles ``a, b, c``.
+and the three angles ``alpha, beta, gamma``.
 
 Boundary conditions and cells
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -156,4 +158,4 @@ Reding and writing frames from files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The main goal of the ``Trajectories`` module is to read or write frames from or to
-files. See the :ref:`documentation <trajectories>` for more informations.
+files. See this module :ref:`documentation <trajectories>` for more informations.

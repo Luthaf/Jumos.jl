@@ -4,7 +4,8 @@ Internal units
 ==============
 
 *Jumos* uses a set of internal units, converting back and forth to these units
-when needed. Conversion from SI units is always supported.
+when needed. Conversion from SI units is always supported. Parenthesis indicate
+planned conversion not yet implemented.
 
 +---------------+-------------------------------------------------+-------------------------+
 |    Quantity   | Internal unit                                   | Supported conversions   |
@@ -19,13 +20,13 @@ when needed. Conversion from SI units is always supported.
 +---------------+-------------------------------------------------+-------------------------+
 | Temperature   | Kelvin (:math:`K`)                              |                         |
 +---------------+-------------------------------------------------+-------------------------+
-| Energy        | Kilo-Joule/Mole (:math:`kJ/mol`)                | :math:`eV`,             |
-|               |                                                 | :math:`Ry`              |
-|               |                                                 | :math:`kcal/mol`        |
+| Energy        | Kilo-Joule/Mole (:math:`kJ/mol`)                | (:math:`eV`),           |
+|               |                                                 | (:math:`Ry`),           |
+|               |                                                 | (:math:`kcal/mol`)      |
 +---------------+-------------------------------------------------+-------------------------+
 | Force         | Kilo-Joule/(Mole-Ångtröm) :math:`kJ/(mol A)`    |                         |
 +---------------+-------------------------------------------------+-------------------------+
-| Pressure      | :math:`bar`                                     |  :math:`atm`            |
+| Pressure      | :math:`bar`                                     |  (:math:`atm`)          |
 +---------------+-------------------------------------------------+-------------------------+
 | Charge        | Multiples of :math:`e = 1.602176487\ 10^{-19}C` |                         |
 +---------------+-------------------------------------------------+-------------------------+
