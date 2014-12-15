@@ -122,6 +122,7 @@ set by the user.
 function check_settings(sim::MDSimulation)
     check_interactions(sim)
     check_masses(sim)
+    setup_outputs(sim)
 end
 
 function check_interactions(sim::MDSimulation)
@@ -165,6 +166,12 @@ function check_masses(sim::MDSimulation)
         throw(SimulationConfigurationError(
                 "Missing masses for the following atomic types: $missing"
             ))
+    end
+end
+
+function setup_outputs(sim::MDSimulation)
+    for output in sim.outputs
+        setup(output, sim)
     end
 end
 
@@ -213,8 +220,14 @@ end
 " ->
 function output(sim::MDSimulation)
     context = sim.data
+    context[:step] = sim.frame.step
     for out in sim.outputs
-        write(out, context)
+        if out.current == out.frequency
+            write(out, context)
+            out.current = 0
+        else
+            out.current += 1
+        end
     end
 end
 
