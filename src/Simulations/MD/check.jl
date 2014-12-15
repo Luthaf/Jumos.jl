@@ -42,11 +42,37 @@ function call(::AllPositionsAreDefined, sim::MDSimulation)
 end
 
 
-type ParticleNumberIsConstant <: BaseCheck
-end
-
+@doc "
+Check if the overall velocity is null, with a 1e-5 tolerance.
+" ->
 type GlobalVelocityIsNull <: BaseCheck
 end
 
+function call(::GlobalVelocityIsNull, sim::MDSimulation)
+    const natoms = size(sim.frame)
+    V = 0.0
+    for i=1:natoms, j=1:3
+        V += sim.frame.velocities[j, i]
+    end
+    isapprox(V, 0.0, atol=1e-5) || throw(CheckError(
+        "The global velocity is not null."
+    ))
+end
+
+
+@doc "
+Check if the sum of the forces is effectively null, with a 1e-5 tolerance.
+" ->
 type TotalForceIsNull <: BaseCheck
+end
+
+function call(::TotalForceIsNull, sim::MDSimulation)
+    const natoms = size(sim.frame)
+    F = 0.0
+    for i=1:natoms, j=1:3
+        F += sim.forces[j, i]
+    end
+    isapprox(F, 0.0, atol=1e-5) || throw(CheckError(
+        "The global force is not null."
+    ))
 end
