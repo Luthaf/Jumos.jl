@@ -3,6 +3,7 @@
 ===============================================================================#
 import Base: ==
 export UnitCell, InfiniteCell, OrthorombicCell, TriclinicCell
+export volume
 
 abstract AbstractCellType
 immutable InfiniteCell <: AbstractCellType end
@@ -99,3 +100,22 @@ end
 
 UnitCell{T<:Type{AbstractCellType}}(L::Real, celltype::T) = UnitCell(L, L, L, celltype)
 UnitCell{T<:Type{AbstractCellType}}(celltype::T) = UnitCell(0.0, celltype)
+
+#==============================================================================#
+function volume(::UnitCell)
+    return 0.0
+end
+
+function volume(cell::UnitCell{OrthorombicCell})
+    return cell.x * cell.y * cell.z
+end
+
+function volume(cell::UnitCell{TriclinicCell})
+    α = cell.alpha
+    β = cell.beta
+    γ = cell.gamma
+
+    Vol = cell.x * sin(γ) * cell.y
+    tmp = sqrt(1 - cos(β)^2 - ((cos(α) - cos(β)*cos(γ))/sin(α))^2)
+    return Vol * tmp * cell.z
+end

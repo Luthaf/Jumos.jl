@@ -53,3 +53,9 @@ end
 # check mutating version
 minimal_image!(frame.positions[4], orthorombic)
 @test isapprox([frame.positions[4]...], [-1, 2.0, -5.0])
+
+@test volume(orthorombic) == 10.^3
+@test volume(orthorombic) == volume(triclinic2)
+@test volume(infitite) == 0.
+# TODO: compute this by hand
+# @test volume(triclinic1) ==
