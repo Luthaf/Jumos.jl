@@ -50,23 +50,23 @@ module Jumos
 
 
     # This module offer functions to compute distances between atoms
-    @reexport module Distances
+    @reexport module PBC
         using Jumos: Universe, Trajectories, Units
 
-        include("Distances/Distances.jl")
+        include("PBC/Distances.jl")
     end
 
 
     # This module provide utilities for analysing trajectories, either
     # while runnning or using trajectories files
     @reexport module Analysis
-        using Jumos: Trajectories, Distances, Atoms, Universe, Units
+        using Jumos: Trajectories, PBC, Atoms, Universe, Units
 
         include("Analysis/Histograms.jl")
     end
 
     @reexport module Simulations
-        using Jumos: Trajectories, Distances, Universe, Atoms, Units
+        using Jumos: Trajectories, PBC, Universe, Atoms, Units
 
         include("Simulations/MolecularDynamics.jl")
     end

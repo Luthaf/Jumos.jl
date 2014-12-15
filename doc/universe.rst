@@ -4,6 +4,8 @@ Universe
 The Universe module defines some basic types for holding informations about a
 simulation.
 
+.. _type-Array3D:
+
 Array3D
 -------
 

@@ -91,10 +91,10 @@ end
 #
 # Compute the distance between to particles, using the minimal image conventions.
 #
-# i and j are particle index, the computed distance is ref[i] - conf[j]
+# i and j are particle index, the computed distance is ref[j] - conf[i]
 # " ->
-function distance(ref::Frame, conf::Frame, i::Integer, j::Integer)
-    return norm(minimal_image!(ref.positions[i] - conf.positions[j], ref.cell))
+function distance(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
+    return norm(minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.cell))
 end
 
 @doc "
@@ -119,10 +119,10 @@ end
 # `distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)`
 
 # Compute the vector between two particles in two frames.
-# i and j are particle index, the computed distance is ref[i] - conf[j]
+# i and j are particle index, the computed distance is ref[j] - conf[i]
 # " ->
-function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer)
-    return minimal_image!(ref.positions[i], conf.positions[j]), ref.cell)
+function distance3d(ref::Frame, conf::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
+    return minimal_image!(substract!(ref.positions[j], conf.positions[i], work), ref.cell)
 end
 
 @doc "
@@ -130,7 +130,7 @@ end
 
 Compute the vector between the two particle in the same frame.
 " ->
-function distance3d(ref::Frame, i::Integer, j::Integer)
+function distance3d(ref::Frame, i::Integer, j::Integer, work=[0., 0., 0.])
     return distance3d(ref, ref, i, j, work)
 end
 
@@ -139,7 +139,7 @@ end
 
 Compute the vector between the same particle in the two frames.
 " ->
-function distance3d(ref::Frame, conf::Frame, i::Integer)
+function distance3d(ref::Frame, conf::Frame, i::Integer, work=[0., 0., 0.])
     return distance3d(ref, conf, i, i, work)
 end
 
