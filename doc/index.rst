@@ -29,7 +29,7 @@ You can also explore the packages with the links below.
     distances
     atoms
     simulations/index
-    trajectories/index
+    trajectories
     analysis/index
 
 Installation
