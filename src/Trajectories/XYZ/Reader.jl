@@ -1,11 +1,17 @@
-#===============================================================================
-         Implementation of the XYZ trajectories Reader
-
-    XYZ format is a text-based format, with atomic informations arranged as:
-            <name> <x> <y> <z> [<vx> <vy> <vz>]
-    The two first lines of each frame contains a comment header, and the number
-    of atoms.
-===============================================================================#
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#       Implementation of the XYZ trajectories Reader
+#
+# XYZ format is a text-based format, with atomic informations arranged as:
+#    <name> <x> <y> <z> [<vx> <vy> <vz>]
+# The two first lines of each frame contains a comment header, and the number
+# of atoms.
+# ============================================================================ #
 
 type XYZReader <: AbstractReaderIO
     file::IOStream

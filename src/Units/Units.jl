@@ -1,9 +1,18 @@
-#===============================================================================
-                            Chemistry specific units
-===============================================================================#
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#                           Chemistry specific units
+# ============================================================================ #
+
+
 import Base: convert, show
 import SIUnits: SIUnit, NonSIUnit, SIQuantity, NonSIQuantity, unit
-#==============================================================================#
+
+# ============================================================================ #
 # Non SI units
 export Calorie, Angstrom, Ångström, AtomicMass, Bar, Atmosphere
 
@@ -25,7 +34,7 @@ convert(::Type{SIQuantity},::typeof(Bar)) = 101325Pascal
 # UTF-8 version
 const Ångström = Angstrom
 
-#==============================================================================#
+# ============================================================================ #
 # Small names
 export kcal, AA, Å, pm, amu, bar, atm
 
@@ -41,13 +50,13 @@ const NA = 6.02214129e23
 const mol = 1/NA
 
 
-#==============================================================================#
+# ============================================================================ #
 # Conversions from NonSIUnit
 /(x::NonSIUnit,y::NonSIQuantity) = convert(SIQuantity, x)/convert(SIQuantity, y)
 /(x::NonSIQuantity,y::NonSIUnit) = convert(SIQuantity, x)/convert(SIQuantity, y)
 /(x::SIQuantity,y::NonSIQuantity) = x/convert(SIQuantity, y)
 
-#==============================================================================#
+# ============================================================================ #
 # Utility functions
 
 export internal, with_unit

@@ -1,10 +1,17 @@
-#===============================================================================
-         Implementation of the NetCDF trajectories Reader
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#               Implementation of the NetCDF trajectories Reader
+#
+# NetCDF-based format, with .nc extention. The AMBER convention is used.
+# See http://www.unidata.ucar.edu/software/netcdf/ for NetCDF description
+# See http://ambermd.org/netcdf/nctraj.xhtml for the convention.
+# ============================================================================ #
 
-    NetCDF-based format, with .nc extention. The AMBER convention is used.
-        See http://www.unidata.ucar.edu/software/netcdf/ for NetCDF description
-        See http://ambermd.org/netcdf/nctraj.xhtml for the convention.
-===============================================================================#
 using NetCDF
 
 type NCReader <: AbstractReaderIO

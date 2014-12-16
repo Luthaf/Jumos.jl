@@ -1,6 +1,8 @@
-#===============================================================================
-  Read a file produced by the VMD topotools plugins and extract the topology.
-===============================================================================#
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 const N_ATOMS = r"([0-9]*)\s*atoms"
 const N_BONDS = r"([0-9]*)\s*bonds"
@@ -10,6 +12,9 @@ const N_IMPROPERS = r"([0-9]*)\s*impropers"
 const N_TYPES = r"([0-9]*)\s*atom types"
 const NAMES = r"Pair Coeffs\n#\n(.*)\n\n# Bond Coeffs"s
 
+@doc "
+Read a file produced by the VMD topotools plugins and extract the topology.
+" ->
 function read_lmp_topology(filename::String)
     topology_file = open(filename)
 

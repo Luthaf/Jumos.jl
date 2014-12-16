@@ -1,10 +1,20 @@
-#===============================================================================
-                    The Frame type holds a frame,
-            i.e. all the data from one step of a simulation.
-===============================================================================#
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#                              Frame type
+# ============================================================================ #
+
 import Base: size
 export Frame, set_frame_size!
 
+@doc "
+The Frame type holds a frame,
+i.e. all the data from one step of a simulation.
+" ->
 type Frame
     step::Integer
     cell::UnitCell

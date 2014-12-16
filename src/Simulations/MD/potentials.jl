@@ -1,3 +1,13 @@
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#                    Potentials: energy and forces primitives
+# ============================================================================ #
+
 import Base: call, show
 export PotentialError, BasePotential, ShortRangePotential, Potential
 export UserPotential, LennardJones, Harmonic, NullPotential

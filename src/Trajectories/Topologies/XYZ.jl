@@ -1,7 +1,12 @@
-#===============================================================================
-        Read the firt frame of an XYZ file and extract the atomic names.
-===============================================================================#
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+@doc "
+Read the first frame of an XYZ file and extract the atomic names.
+" ->
 function read_xyz_topology(filename::String)
     fd = open(filename)
 
