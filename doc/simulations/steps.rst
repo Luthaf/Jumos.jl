@@ -6,14 +6,14 @@ Usual simulation steps
 .. note::
     This section describe generalities, and all the capacities presented here may
     not be implemented in `Jumos`. However, it describe exactly the steps invloved
-    in preparing and running a simulation with `Jumos`, so it is worth reading it.
+    in preparing and running a simulation with `Jumos`, so it is worth reading.
 
-In every molecular dynamics simulation, the main steps are roughly the sames.
+In every molecular dynamics simulation, the main steps are roughly the same.
 One shall start by setting the simulation : positions of the particles,
 velocities (either from a file or from a random gaussian distribution), timestep,
-atomic types, potential to use beetween the atoms, and so on.
+atomic types, potential to use between the atoms, and so on.
 
-Then one run the simulation for a given number of steps ``n_run``. During the
+Then run the simulation for a given number of steps ``n_run``. During the
 run, the three main steps are computing the forces from the potentials,
 integrating the movement and outputing the quantities of interest : trajectories,
 energy, temperature, pressure, `etc.`
@@ -27,10 +27,10 @@ These two parts are summarised in the figure :ref:`fig-MD_steps`.
 
     Usual steps in a molecular dynamic simulation
 
-    A molecular dynamics simulation is usally build around two main parts, these
-    part being separated in various steps. The first part is the setting part,
-    creating all the needed informations about the simulation. The second part
-    is the run part, effectivelly running the simulation.
+    A molecular dynamics simulation is usually built around two main parts, these
+    parts being separated in various steps. The first part is sets the configuration,
+    defining all the needed information about the simulation. The second part
+    is the dynamics calculation, effectivelly running the simulation.
 
 Setting the simulation
 ----------------------
@@ -45,16 +45,16 @@ Get topology
 
 The topology of a simulation is a representation of the atoms, molecules, groups
 of molecules one can find in this simulation. It can be read from a file
-(:file:`.pdb` files ,:file:`.lmp` LAMMPS topology, …) ; gessed from the initial
+(:file:`.pdb` files ,:file:`.lmp` LAMMPS topology, …) ; guessed from the initial
 configuration (two atoms are linked if they are closer than the sum of there Van
-der Waals radii) ; or buildt by hand.
+der Waals radii) ; or built by hand.
 
 Setup interaction
 ^^^^^^^^^^^^^^^^^
 
-The interactions describe how atoms should interact : they can be pair potentials,
+The interactions describe how atoms should behave: they can be pair potentials,
 many-body potentials, bond potentials, torsion potentials, dihedral potentials or
-any other kind of interaction energy.
+any other kinds of interactions.
 
 Each of these potentials is associated with a force. This force is used in
 molecular dynamics to integrate Newton's equations of motions.
@@ -70,7 +70,7 @@ Get initial velocities
 
 The initial velocities are also needed to start the time integration in molecular
 dynamics. They can be defined either in a file (to restart previous dynamic), or
-randomly assigned. In the later case, it is a better idea to use a Maxwell-Boltzman
+randomly assigned. In the later case, it is a better idea to use a Maxwell-Boltzmann
 distribution at the temperature :math:`T` of the simulation.
 
 Setup simulation
@@ -78,7 +78,7 @@ Setup simulation
 
 Some other values will have to be set in order to run a simulation, depending on
 the kind of simulation: the timestep of integration :math:`dt`, the type of
-thermostat or barostat to use, `etc.`
+thermostat or barostat to use.
 
 Running the simulation
 ----------------------
@@ -88,8 +88,8 @@ The order of the steps in a simulation run is always the same, and can not be ch
 Integrate
 ^^^^^^^^^
 
-Using the forces, one can now integrate the Newton's equations of motions.
-The greatest variety of algorithm exists here: from simple volecity-Verlet to
+Using the forces, one can now integrate Newton's equations of motions.
+The greatest variety of algorithm exists here: from simple velocity-Verlet to
 complex multi-timestep RESPA algorithm. At the end, postions and velocities are
 updated to the new step.
 
@@ -97,9 +97,10 @@ Get forces
 ^^^^^^^^^^
 
 During the integration steps, forces acting on the atoms will be needed. This
-forces computing step is the more time consuming one. Various way to do this
-computation exists, depening on the type of potentials (short range or long range),
-and some ticks can speed up the computation (pairs list, short range potential truncation).
+forces computing step is the most time consuming aspect of the calculation. Various ways 
+to do this computation exists, depening on the type of potentials (short range or 
+long range), and some tricks can speed up the computation (pairs list, short range potential 
+truncation).
 
 The algorithm used for integration have the responsability to call this step when
 and as many times as needed.
@@ -109,26 +110,26 @@ Enforce
 
 If the time integration does not force the value of external parameters, like
 temperature or pressure or volume, this step can enforce them. Here will act the
-berendsen thermostat, the velocity rescaling, the particle wrapping to the cell.
+Berendsen thermostat, the velocity rescaling, the particle wrapping to the cell.
 
 Check
 ^^^^^
 
 During the run, one can check for simulation consistency. For example, the number
-of particle in the cell may have be constant, the global momentum have to be zero,
+of particles in the cell may have be constant, the global momentum has to be zero,
 and so on.
 
 Compute
 ^^^^^^^
 
-Running simulations is great, but worth nothing if no analysis is performed on
-the trajectory. This step allow for computing and averaging physical quantities,
+Running a simulations is great, but worth nothing if no analysis is performed on
+the trajectories. This step allows for computing and averaging physical quantities,
 like total energy, kinetic energy, temperature, pressure, magnetic moment, and
 plenty of other intersting quantities.
 
 Output
 ^^^^^^
 
-But computing these quantities is not enough. You have to write the to a file in
+But computing these quantities is not enough. You have to write to a file in
 order to do save them. So here `Jumos` will output the computed values, and the
 trajectories.

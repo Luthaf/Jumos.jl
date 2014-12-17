@@ -1,9 +1,9 @@
 Simulations
 ===========
 
-The simulation module is were all the simulation code falls in. This module allow
-you to define and run molecular dynamic simulations. It use extensively custom
-types, all of them being presented here.
+The simulation module is were all the simulation code falls. This module allows
+you to define and run molecular dynamic simulations. It extensively uses custom
+types, all of them are presented here.
 
 
 Basic usage

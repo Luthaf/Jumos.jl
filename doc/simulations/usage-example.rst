@@ -4,7 +4,7 @@ Usage example
 =============
 
 With `Jumos`, you run simulations by writting Julia scripts. You don't need to
-know much of Julia, and if you already have done some C++ or Python you should
+know much of Julia, and if you already have programmed with C++ or Python it should
 feel familiar. Just remember that array index start at 1, not 0. If you come from
 FORTRAN, the main point will be that you can access composit types fields using the
 the dot notation : ``foo.bar = 3`` will set the ``bar`` field of ``foo`` to 3.
@@ -19,8 +19,8 @@ fluid at :math:`300K`.
    :language: julia
    :linenos:
 
-Each simulation script should start by the ``using Jumos`` directive. This import
-the module and the exported names in current scope.
+Each simulation script should start by the ``using Jumos`` directive. This imports
+the module and the exported names in the current scope.
 
 Then, in this script, we create a molecular dynamics (``"MD"``) simulation with
 a timestep of :math:`2\ \text{fs}`, and a cubic cell, associated to the simulation.
