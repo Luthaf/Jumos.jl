@@ -1,3 +1,4 @@
+# Loading the Jumos module before anything else
 using Jumos
 
 # Molecular Dynamics with 1.0fs timestep
@@ -25,5 +26,5 @@ out_trajectory.frequency = 10
 
 run!(sim, 5000)
 
-# Simulation scripts are normal julia scripts !
+# Simulation scripts are normal Julia scripts !
 println("All done")
