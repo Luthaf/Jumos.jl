@@ -14,8 +14,8 @@ export add_interaction, set_cell, read_topology, read_positions, add_output ,
        set_frame
 
 # Todo: Way to add a catchall interaction
-function add_interaction(sim::MDSimulation, potential::BasePotential, atoms::(AtomType, AtomType))
-    pot = Potential(potential)
+function add_interaction(sim::MDSimulation, potential::BasePotential, atoms::(AtomType, AtomType); cutoff=12.0)
+    pot = Potential(potential, cutoff=cutoff)
     atom_i, atom_j = get_atom_id(sim, atoms...)
 
     sim.interactions[(atom_i, atom_j)] = pot
