@@ -25,8 +25,8 @@ function show(io::IO, e::TrajectoryIOError)
 end
 
 
-abstract AbstractReaderIO <: TrajectoryIO
-type Reader{T<:AbstractReaderIO}
+abstract FormatReader <: TrajectoryIO
+type Reader{T<:FormatReader}
     natoms::Int
     nsteps::Int
     current_step::Int
@@ -34,7 +34,7 @@ type Reader{T<:AbstractReaderIO}
     reader::T
 end
 
-function Reader(r::AbstractReaderIO, topology=Topology())
+function Reader(r::FormatReader, topology=Topology())
     natoms, nsteps = get_traj_infos(r)
     if natoms > 0 && size(topology) == 0
         topology = dummy_topology(natoms)
@@ -45,13 +45,13 @@ end
 import Jumos: Frame
 Frame(reader::Reader) = Frame(reader.topology)
 
-abstract AbstractWriterIO <: TrajectoryIO
-type Writer{T<:AbstractWriterIO}
+abstract FormatWriter <: TrajectoryIO
+type Writer{T<:FormatWriter}
     current_step::Int
     writer::T
 end
 
-Writer(IOWriter::AbstractWriterIO) = Writer(0, IOWriter)
+Writer(IOWriter::FormatWriter) = Writer(0, IOWriter)
 Frame(writer::Writer) = Frame(writer.topology)
 
 # These dicts stores associations between extensions and file types.
@@ -61,14 +61,14 @@ TRAJECTORIES_WRITERS = Dict{String, (String, DataType)}()
 
 function register_reader(;extension="", filetype="", reader=Any)
     extension == "" && error("Default extention can not be empty")
-    reader <: AbstractReaderIO || error("reader should be a subtype of AbstractReaderIO")
+    reader <: FormatReader || error("reader should be a subtype of FormatReader")
     TRAJECTORIES_READERS[extension] = (filetype, reader)
     # TODO: add check on methods
 end
 
 function register_writer(;extension="", filetype="", writer=Any)
     extension == "" && error("Default extention can not be empty")
-    writer <: AbstractWriterIO || error("writer should be a subtype of AbstractWriterIO")
+    writer <: FormatWriter || error("writer should be a subtype of FormatWriter")
     TRAJECTORIES_WRITERS[extension] = (filetype, writer)
     # TODO: add check on methods
 end
@@ -112,12 +112,12 @@ function eachframe(t::Reader; start=1)
     return Task(_it)
 end
 
-function read_next_frame!{T<:AbstractReaderIO}(t::Reader{T}, ::Frame)
+function read_next_frame!{T<:FormatReader}(t::Reader{T}, ::Frame)
    throw(NotImplementedError("Method read_next_frame! not implemented for "*
                              "$(typeof(t.reader)) trajectory type"))
 end
 
-function read_frame!{T<:AbstractReaderIO}(t::Reader{T}, ::Integer, ::Frame)
+function read_frame!{T<:FormatReader}(t::Reader{T}, ::Integer, ::Frame)
     throw(NotImplementedError("Method read_frame! not implemented for "*
                               "$(typeof(t.reader)) trajectory type"))
 end

@@ -13,7 +13,7 @@
 # of atoms.
 # ============================================================================ #
 
-type XYZReader <: AbstractReaderIO
+type XYZReader <: FormatReader
     file::IOStream
     cell::UnitCell
 end

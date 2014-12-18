@@ -14,7 +14,7 @@
 
 using NetCDF
 
-type NCReader <: AbstractReaderIO
+type NCReader <: FormatReader
     file::NcFile
 end
 

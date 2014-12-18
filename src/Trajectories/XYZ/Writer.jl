@@ -15,7 +15,7 @@
 
 import Base: write
 
-type XYZWriter <: AbstractWriterIO
+type XYZWriter <: FormatWriter
     file::IOStream
     header::String
 end
