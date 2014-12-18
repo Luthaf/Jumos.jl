@@ -73,20 +73,9 @@ function register_writer(;extension="", filetype="", writer=Any)
     # TODO: add check on methods
 end
 
-#===============================================================================
-                Iterator interface for trajectories IO
-
-All the new reader/writer should implement the following methods:
-
-    - read_next_frame!(t::Reader, f::Frame)
-        Reads the next frame in f if their is one, update t.current_step.
-        Raise an error in case of failure
-        Return true if their is some other frame to read, false otherwise
-    - read_frame!(t::Reader, step::Integer, f::Frame)
-        Reads the frame at step "step" and update t.current_step
-        Raise an error in the case of failure
-        Return true if their is a frame after the step "step", false otherwise
-===============================================================================#
+# ============================================================================ #
+#                 Iterator interface for trajectories IO
+# ============================================================================ #
 
 # Only reads some specific steps
 function eachframe(t::Reader, range::Range{Integer})
@@ -122,9 +111,9 @@ function read_frame!{T<:FormatReader}(t::Reader{T}, ::Integer, ::Frame)
                               "$(typeof(t.reader)) trajectory type"))
 end
 
-#===============================================================================
-                            Trajectory formats
-===============================================================================#
+# ============================================================================ #
+#                             Trajectory formats
+# ============================================================================ #
 
 function get_in_kwargs(kwargs, key::Symbol, default)
     value = default
@@ -160,35 +149,37 @@ Keyword arguments
 """ ->
 function opentraj(filename::String; mode="r", topology="", kwargs...)
     extension = split(strip(filename), ".")[end]
-    topo = Topology()
     if mode == "r"
+        if haskey(TRAJECTORIES_READERS, extension)
+            trajtype, reader = TRAJECTORIES_READERS[extension]
+            info(".$extension extension, assuming $trajtype trajectory at input")
+            FormatReader = reader(filename; kwargs...)
+        else
+            error("The '$extension' extension is not recognized. " *
+                  "Please provide a trajectory type.")
+        end
+        natoms, _ = get_traj_infos(FormatReader)
         if topology != ""
             topo = Topology(topology)
         else
             info("You may want to use atomic names, providing a topology file")
+            topo = dummy_topology(natoms)
         end
-        if haskey(TRAJECTORIES_READERS, extension)
-            trajtype, reader = TRAJECTORIES_READERS[extension]
-            info(".$extension extension, assuming $trajtype trajectory at input")
-            IOreader = reader(filename; kwargs...)
-            return Reader(IOreader, topo)
-        else
-            error("The '$extension' extension is not recognized. " *
-                  "Please provide a trajectory type.")
-        end
+        return Reader(FormatReader, topo)
     elseif mode =="w"
         if haskey(TRAJECTORIES_WRITERS, extension)
             trajtype, writer = TRAJECTORIES_WRITERS[extension]
             info(".$extension extension, assuming $trajtype trajectory at output")
-            IOwriter = writer(filename; kwargs...)
-            return Writer(IOwriter)
+            FormatWriter = writer(filename; kwargs...)
         else
             error("The '$extension' extension is not recognized. " *
                   "Please provide a trajectory type.")
         end
+        return Writer(FormatWriter)
     else
         error("Only read ('r') and write ('w') modes are supported")
     end
+    return nothing
 end
 
 Reader(filename::String; kwargs...) = opentraj(filename; mode="r", kwargs...)
