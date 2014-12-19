@@ -10,7 +10,7 @@
 
 import Base: show, call
 export BaseCheck
-export ParticleNumberIsConstant, GlobalVelocityIsNull, TotalForceIsNull
+export GlobalVelocityIsNull, TotalForceIsNull, AllPositionsAreDefined
 # abstract BaseCheck -> Defined in MolecularDynamics.jl
 
 function show(io::IO, a::BaseCheck)

@@ -1,3 +1,5 @@
+.. _type-Integrator:
+
 Integrator: running the simulation
 ==================================
 
@@ -6,6 +8,8 @@ velocities of the current :ref:`frame <type-Frame>` of the :ref:`simulation <typ
 
 Verlet integrators
 ------------------
+
+.. _type-VelocityVerlet:
 
 Velocity-Verlet
 ^^^^^^^^^^^^^^^

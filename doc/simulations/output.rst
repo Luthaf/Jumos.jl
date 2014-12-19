@@ -6,6 +6,7 @@ Existing outputs
 
 
 .. _trajectory-output:
+
 Trajectory output
 ^^^^^^^^^^^^^^^^^
 
@@ -13,6 +14,7 @@ TODO
 
 
 .. _energy-output:
+
 Energy output
 ^^^^^^^^^^^^^
 

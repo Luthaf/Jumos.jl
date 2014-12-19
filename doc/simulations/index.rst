@@ -40,5 +40,6 @@ how to expand Jumos with your own algorithms.
     integrator
     forces
     enforce
+    check
     compute
     output
