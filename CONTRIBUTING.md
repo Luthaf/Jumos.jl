@@ -8,6 +8,12 @@ Please take in consideration the following points when contributing:
  - You should add test with your code: bugfix and new feature both needs tests.
  - You should add the doc with the new features you add
 
+### Code style
+
+ - Please use as much as possible 80 characters long lines;
+ - Readability count
+ - Use the `@doc` macro to document the code.
+
 ## Contribution How To
 
 Here is how you can contribute, step by step.
