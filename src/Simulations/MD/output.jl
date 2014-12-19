@@ -14,7 +14,7 @@ export TrajectoryOutput, CustomOutput, EnergyOutput
 
 # abstract BaseOutput -> Defined in MolecularDynamics.jl
 
-function setup(::BaseOutput, ::MDSimulation)
+function setup(::BaseOutput, ::MolecularDynamic)
     return nothing
 end
 
@@ -107,7 +107,7 @@ function write(out::EnergyOutput, context::Dict)
     write(out.file, s * EOL)
 end
 
-function setup(::EnergyOutput, sim::MDSimulation)
+function setup(::EnergyOutput, sim::MolecularDynamic)
     if !have_compute(sim, TemperatureCompute)
         push!(sim.computes, TemperatureCompute())
     end
@@ -117,7 +117,7 @@ function setup(::EnergyOutput, sim::MDSimulation)
     return nothing
 end
 
-function have_compute{T<:BaseCompute}(sim::MDSimulation, compute_type::Type{T})
+function have_compute{T<:BaseCompute}(sim::MolecularDynamic, compute_type::Type{T})
     for compute in sim.computes
         if isa(compute, compute_type)
             return true

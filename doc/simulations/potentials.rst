@@ -65,7 +65,7 @@ Adding interactions to a simulation
 Before runnning a simulation, one should define interactions between all the pairs
 of atomic types. The ``add_interaction`` function can be used for that.
 
-.. function:: add_interaction(::MDSimulation, potential, atoms [, cutoff=12.0])
+.. function:: add_interaction(::MolecularDynamic, potential, atoms [, cutoff=12.0])
 
     Add an interaction between the ``atoms`` in the simulation. The energy and
     the forces for this interaction will be computed using the given ``potential``.
@@ -163,7 +163,7 @@ The above example can the be use like this:
 
 .. code-block:: julia
 
-    sim = Simulation("MD", 1.0)
+    sim = MolecularDynamic(1.0)
 
     add_interaction(sim, LennardJones2(4.5, 5.3), ("He", "He"))
 

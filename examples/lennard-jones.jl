@@ -2,7 +2,7 @@
 using Jumos
 
 # Molecular Dynamics with 1.0fs timestep
-sim = Simulation("MD", 1.0)
+sim = MolecularDynamic(1.0)
 
 # Create the simulation cell : cubic simulation cell with a width of 10A
 set_cell(sim, (10.0,))

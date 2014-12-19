@@ -22,7 +22,7 @@ Compute the temperature of a simulation frame using the relation
 " ->
 type TemperatureCompute <: BaseCompute end
 
-function call(::TemperatureCompute, sim::MDSimulation)
+function call(::TemperatureCompute, sim::MolecularDynamic)
 	T = 0.0
     K = kinetic_energy(sim)*1e-4
     natoms = size(sim.frame)
@@ -44,7 +44,7 @@ Compute the volume of the current simulation cell
 " ->
 type VolumeCompute <: BaseCompute end
 
-function call(::VolumeCompute, sim::MDSimulation)
+function call(::VolumeCompute, sim::MolecularDynamic)
     V = volume(sim.frame.cell)
     sim.data[:volume] = V
     return V
@@ -53,12 +53,12 @@ end
 
 @doc "
 Compute the energy of a simulation.
-    EnergyCompute()(simulation::MDSimulation) returns a tuple
+    EnergyCompute()(simulation::MolecularDynamic) returns a tuple
     (Kinetic_energy, Potential_energy, Total_energy)
 " ->
 type EnergyCompute <: BaseCompute end
 
-function call(::EnergyCompute, sim::MDSimulation)
+function call(::EnergyCompute, sim::MolecularDynamic)
     K = kinetic_energy(sim)
     P = potential_energy(sim)
 	sim.data[:E_kinetic] = K
@@ -67,7 +67,7 @@ function call(::EnergyCompute, sim::MDSimulation)
 	return K, P, P + K
 end
 
-function kinetic_energy(sim::MDSimulation)
+function kinetic_energy(sim::MolecularDynamic)
     K = 0.0
 	natoms = size(sim.frame)
 	@inbounds for i=1:natoms
@@ -76,7 +76,7 @@ function kinetic_energy(sim::MDSimulation)
     return K*1e4  # TODO: better handling of energy conversions
 end
 
-function potential_energy(sim::MDSimulation)
+function potential_energy(sim::MolecularDynamic)
     E = 0.0
 	natoms = size(sim.frame)
 	@inbounds for i=1:natoms, j=(i+1):natoms

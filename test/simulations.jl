@@ -31,7 +31,7 @@ short = Potential(lj, cutoff=8.0)
 @test short(3.) == lj(3.0) + short.e_cutoff
 
 # Test the simulations
-sim = Simulation("MD", 1.0)
+sim = MolecularDynamic(1.0)
 
 top = Topology(4)
 for i=1:4

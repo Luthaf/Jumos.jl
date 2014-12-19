@@ -2,7 +2,7 @@ using Jumos
 
 function run_jumos()
     tic()
-    sim = Simulation("MD", 1.0)
+    sim = MolecularDynamic(1.0)
     set_cell(sim, (10.0,))
     read_topology(sim, "He-LJ.xyz")
     read_positions(sim, "He-LJ.xyz")

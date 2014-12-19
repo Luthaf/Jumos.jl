@@ -26,7 +26,7 @@ function VelocityVerlet(timestep::Float64)
     return VelocityVerlet(timestep, accelerations)
 end
 
-function call(integrator::VelocityVerlet, sim::MDSimulation)
+function call(integrator::VelocityVerlet, sim::MolecularDynamic)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
@@ -83,7 +83,7 @@ function Verlet(timestep::Float64)
     return Verlet(timestep, prevpos)
 end
 
-function call(integrator::Verlet, sim::MDSimulation)
+function call(integrator::Verlet, sim::MolecularDynamic)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
