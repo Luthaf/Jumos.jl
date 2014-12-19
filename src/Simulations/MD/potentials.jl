@@ -9,7 +9,12 @@
 # ============================================================================ #
 
 import Base: call, show
-export PotentialError, BasePotential, ShortRangePotential, Potential
+export PotentialError
+export PotentialFunction, PairPotential, BondedPotential, AnglePotential,
+       DihedralPotential, ShortRangePotential, LongRangePotential
+export PotentialComputation, DirectComputation, CutoffComputation,
+       LongRangeComputation, TableComputation
+
 export UserPotential, LennardJones, Harmonic, NullPotential
 export force
 
@@ -22,72 +27,157 @@ function show(io::IO, e::PotentialError)
     print(io, e.msg)
 end
 
-abstract BasePotential
-abstract ShortRangePotential <: BasePotential
-abstract LongRangePotential <: BasePotential
+@doc "
+A `PotentialFunction` is an effective implementation of a potential energy and
+forces function.
+" ->
+abstract PotentialFunction
 
-type Potential{T<:BasePotential}
+@doc "
+A `PotentialComputation` is a way to compute interactions.
+" ->
+abstract PotentialComputation
+
+# ============================================================================ #
+
+@doc "
+A `PairPotential` is an interaction between two particle, with no range limit,
+going to zero as the distance goes to infinity.
+" ->
+abstract PairPotential <: PotentialFunction
+
+@doc doc"
+Short-range potential are functions going to zero faster than the $1/r^3$ function.
+" ->
+abstract ShortRangePotential <: PairPotential
+
+@doc doc"
+Long-range potential are functions going to zero slower than the $1/r^3$ function.
+" ->
+abstract LongRangePotential <: PairPotential
+
+@doc "
+A `BondedPotential` is an interaction between two particle, with a range limit.
+This interaction goes to infinity when the distance goes to zero or to infinity.
+" ->
+abstract BondedPotential <: PotentialFunction
+
+@doc "
+An `AnglePotential` is an interaction between three particle, computed using the
+angle between these particles.
+" ->
+abstract AnglePotential <: PotentialFunction
+
+@doc "
+A `DihedralPotential` is an interaction between four particle, computed using the
+two dihedral angles.
+" ->
+abstract DihedralPotential <: PotentialFunction
+
+# ============================================================================ #
+
+@doc "
+The `DirectComputation` of a potential can always be used, but may not be the
+most effective way.
+" ->
+type DirectComputation <: PotentialComputation
+    potential::PotentialFunction
+end
+
+@doc "
+A `CutoffComputation` of an interaction use a cutoff distance. After this distance,
+the energy and the force are set to be zero.
+" ->
+type CutoffComputation{T<:ShortRangePotential} <: PotentialComputation
     potential::T
     cutoff::Float64
     e_cutoff::Float64
 end
 
+@doc doc"
+`LongRangeComputation` should be used for pair potential which goes to zero slower
+than the $1/r^3$ function.
+" ->
+abstract LongRangeComputation <: PotentialComputation
+
+@doc "
+`TableComputation` uses table lookup to compute pair interactions efficiently.
+" ->
+type TableComputation{T<:PotentialFunction, N} <: PotentialComputation
+    potential::T
+    data::Array{Float64, 1}
+    force::Array{Float64, 1}
+    rmax::Float64
+end
+
+# ============================================================================ #
+#                           Fallback methods
+# ============================================================================ #
+
+function call(p::PotentialComputation, ::Real)
+    throw(NotImplementedError(
+        "The potential computation $(typeof(p)) is not implemented."
+    ))
+end
+
+function force(p::PotentialComputation, ::Real)
+    throw(NotImplementedError(
+        "The force computation for $(typeof(p)) is not implemented."
+    ))
+end
+
+function call(pot::PotentialFunction, ::Real)
+    throw(NotImplementedError("No call method provided for potential $pot.\n
+                               Please provide this method."))
+end
+
+function force(pot::PotentialFunction, ::Real)
+    throw(NotImplementedError("No force method provided for potential $pot.\n
+                               Please provide this method."))
+end
+
+# Convert everything to Float64
+call(pot::PotentialFunction, r::Real) = call(pot, convert(Float64, r))
+force(pot::PotentialFunction, r::Real) = force(pot, convert(Float64, r))
+
+# ============================================================================ #
+#                        Computations implementations
+# ============================================================================ #
+
 # The default cutoff is set in angstroms. Others units should be added after
-function Potential(pot::BasePotential; cutoff=12.0)
-    if typeof(pot) <: ShortRangePotential
-        e_cutoff = pot(cutoff)
-    else
-        e_cutoff = 0.0
-        cutoff = 0.0
-    end
-    return Potential(pot, cutoff, e_cutoff)
+function CutoffComputation(pot::PotentialFunction; cutoff=12.0)
+    e_cutoff = pot(cutoff)
+    return CutoffComputation(pot, cutoff, e_cutoff)
 end
 
-function Potential(T, args...; cutoff=12.0)
-    pot = T(args...)
-    return Potential(pot, cutoff=cutoff)
-end
-
-@inline function call{T<:ShortRangePotential}(pot::Potential{T}, r::Real)
+@inline function call{T<:ShortRangePotential}(pot::CutoffComputation{T}, r::Real)
     r > pot.cutoff ? 0.0 : pot.potential(r) + pot.e_cutoff
 end
 
-@inline function force{T<:ShortRangePotential}(pot::Potential{T}, r::Real)
+@inline function force{T<:ShortRangePotential}(pot::CutoffComputation{T}, r::Real)
     r > pot.cutoff ? 0.0 : force(pot.potential, r)
 end
 
-# Todo: long range potentials
-function call(::Potential{LongRangePotential}, ::Real)
-    throw(NotImplementedError("Long range potential not implemented"))
+# Only the default constructor is needed for DirectComputation(::PotentialFunction)
+
+@inline function call{T<:PotentialFunction}(pot::DirectComputation{T}, r::Real)
+    return pot.potential(r)
 end
 
-function show(io::IO, pot::Potential)
-    SEP = "\t"
-    potential_type = typeof(pot.potential)
-    println(io, "Potential{$potential_type}")
-    println(io, SEP, "cutoff: ", pot.cutoff)
-    for name in names(potential_type)
-        println(io, SEP, name, ": ", getfield(pot.potential, name))
-    end
+@inline function force{T<:PotentialFunction}(pot::DirectComputation{T}, r::Real)
+    return force(pot.potential, r)
 end
 
-function call(pot::BasePotential, ::Real)
-    throw(NotImplementedError("No implementation provided for potential $pot."))
-end
+# TODO: LongRangeComputation & TableComputation
 
-call(pot::BasePotential, r::Real) = call(pot, convert(Float64, r))
-
-function force(pot::BasePotential, ::Real)
-    throw(NotImplementedError("No force method provided for potential $pot."))
-end
-
-force(pot::BasePotential, r::Real) = force(pot, convert(Float64, r))
-
+# ============================================================================ #
+#                           Potential functions
+# ============================================================================ #
 
 @doc "
 Null potential, for a system without interactions
 " ->
-type NullPotential <: ShortRangePotential
+type NullPotential <: PairPotential
 end
 
 function call(::NullPotential, ::Float64)
@@ -98,6 +188,7 @@ end
     return 0.0
 end
 
+# ============================================================================ #
 
 @doc "
 User defined potential, without any parameter
@@ -123,11 +214,12 @@ end
     return pot.force(r)
 end
 
+# ============================================================================ #
 
-# @doc "
-# Lennard-Jones potential, using the following formulation
-#    \[ V(r) = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
-# " ->
+@doc doc"
+Lennard-Jones potential, using the following formulation
+   \[ V(r) = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
+" ->
 type LennardJones <: ShortRangePotential
     epsilon :: Float64
     sigma   :: Float64
@@ -143,16 +235,16 @@ end
     return -24.*pot.epsilon*(s6 - 2*s6^2)/r
 end
 
+# ============================================================================ #
 
-# @doc "
-# Harmonic potential, with the following definition :
-#     \[ V(r) = \frac12 k (r - r_0) - D_0 \]
-#
-# `Harmonic(k, r0, depth=0.0)`
-#
-#     This function creates an instance of an Harmonic potential.
-# " ->
-type Harmonic <: ShortRangePotential
+@doc doc"
+Harmonic potential, with the following definition :
+    \[ V(r) = \frac12 k (r - r_0) - D_0 \]
+
+`Harmonic(k, r0, depth=0.0)`
+    This function creates an instance of an Harmonic potential.
+" ->
+type Harmonic <: BondedPotential
     k     :: Float64
     r0    :: Float64
     depth :: Float64
