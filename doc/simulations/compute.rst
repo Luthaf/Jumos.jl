@@ -1,3 +1,5 @@
+.. _simulation-computes:
+
 Computing values of interest
 ============================
 

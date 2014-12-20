@@ -1,3 +1,5 @@
+.. _simulation-outputs:
+
 Exporting values of interest
 ============================
 

@@ -1,3 +1,5 @@
+.. _simulation-checks:
+
 Checking the simulation consistency
 ===================================
 
