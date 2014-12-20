@@ -144,9 +144,13 @@ and the topology informations in the files. The last column give the accepted ke
 
 .. |yes| image:: static/img/yes.png
           :alt: Yes
+          :width: 16px
+          :height: 16px
 
 .. |no| image:: static/img/no.png
           :alt: No
+          :width: 16px
+          :height: 16px
 
 Readind and writing topologies
 -------------------------------
