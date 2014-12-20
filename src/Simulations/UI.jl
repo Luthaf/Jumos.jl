@@ -10,8 +10,8 @@
 
 typealias AtomType Union(Integer, String)
 
-export add_interaction, set_cell, read_topology, read_positions, add_output ,
-       set_frame
+export add_interaction, set_cell, read_topology, read_positions, set_frame,
+       add_compute, add_enforce, add_check, add_output
 
 # Todo: Way to add a catchall interaction
 function add_interaction(sim::MolecularDynamic, potential::BasePotential, atoms::(AtomType, AtomType); cutoff=12.0)
@@ -61,8 +61,52 @@ end
 # Todo:
 # function read_velocities(sim::MolecularDynamic, filename::AbstractString)
 
-function add_output(sim::MolecularDynamic, out::BaseOutput)
-    push!(sim.outputs, out)
+function add_output(sim::MolecularDynamic, output::BaseOutput)
+    if !ispresent(sim, output)
+        push!(sim.outputs, output)
+    else
+        warn("$output is aleady present in this simulation")
+    end
+    return sim.outputs
+end
+
+function add_compute(sim::MolecularDynamic, compute::BaseCompute)
+    if !ispresent(sim, compute)
+        push!(sim.computes, compute)
+    else
+        warn("$compute is aleady present in this simulation")
+    end
+    return sim.computes
+end
+
+function add_enforce(sim::MolecularDynamic, enforce::BaseEnforce)
+    if !ispresent(sim, enforce)
+        push!(sim.enforces, enforce)
+    else
+        warn("$enforce is aleady present in this simulation")
+    end
+    return sim.enforces
+end
+
+function add_check(sim::MolecularDynamic, check::BaseCheck)
+    if !ispresent(sim, check)
+        push!(sim.checks, check)
+    else
+        warn("$check is aleady present in this simulation")
+    end
+    return sim.checks
+end
+
+function ispresent(sim::MolecularDynamic, algo)
+    algo_type = typeof(algo)
+    for field in [:checks, :computes, :outputs, :enforces]
+        for elem in getfield(sim, field)
+            if isa(elem, algo_type)
+                return true
+            end
+        end
+    end
+    return false
 end
 
 @doc "
@@ -78,4 +122,12 @@ function set_frame(sim::MolecularDynamic, frame::Frame)
     natoms = size(sim.frame)
     sim.frame.velocities = Array3D(Float64, natoms)
     return nothing
+end
+
+function set_integrator(sim::MolecularDynamic, integrator::BaseIntegrator)
+    sim.integrator = integrator
+end
+
+function set_forces_computation(sim::MolecularDynamic, forces_computer::BaseForcesComputer)
+    sim.forces_computer = forces_computer
 end
