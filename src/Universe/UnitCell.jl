@@ -8,7 +8,7 @@
 #                          Simulation cell type
 # ============================================================================ #
 
-import Base: ==
+import Base: ==, show
 export UnitCell, InfiniteCell, OrthorombicCell, TriclinicCell
 export volume
 
@@ -25,6 +25,19 @@ type UnitCell{T<:AbstractCellType}
     beta  :: Float64
     gamma :: Float64
 end
+
+function show(io::IO, cell::UnitCell)
+    ctype = split(string(celltype(cell)), ".")[end]
+    print(io, ctype)
+    if !(celltype(cell) == InfiniteCell)
+        print(io, "\n   Lenghts: ", cell.x, ", ", cell.y, ", ", cell.z)
+        if celltype(cell) == TriclinicCell
+            print(io, "\n   Angles: ", cell.alpha, ", ", cell.beta, ", ", cell.gamma)
+        end
+    end
+end
+
+celltype{T<:AbstractCellType}(::UnitCell{T}) = T
 
 function getindex(b::UnitCell, i::Int)
     if i == 1
