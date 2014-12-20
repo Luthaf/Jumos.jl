@@ -37,54 +37,61 @@ cells :
 Creating simulation cell
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Automatic cell types
-""""""""""""""""""""
+.. function:: UnitCell(Lx, [Ly, Lz, alpha, beta, gamma, celltype])
 
-These constructors try to guess the cell type according the following algorithm:
-if the cell angles are all :math:`90°`, then the cell is an ``OrthorombicCell``.
-Else, it is a ``TriclinicCell``.
+    Creates an unit cell. If no ``celltype`` parameter is given, this function try
+    to guess the cell type using the following behaviour: if all the angles are
+    equals to :math:`\pi/2`, then the cell is an ``OrthorombicCell``; else, it
+    is a ``TriclinicCell``.
 
-.. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
+    If no values are given for ``alpha, beta, gamma``, they are set to :math:`\pi/2`.
+    If no values are given for ``Lx, Ly``, they are set to be equal to ``Lx``.
+    This create a cubic cell. If no value is given for ``Lx``, a cell with lenghts
+    of :math:`0 A` and :math:`\pi/2` angles is constructed.
 
-    Creates a cell of side lenghts ``Lx, Ly, Lz``, and angles ``alpha, beta, gamma``.
+    .. code-block:: jlcon
 
-.. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real)
+        julia> UnitCell() # Without parameters
+        OrthorombicCell
+            Lenghts: 0.0, 0.0, 0.0
 
-    Creates an orthorombic cell of side lenghts ``Lx, Ly, Lz``.
+        julia> UnitCell(10.) # With one lenght
+        OrthorombicCell
+            Lenghts: 10.0, 10.0, 10.0
 
-.. function:: UnitCell(L::Real)
+        julia> UnitCell(10., 12, 15) # With three lenghts
+        OrthorombicCell
+            Lenghts: 10.0, 12.0, 15.0
 
-    Creates cubic cell of side lenght ``L``.
+        julia> UnitCell(10, 10, 10, pi/2, pi/3, pi/5) # With lenghts and angles
+        TriclinicCell
+            Lenghts: 10.0, 10.0, 10.0
+            Angles: 1.5707963267948966, 1.0471975511965976, 0.6283185307179586
 
-.. function:: UnitCell()
+        julia> UnitCell(InfiniteCell) # With type
+        InfiniteCell
 
-    Creates cubic cell of side lenght ``0.0``.
+        julia> UnitCell(10., 12, 15, TriclinicCell) # with lenghts and type
+        TriclinicCell
+            Lenghts: 10.0, 12.0, 15.0
+            Angles: 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
 
-.. function:: UnitCell(u::Vector)
-.. function:: UnitCell(u::Vector, v::Vector)
+.. function:: UnitCell(u::Vector, [v::Vector, celltype])
 
-    If the size match, these functions expands the vectors and return one of the
-    previous constructors, *e.g.* if ``u == [30, 40, 30]``, ``UnitCell(u) == UnitCell(30, 40, 30)``.
+    If the size match, these functions expands the vectors and return the corresponding
+    cell.
 
-Manualy defined cell type
-"""""""""""""""""""""""""
+    .. code-block:: jlcon
 
-For all these constructors, the cell type is specified as the first argument. This
-allow for ``InfiniteCell`` and ``TriclinicCell`` with initial angles of :math:`90°`
-to be constructed.
+        julia> u = [10, 20, 30]
+        3-element Array{Int64,1}:
+         10
+         20
+         30
 
-.. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, celltype::Type{AbstractCellType})
-
-    Create a cell with lenghts ``Lx, Ly, Lz``, angles ``a, b, c``, and type ``celltype``.
-
-.. function:: UnitCell(Lx::Real, Ly::Real, Lz::Real, celltype)
-.. function:: UnitCell(L::Real, celltype)
-.. function:: UnitCell(celltype)
-.. function:: UnitCell(u::Vector, v::Vector, celltype)
-.. function:: UnitCell(u::Vector, celltype)
-
-    All these functions have the same behaviour than the one with automatic cell type,
-    excepted than the cell type is taken to be equal to ``celltype``.
+        julia> UnitCell(u)
+        OrthorombicCell
+            Lenghts: 10.0, 20.0, 30.0
 
 Indexing simulation cell
 ^^^^^^^^^^^^^^^^^^^^^^^^
