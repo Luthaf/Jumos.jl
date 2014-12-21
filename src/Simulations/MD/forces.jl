@@ -22,6 +22,12 @@ function force_array_to_internal!(a::Array3D)
     return a
 end
 
+function get_potential(interactions::Interactions, topology::Topology, i::Integer, j::Integer)
+    atom_i = topology.atoms[i]
+    atom_j = topology.atoms[j]
+    return interactions[(atom_i, atom_j)]
+end
+
 @doc "
 Naive forces computation : just get the vector between two particles, and
 call the force function for these particles.
@@ -35,6 +41,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
     r = Array(Float64, 3)
     natoms = size(frame)
     dist = 0.0
+    potential = NullPotential()
 
     if length(forces) != natoms
         # Allocating new memory as needed
@@ -49,9 +56,7 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         r = distance3d(frame, i, j)
         dist = norm(r)
         unit!(r)
-        atom_i = frame.topology.atoms[i]
-        atom_j = frame.topology.atoms[j]
-        potential = interactions[(atom_i, atom_j)]
+        potential = get_potential(interactions, frame.topology, i, j)
         r *= force(potential, dist)
 
         forces[i] .+= -r
