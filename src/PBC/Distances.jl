@@ -10,36 +10,49 @@
 
 export distance, distance_array, distance3d, minimal_image, minimal_image!
 
+minimal_image(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
+minimal_image!(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
+
 @doc "
 `minimal_image(vect::AbstractVector, cell::UnitCell)`
 
 Refine a vector using the minimal image convention
-" ->
-minimal_image(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
-minimal_image!(vect::AbstractVector, ::UnitCell{InfiniteCell}) = vect
+" -> minimal_image
+
+@doc "
+`minimal_image!(vect::AbstractVector, cell::UnitCell)`
+
+Refine a vector in-place using the minimal image convention
+" -> minimal_image!
 
 function minimal_image(vect, cell::UnitCell)
     tmp = copy(vect)
     return minimal_image!(tmp, cell)
 end
 
-function nint(a::Real)
-    a >= 0.0 ? floor(a+0.5) : ceil(a-0.5)
-end
-
 function minimal_image!(vect::AbstractVector, cell::UnitCell{OrthorombicCell})
-    vect[1] = vect[1] - nint(vect[1]/cell.x)*cell.x
-    vect[2] = vect[2] - nint(vect[2]/cell.y)*cell.y
-    vect[3] = vect[3] - nint(vect[3]/cell.z)*cell.z
+    vect[1] = vect[1] - round(vect[1]/cell.x)*cell.x
+    vect[2] = vect[2] - round(vect[2]/cell.y)*cell.y
+    vect[3] = vect[3] - round(vect[3]/cell.z)*cell.z
     return vect
 end
 
 function minimal_image!(vect::AbstractVector, cell::UnitCell{TriclinicCell})
-    cart2fract!(vect, cell)
-    vect[1] -= round(vect[1])
-    vect[2] -= round(vect[2])
-    vect[3] -= round(vect[3])
-    return fract2cart!(vect, cell)
+    realvects = cellmatrix(cell::UnitCell)
+    for i in [3, 2, 1]
+        while abs(vect[i]) > realvects[i,i]/2
+            if vect[i] < 0
+                vect[1] += realvects[i, 1]
+                vect[2] += realvects[i, 2]
+                vect[3] += realvects[i, 3]
+            else
+                vect[1] -= realvects[i, 1]
+                vect[2] -= realvects[i, 2]
+                vect[3] -= realvects[i, 3]
+            end
+        end
+    end
+    return vect
 end
 
 function minimal_image!(a::Array3D, cell::UnitCell)
@@ -56,40 +69,25 @@ function minimal_image!(a::Matrix, cell::UnitCell)
     end
 end
 
-function cart2fract!(vect::AbstractVector, cell::UnitCell)
-    const z = vect[3]/cell.gamma
-    const y = (vect[2] - z*cell.beta)/cell.z
-    const x = (vect[1] - z*cell.alpha - y * cell.y) / cell[1]
 
-    vect[1] = x
-    vect[2] = y
-    vect[3] = z
+function cellmatrix(cell::UnitCell)
+    res = zeros(Float64, 3, 3)
 
-    return vect
-end
+    res[1,1] = cell.x
 
-function cart2fract(vect::AbstractVector, cell::UnitCell)
-    tmp = copy(vect)
-    return cart2fract!(tmp, cell)
-end
+    res[2,1] = cell.y * cos(cell.gamma)
+    res[2,2] = cell.y * sin(cell.gamma)
 
-function fract2cart!(vect::AbstractVector, cell::UnitCell)
-    vect[1] = vect[1]*cell[1] + vect[2]*cell.y + vect[3]*cell.alpha
-    vect[2] = vect[2]*cell.z + vect[3]*cell.beta
-    vect[3] = vect[3]*cell.gamma
-    return vect
-end
+    res[3,1] = cell.z * ((cos(cell.alpha) - 1)*cos(cell.beta))/(cos(cell.beta)*cos(cell.gamma) - 1)
+    res[3,1] += cell.z * cos(cell.gamma) * (cos(cell.beta)*cos(cell.gamma)
+                        - cos(cell.alpha)) / (cos(cell.beta)*cos(cell.gamma) - 1)
 
-function cart2fract(vect::AbstractVector, cell::UnitCell)
-    tmp = copy(vect)
-    return cart2fract!(tmp, cell)
-end
+    res[3,2] = cell.z * sin(cell.gamma) * (cos(cell.beta)*cos(cell.gamma)
+                        - cos(cell.alpha)) / (cos(cell.beta)*cos(cell.gamma) - 1)
 
-function fract2cart!(vect::AbstractVector, cell::UnitCell)
-    vect[1] = vect[1]*cell[1] + vect[2]*cell.y + vect[3]*cell.alpha
-    vect[2] = vect[2]*cell.z + vect[3]*cell.beta
-    vect[3] = vect[3]*cell.gamma
-    return vect
+    res[3,3] = cell.z * ((cos(cell.alpha)-1)*(cos(cell.beta)+ cos(cell.gamma))*cos(cell.gamma)
+                          + sin(cell.alpha)^2) / (1 - cos(cell.gamma)cos(cell.beta))
+    return res
 end
 
 # @doc "

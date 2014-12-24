@@ -1,6 +1,6 @@
 facts("Trajectory IO") do
     TRAJ_DIR = joinpath(dirname(@__FILE__), "trjs")
-    
+
     context("NetCDF") do
         traj = Reader("$TRAJ_DIR/water.nc", topology="$TRAJ_DIR/water.lmp")
         frame = Frame(traj)

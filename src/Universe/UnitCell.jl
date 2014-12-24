@@ -135,7 +135,7 @@ function volume(cell::UnitCell{TriclinicCell})
     β = cell.beta
     γ = cell.gamma
 
-    Vol = cell.x * sin(γ) * cell.y
-    tmp = sqrt(1 - cos(β)^2 - ((cos(α) - cos(β)*cos(γ))/sin(α))^2)
-    return Vol * tmp * cell.z
+    V = cell.x * cell.y * cell.z
+    factor = sqrt(1 - cos(α)^2 - cos(β)^2 - cos(γ)^2 + 2*cos(α)*cos(β)*cos(γ))
+    return V * factor
 end

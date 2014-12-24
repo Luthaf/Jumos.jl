@@ -10,10 +10,10 @@ function testing_frame(cell)
 end
 
 # Cell for later usage
-orthorombic = UnitCell(10.)
+orthorombic = UnitCell(10.0)
 infitite = UnitCell(InfiniteCell)
-triclinic1 = UnitCell(10, 10, 10, 80, 90, 120)
-triclinic2 = UnitCell(10., TriclinicCell)
+triclinic1 = UnitCell(10.0, 10.0, 10.0, 2*pi/5, pi/2, 2*pi/3)
+triclinic2 = UnitCell(10.0, TriclinicCell)
 
 facts("Distances computations") do
 
@@ -32,9 +32,7 @@ facts("Distances computations") do
     context("Equivalent orthorombic and triclinic") do
         frame = testing_frame(orthorombic)
         frame2 = testing_frame(triclinic2)
-        for i=1:4, j=1:4
-            @pending distance(frame, i, j) => distance(frame2, i, j)
-        end
+        @fact distance_array(frame2) => distance_array(frame)
     end
 
     context("Distance symetry") do
@@ -51,18 +49,19 @@ facts("Minimal images") do
     context("Orthorombic cell") do
         frame = testing_frame(orthorombic)
         @fact minimal_image(frame.positions[1], orthorombic) => frame.positions[1]
-        @fact minimal_image(frame.positions[3], orthorombic) => roughly([5.0, 2.0, 0.56])
-        @fact minimal_image(frame.positions[4], orthorombic) => roughly([-1, 2.0, -5.0])
+        @fact minimal_image(frame.positions[3], orthorombic) => roughly([-5.0, 2.0, 0.56])
+        @fact minimal_image(frame.positions[4], orthorombic) => roughly([-1.0, 2.0, 5.0])
 
         # Mutating version
         minimal_image!(frame.positions[4], orthorombic)
-        @fact [frame.positions[4]...] => roughly([-1, 2.0, -5.0])
+        @fact [frame.positions[4]...] => roughly([-1.0, 2.0, 5.0])
     end
 
     context("Triclinic cell") do
         frame = testing_frame(orthorombic)
-        @fact minimal_image(frame.positions[1], triclinic1) => [frame.positions[1]...]
-        @pending minimal_image(frame.positions[1], triclinic2) => [frame.positions[1]...]
+
+        @fact minimal_image(frame.positions[1], triclinic2) => [frame.positions[1]...]
+        @pending minimal_image(frame.positions[1], triclinic1) => ["compute the real values"]
     end
 
     context("Infinite cell") do
@@ -77,5 +76,7 @@ facts("Volume computation") do
     @fact volume(orthorombic) => 10.^3
     @fact volume(triclinic2) => volume(orthorombic)
     @fact volume(infitite) => 0.
-    @pending volume(triclinic1) => 0.0
+    V = 10.0^3 * sqrt(1 - cos(2*pi/5)^2 - cos(pi/2)^2 - cos(2*pi/3)^2
+                        + 2*cos(2*pi/5)^2*cos(pi/2)^2*cos(2*pi/3)^2  )
+    @fact volume(triclinic1) => V
 end
