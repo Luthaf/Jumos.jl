@@ -18,11 +18,13 @@ function create_velocities(sim::MolecularDynamic, temp::Integer; initializer="bo
     function_name = "init_" * initializer * "_velocities"
     funct = eval(Symbol(function_name))
 
-    # Get masses for the simulation
+    # Get masses
     sim.masses = atomic_masses(sim.topology)
     check_masses(sim)
 
-    return funct(sim, temp)
+    funct(sim, temp)
+
+    sim.data[:temperature] = temp
 end
 
 function init_boltzman_velocities(sim::MolecularDynamic, temp::Integer)
