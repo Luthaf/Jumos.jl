@@ -108,6 +108,7 @@ function run!(sim::MolecularDynamic, nsteps::Integer)
     sim.masses = atomic_masses(sim.topology)
 
     check_settings(sim)
+    setup(sim)
 
     for i=1:nsteps
         integrate(sim)
@@ -129,7 +130,6 @@ set by the user.
 function check_settings(sim::MolecularDynamic)
     check_interactions(sim)
     check_masses(sim)
-    setup_outputs(sim)
 end
 
 function check_interactions(sim::MolecularDynamic)
@@ -176,7 +176,12 @@ function check_masses(sim::MolecularDynamic)
     end
 end
 
-function setup_outputs(sim::MolecularDynamic)
+# Setup the needed values for outputs and enforces
+function setup(sim::MolecularDynamic)
+    for enforce in sim.enforces
+        setup(enforce, sim)
+    end
+
     for output in sim.outputs
         setup(output, sim)
     end
@@ -236,6 +241,15 @@ function output(sim::MolecularDynamic)
             out.current += 1
         end
     end
+end
+
+function have_compute{T<:BaseCompute}(sim::MolecularDynamic, compute_type::Type{T})
+    for compute in sim.computes
+        if isa(compute, compute_type)
+            return true
+        end
+    end
+    return false
 end
 
 include("UI.jl")

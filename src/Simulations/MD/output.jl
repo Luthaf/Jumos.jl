@@ -116,12 +116,3 @@ function setup(::EnergyOutput, sim::MolecularDynamic)
     end
     return nothing
 end
-
-function have_compute{T<:BaseCompute}(sim::MolecularDynamic, compute_type::Type{T})
-    for compute in sim.computes
-        if isa(compute, compute_type)
-            return true
-        end
-    end
-    return false
-end

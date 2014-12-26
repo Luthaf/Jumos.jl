@@ -13,6 +13,10 @@ export BaseEnforce, BerendsenBarostat, BerendsenThermostat, WrapParticles
 
 # abstract BaseEnforce -> Defined in MolecularDynamics.jl
 
+function setup(::BaseEnforce, ::MolecularDynamic)
+    return nothing
+end
+
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
