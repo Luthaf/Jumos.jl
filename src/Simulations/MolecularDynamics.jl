@@ -203,7 +203,7 @@ Enforce a parameter in simulation like temperature or presure or volume, …
 " ->
 function enforce(sim::MolecularDynamic)
     for callback in sim.enforces
-        callback(sim.frame)
+        callback(sim)
     end
 end
 
