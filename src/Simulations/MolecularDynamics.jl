@@ -21,7 +21,7 @@ abstract BaseOutput
 
 include("MD/potentials.jl")
 
-typealias Interactions Dict{(Integer, Integer), Potential}
+typealias Interactions Dict{(Integer, Integer), PotentialComputation}
 
 type SimulationConfigurationError <: Exception
     msg :: String

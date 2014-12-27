@@ -5,33 +5,93 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 # ============================================================================ #
-#               User interface to manipulate Simulation(s)
+#               User interface to manipulate Simulations
 # ============================================================================ #
-
-typealias AtomType Union(Integer, String)
 
 export add_interaction, set_cell, read_topology, read_positions, set_frame,
        add_compute, add_control, add_check, add_output
 
 # Todo: Way to add a catchall interaction
-function add_interaction(sim::MolecularDynamic, potential::BasePotential, atoms::(AtomType, AtomType); cutoff=12.0)
-    pot = Potential(potential, cutoff=cutoff)
-    atom_i, atom_j = get_atom_id(sim, atoms...)
+function add_interaction(sim::MolecularDynamic, potential::PotentialFunction, atoms...;
+                         computation=:auto, kwargs...)
+    atoms_id = get_atoms_id(sim, atoms...)
 
-    sim.interactions[(atom_i, atom_j)] = pot
-    if atom_i != atom_j
-        sim.interactions[(atom_j, atom_i)] = pot
+    interactions = get_interactions(potential, atoms_id...; computation=computation, kwargs...)
+
+    for (index, potential_computation) in interactions
+        sim.interactions[index] = potential_computation
     end
+    return nothing
 end
 
-add_interaction(sim::MolecularDynamic, pot::BasePotential, at_i::AtomType) = add_interaction(sim, pot, (at_i, at_i))
+function get_atoms_id(sim::MolecularDynamic, atoms...)
+    idx = Int[]
+    for atom in atoms
+        atom_idx = isa(atom, Integer) ? atom : get_id_from_name(sim.topology, atom)
+        push!(idx, atom_idx)
+    end
+    return idx
+end
 
-# TODO: add interaction while specifing the cutoff.
+@doc "
+Get the interaction — *i.e.* the pair (atoms_index...)=>PotentialComputation —
+for a potential function.
+" ->
+function get_interactions(potential, atoms...; kwargs...)
+    # TODO: implement this for every kind of potential function
+    throw(NotImplementedError(
+        "Can not build an interaction for a $(typeof(potential)) potential."
+    ))
+end
 
-function get_atom_id(sim::MolecularDynamic, atom_i::AtomType, atom_j::AtomType)
-    i = isa(atom_i, Integer) ? atom_i : get_id_from_name(sim.topology, atom_i)
-    j = isa(atom_j, Integer) ? atom_j : get_id_from_name(sim.topology, atom_j)
-    return (i, j)
+function get_interactions(potential::Potential2Body, atoms...; kwargs...)
+    interactions = cell(2)
+    if length(atoms) == 1
+        atoms = [atoms[1], atoms[1]]
+    elseif length(atoms) > 2
+        throw(SimulationConfigurationError(
+            "Can not build a pair interaction with more than two particles"
+        ))
+    end
+
+    computation = get_computation(potential; kwargs...)
+
+    # 2-body potentials are reflexif
+    interactions[1] = (tuple(atoms...), computation)
+    interactions[2] = (tuple(reverse(atoms)...), computation)
+    return interactions
+end
+
+# Associations between symbols and computations for the get_computation function.
+COMPUTATIONS = Dict(
+    :cutoff=>CutoffComputation,
+    :direct=>DirectComputation,
+    :long_range=>LongRangeComputation,
+    :table=>TableComputation,
+)
+
+function get_computation(potential::PairPotential; kwargs...)
+    kwargs = Dict{Symbol, Any}(kwargs)
+    if kwargs[:computation] == :auto
+        if !haskey(kwargs, :cutoff)
+            computation = CutoffComputation(potential)
+        else
+            computation = CutoffComputation(potential, cutoff=kwargs[:cutoff])
+        end
+    else
+        computation = COMPUTATIONS[kwargs[:computation]](potential; kwargs...)
+    end
+    return computation
+end
+
+function get_computation(potential::BondedPotential; kwargs...)
+    kwargs = Dict{Symbol, Any}(kwargs)
+    if kwargs[:computation] == :auto
+        computation = DirectComputation(potential)
+    else
+        computation = COMPUTATIONS[kwargs[:computation]](potential; kwargs...)
+    end
+    return computation
 end
 
 function set_cell(sim::MolecularDynamic, cell::UnitCell)

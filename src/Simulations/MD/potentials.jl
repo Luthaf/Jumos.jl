@@ -74,6 +74,8 @@ two dihedral angles.
 " ->
 abstract DihedralPotential <: PotentialFunction
 
+typealias Potential2Body Union(PairPotential, BondedPotential)
+
 # ============================================================================ #
 
 @doc "
