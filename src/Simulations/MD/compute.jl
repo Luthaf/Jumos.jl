@@ -13,6 +13,7 @@ using Jumos.Constants #kB
 
 export BaseCompute
 export TemperatureCompute, PressureCompute, VolumeCompute, EnergyCompute
+# TODO: make these types imutables ?
 
 # abstract BaseCompute -> Defined in MolecularDynamics.jl
 

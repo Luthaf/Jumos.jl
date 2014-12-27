@@ -25,6 +25,7 @@ and how you can easily use an other potential.
     usage-example
     create-simulations
     potentials
+    output
 
 
 Use of custom algorithms
@@ -42,4 +43,3 @@ how to expand Jumos with your own algorithms.
     enforce
     check
     compute
-    output
