@@ -26,7 +26,8 @@ to :ref:`potential <potentials>`. The ``get_potential`` function can be usefull.
 
     Return the potential between the atom i and the atom j in the topology.
 
-Due to the internal unit system, forces returned by the potentials are in :math:`kJ/(mol \cdot A)`,
-and should be in :math:`uma \cdot A / fs^2`. The conversion can be handled by the unexported
+Due to the internal unit system, forces returned by the potentials are in
+:math:`kJ/(mol \cdot A)`, and should be in :math:`uma \cdot A / fs^2` for being
+used with the newton equations.  The conversion can be handled by the unexported
 ``Simulations.force_array_to_internal!`` function, converting the values of an
 Array3D from :math:`kJ/(mol \cdot A)` to :math:`uma \cdot A / fs^2`.

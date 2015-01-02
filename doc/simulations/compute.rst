@@ -19,6 +19,7 @@ can be registered with a specific :ref:`simulation <type-Simulation>` using the
 ``add_compute`` function.
 
 .. function:: add_compute(::MolecularDynamic, ::BaseCompute)
+    :noindex:
 
     This function register a computation for a given simulation. Example usage:
 
@@ -115,5 +116,5 @@ provide a specialised ``call`` function with the following signature:
 
 .. function:: call(::MyCompute, ::MolecularDynamic)
 
-This function can set a ``MolecularDynamic.data`` entry with any kind of key to
-store the computed value.
+    This function can set a ``MolecularDynamic.data`` entry with any kind of key
+    to store the computed value.
