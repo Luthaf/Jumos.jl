@@ -62,7 +62,7 @@ function CustomOutput(filename::String, values::Vector{Symbol}, frequency=1;
     write(file, header * EOL)
     s = "# "
     for name in values
-        s *= string(name)
+        s *= string(name) * "   "
     end
     write(file, s * EOL)
     return CustomOutput(file, values, frequency, 0)
