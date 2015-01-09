@@ -89,7 +89,7 @@ integrator, even in the middle of a run.
 
 .. function:: add_control(sim, control)
 
-    Add an :ref:`control <simulation-controls>` algorithm to the simulation
+    Add a :ref:`control <simulation-controls>` algorithm to the simulation
     list. If the control algorithm is already present, a warning is issued.
 
     Usage example:
