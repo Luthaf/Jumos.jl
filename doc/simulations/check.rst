@@ -29,19 +29,19 @@ simulation by using the ``add_check`` function.
 Existing checks
 ---------------
 
-.. cpp:type:: GlobalVelocityIsNull
+.. jl:type:: GlobalVelocityIsNull
 
     This algorithm checks if the global velocity (the total moment of inertia) is
     null for the current simulation. The absolute tolerance is :math:`10^{-5}\ A/fs`.
 
-.. cpp:type:: TotalForceIsNull
+.. jl:type:: TotalForceIsNull
 
     This algorithm checks if the sum of the forces is null for the current
     simulation. The absolute tolerance is :math:`10^{-5}\ uma \cdot A/fs^2`.
 
 .. _type-AllPositionsAreDefined:
 
-.. cpp:type:: AllPositionsAreDefined
+.. jl:type:: AllPositionsAreDefined
 
     This algorithm check is all the positions and all the velocities are defined
     numbers, *i.e.* if all the values are not infinity or the ``NaN`` (not a number)
@@ -56,7 +56,7 @@ Adding a new check algorithm is as simple as subtyping ``BaseCheck`` and extendi
 the ``call(::BaseCheck, ::MolecularDynamic)`` method. This method should throw an
 exception of type ``CheckError`` if the checked condition is not fullfiled.
 
-.. cpp:type:: CheckError
+.. jl:type:: CheckError
 
     Custom exception providing a specific error message for simulation checking.
 

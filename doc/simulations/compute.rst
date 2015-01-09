@@ -55,7 +55,7 @@ them the return value (for direct calling), and the setted keys of
 Energy related values
 ---------------------
 
-.. cpp:type:: TemperatureCompute
+.. jl:type:: TemperatureCompute
 
     Compute the temperature of the simulation. All the masses have to be set.
 
@@ -63,7 +63,7 @@ Energy related values
 
     **Return value**: The current frame temperature.
 
-.. cpp:type:: EnergyCompute
+.. jl:type:: EnergyCompute
 
     Compute the potential, kinetic and total energy of the current simulation step.
 
@@ -89,7 +89,7 @@ Energy related values
 Volume
 ------
 
-.. cpp:type:: VolumeCompute
+.. jl:type:: VolumeCompute
 
     Compute the volume of the current :ref:`unit cell <type-UnitCell>`.
 
@@ -100,7 +100,7 @@ Volume
 Pressure
 --------
 
-.. cpp:type:: PressureCompute
+.. jl:type:: PressureCompute
 
     TODO
 

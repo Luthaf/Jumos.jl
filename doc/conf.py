@@ -16,6 +16,10 @@ import sys
 import os
 import sphinx_rtd_theme
 
+DOC_DIR = os.path.dirname(__file__)
+sys.path.append(os.path.join(DOC_DIR, "ext"))
+import juliadoc
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -27,6 +31,7 @@ import sphinx_rtd_theme
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
+    'juliadoc.julia'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
