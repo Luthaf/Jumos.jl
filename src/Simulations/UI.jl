@@ -11,7 +11,7 @@
 typealias AtomType Union(Integer, String)
 
 export add_interaction, set_cell, read_topology, read_positions, set_frame,
-       add_compute, add_enforce, add_check, add_output
+       add_compute, add_control, add_check, add_output
 
 # Todo: Way to add a catchall interaction
 function add_interaction(sim::MolecularDynamic, potential::BasePotential, atoms::(AtomType, AtomType); cutoff=12.0)
@@ -79,13 +79,13 @@ function add_compute(sim::MolecularDynamic, compute::BaseCompute)
     return sim.computes
 end
 
-function add_enforce(sim::MolecularDynamic, enforce::BaseEnforce)
-    if !ispresent(sim, enforce)
-        push!(sim.enforces, enforce)
+function add_control(sim::MolecularDynamic, control::BaseControl)
+    if !ispresent(sim, control)
+        push!(sim.controls, control)
     else
-        warn("$enforce is aleady present in this simulation")
+        warn("$control is aleady present in this simulation")
     end
-    return sim.enforces
+    return sim.controls
 end
 
 function add_check(sim::MolecularDynamic, check::BaseCheck)
@@ -99,7 +99,7 @@ end
 
 function ispresent(sim::MolecularDynamic, algo)
     algo_type = typeof(algo)
-    for field in [:checks, :computes, :outputs, :enforces]
+    for field in [:checks, :computes, :outputs, :controls]
         for elem in getfield(sim, field)
             if isa(elem, algo_type)
                 return true

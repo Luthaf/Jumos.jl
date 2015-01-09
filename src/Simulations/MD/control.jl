@@ -9,20 +9,20 @@
 # ============================================================================ #
 
 import Base: call
-export BaseEnforce
+export BaseControl
 export BerendsenBarostat, WrapParticles
 export BerendsenThermostat, VelocityRescaleThermostat
 
-# abstract BaseEnforce -> Defined in MolecularDynamics.jl
+# abstract BaseControl -> Defined in MolecularDynamics.jl
 
-function setup(::BaseEnforce, ::MolecularDynamic)
+function setup(::BaseControl, ::MolecularDynamic)
     return nothing
 end
 
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
-type WrapParticles <: BaseEnforce
+type WrapParticles <: BaseControl
 end
 
 function call(::WrapParticles, sim::MolecularDynamic)
@@ -31,7 +31,7 @@ function call(::WrapParticles, sim::MolecularDynamic)
     end
 end
 
-abstract Thermostat <: BaseEnforce
+abstract Thermostat <: BaseControl
 
 function setup(::Thermostat, sim::MolecularDynamic)
     if !have_compute(sim, TemperatureCompute)
@@ -87,6 +87,6 @@ function call(th::BerendsenThermostat, sim::MolecularDynamic)
 end
 
 
-type BerendsenBarostat <: BaseEnforce
+type BerendsenBarostat <: BaseControl
     tau::Float64
 end

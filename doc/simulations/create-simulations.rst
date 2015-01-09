@@ -36,7 +36,7 @@ By default, the following algorithm are used in the molecular dynamic run.
 +---------------------+----------------------------------------------------------------------+
 | Forces computation  | :ref:`Naive computation <type-NaiveForceComputer>`                   |
 +---------------------+----------------------------------------------------------------------+
-| Enforce             | :ref:`Wrap particles in the box <type-WrapParticles>`                |
+| Control             | :ref:`Wrap particles in the box <type-WrapParticles>`                |
 +---------------------+----------------------------------------------------------------------+
 | Check               | :ref:`All positions are defined <type-AllPositionsAreDefined>`       |
 +---------------------+----------------------------------------------------------------------+
@@ -87,16 +87,16 @@ integrator, even in the middle of a run.
         # Note the parentheses, needed to instanciate the new check.
         add_check(sim, AllPositionsAreDefined())
 
-.. function:: add_enforce(sim, enforce)
+.. function:: add_control(sim, control)
 
-    Add an :ref:`enforce <simulation-enforces>` algorithm to the simulation
-    list. If the enforce algorithm is already present, a warning is issued.
+    Add an :ref:`control <simulation-controls>` algorithm to the simulation
+    list. If the control algorithm is already present, a warning is issued.
 
     Usage example:
 
     .. code-block:: julia
 
-        add_enforce(sim, RescaleVelocities(300, 100))
+        add_control(sim, RescaleVelocities(300, 100))
 
 .. function:: add_compute(sim, compute)
 

@@ -97,15 +97,15 @@ Get forces
 ^^^^^^^^^^
 
 During the integration steps, forces acting on the atoms will be needed. This
-forces computing step is the most time consuming aspect of the calculation. Various ways 
-to do this computation exists, depening on the type of potentials (short range or 
-long range), and some tricks can speed up the computation (pairs list, short range potential 
+forces computing step is the most time consuming aspect of the calculation. Various ways
+to do this computation exists, depening on the type of potentials (short range or
+long range), and some tricks can speed up the computation (pairs list, short range potential
 truncation).
 
 The algorithm used for integration have the responsability to call this step when
 and as many times as needed.
 
-Enforce
+Control
 ^^^^^^^
 
 If the time integration does not force the value of external parameters, like

@@ -1,4 +1,4 @@
-.. _simulation-enforces:
+.. _simulation-controls:
 
 Controlling the simulation
 ==========================
@@ -28,4 +28,4 @@ Wrapping the particles in the unit cell
 Adding other controls
 ---------------------
 
-TODO: explain what should be an Enforce and what should not be.
+TODO: explain what should be an Control and what should not be.

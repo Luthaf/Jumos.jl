@@ -10,7 +10,7 @@ by a simulation.
 Users don't usualy need to use ``Basecompute`` directly, as all the output
 capacities are provided by the :ref:`outputs <simulation-outputs>`. Computed values
 can have various usages: they may be used in :ref:`outputs <simulation-outputs>`,
-or in :ref:`enforces <simulation-enforces>`. The data is shared between algorithms
+or in :ref:`controls <simulation-controls>`. The data is shared between algorithms
 using the ``MolecularDynamic.data`` field. This field is a dictionnary associating
 symbols and any kind of value.
 

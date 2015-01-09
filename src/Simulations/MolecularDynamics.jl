@@ -14,7 +14,7 @@ export MolecularDynamic, run!
 abstract Simulation
 abstract BaseForcesComputer
 abstract BaseIntegrator
-abstract BaseEnforce
+abstract BaseControl
 abstract BaseCheck
 abstract BaseCompute
 abstract BaseOutput
@@ -38,7 +38,7 @@ type MolecularDynamic <: Simulation
     interactions    :: Interactions
     forces_computer :: BaseForcesComputer
     integrator      :: BaseIntegrator
-    enforces        :: Vector{BaseEnforce}
+    controls        :: Vector{BaseControl}
     checks          :: Vector{BaseCheck}
     computes        :: Vector{BaseCompute}
     outputs         :: Vector{BaseOutput}
@@ -57,7 +57,7 @@ function MolecularDynamic(integrator=VelocityVerlet(1.0))
     interactions = Interactions()
     forces_computer = NaiveForces()
 
-    enforces = BaseEnforce[WrapParticles()]
+    controls = BaseControl[WrapParticles()]
     checks = BaseCheck[AllPositionsAreDefined(), ]
     computes = BaseCompute[]
     outputs = BaseOutput[]
@@ -72,7 +72,7 @@ function MolecularDynamic(integrator=VelocityVerlet(1.0))
     return MolecularDynamic(interactions,
                         forces_computer,
                         integrator,
-                        enforces,
+                        controls,
                         checks,
                         computes,
                         outputs,
@@ -91,7 +91,7 @@ MolecularDynamic(timestep::Real) = MolecularDynamic(VelocityVerlet(timestep))
 
 include("MD/forces.jl")
 include("MD/integrators.jl")
-include("MD/enforce.jl")
+include("MD/control.jl")
 include("MD/check.jl")
 include("MD/compute.jl")
 include("MD/output.jl")
@@ -112,7 +112,7 @@ function run!(sim::MolecularDynamic, nsteps::Integer)
 
     for i=1:nsteps
         integrate(sim)
-        enforce(sim)
+        control(sim)
         check(sim)
         compute(sim)
         output(sim)
@@ -176,10 +176,10 @@ function check_masses(sim::MolecularDynamic)
     end
 end
 
-# Setup the needed values for outputs and enforces
+# Setup the needed values for outputs and controls
 function setup(sim::MolecularDynamic)
-    for enforce in sim.enforces
-        setup(enforce, sim)
+    for control in sim.controls
+        setup(control, sim)
     end
 
     for output in sim.outputs
@@ -199,10 +199,10 @@ function get_forces!(sim::MolecularDynamic)
 end
 
 @doc "
-Enforce a parameter in simulation like temperature or presure or volume, …
+Control a parameter in simulation like temperature or presure or volume, …
 " ->
-function enforce(sim::MolecularDynamic)
-    for callback in sim.enforces
+function control(sim::MolecularDynamic)
+    for callback in sim.controls
         callback(sim)
     end
 end

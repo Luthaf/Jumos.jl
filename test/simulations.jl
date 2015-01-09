@@ -76,7 +76,7 @@ Ekin_f, Epot_f, Etot_f = energy(sim)
 @test isapprox(Etot_f, Etot, rtol=1e-3)
 
 # Thermostating at 300K: Berendsen thermostat
-add_enforce(sim, BerendsenThermostat(300, 10))
+add_control(sim, BerendsenThermostat(300, 10))
 create_velocities(sim, 200)
 run!(sim, 1000)
 
@@ -84,7 +84,7 @@ T_end = T(sim)
 @test isapprox(T_end, 300, atol=10)
 
 # Thermostating at 300K: velocity rescale thermostat
-add_enforce(sim, VelocityRescaleThermostat(300, 10))
+add_control(sim, VelocityRescaleThermostat(300, 10))
 create_velocities(sim, 200)
 run!(sim, 1000)
 
