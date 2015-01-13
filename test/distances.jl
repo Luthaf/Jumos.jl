@@ -37,14 +37,13 @@ end
 
 # TODO: test the distance(ref, conf, i, j) and distance(ref, conf, i) methods
 
-# frame.positions[1] is in the cell
+# frame.positions[1] is in the cell, and should stay inside
 @test minimal_image(frame.positions[1], orthorombic) == frame.positions[1]
 @test minimal_image(frame.positions[1], infitite) == [frame.positions[1]...]
 @test minimal_image(frame.positions[1], triclinic1) == [frame.positions[1]...]
 # TODO: fix this and L26.
 #@test minimal_image(frame.positions[1], triclinic2) == [frame.positions[1]...]
 
-# frame.positions[3] and frame.positions[4] are not
 @test isapprox(minimal_image(frame.positions[3], orthorombic), [5.0, 2.0, 0.56])
 @test isapprox(minimal_image(frame.positions[4], orthorombic), [-1, 2.0, -5.0])
 @test minimal_image(frame.positions[3], infitite) == [frame.positions[3]...]

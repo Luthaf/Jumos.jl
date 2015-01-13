@@ -10,12 +10,12 @@ function dummy_frame(n=4)
     frame = Frame(top)
     nplaced = 0
     for i=0:side-1, j=0:side-1, k=0:side-1
-        frame.positions[i+j+k+1] = [i, j, k]
+        frame.positions[nplaced+1] = [2.0*i, 2.0*j, 2.0*k]
         nplaced += 1
         nplaced == n ? break : nothing
     end
 
-    cell = UnitCell(8.0)
+    cell = UnitCell(side*2.0)
     frame.cell = cell
     return frame
 end

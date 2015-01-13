@@ -90,6 +90,7 @@ function call(integrator::Verlet, sim::MolecularDynamic)
     positions = sim.frame.positions
     velocities = sim.frame.velocities
     prevpos = integrator.prevpos
+    masses = sim.masses
 
     natoms = size(sim.frame)
 
@@ -103,17 +104,16 @@ function call(integrator::Verlet, sim::MolecularDynamic)
     end
 
     current = copy(prevpos)
+    get_forces!(sim)
 
     # Save current positions
     @inbounds for i=1:natoms
         current[i] = positions[i]
     end
 
-    get_forces!(sim)
-
     # Update positions
     @inbounds for i=1:natoms
-        positions[i] = sim.forces[i] .* dt^2/sim.masses[i] .+ 2.0 .* positions[i] .- prevpos[i]
+        positions[i] = 2.0.*positions[i] + 2.0/masses[i] .* sim.forces[i] .* dt^2 - prevpos[i]
     end
 
     # Update saved position

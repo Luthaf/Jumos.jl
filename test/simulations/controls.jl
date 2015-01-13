@@ -7,7 +7,7 @@ facts("Thermostats") do
 
         run!(sim, 1000)
         T_end = T(sim)
-        @fact T_end => roughly(300, atol=10)
+        @fact T_end => roughly(300, atol=20)
     end
 
     context("Velocity rescale thermostat") do
@@ -17,6 +17,6 @@ facts("Thermostats") do
 
         run!(sim, 1000)
         T_end = T(sim)
-        @fact T_end => roughly(300, atol=15)
+        @fact T_end => roughly(300, atol=20)
     end
 end

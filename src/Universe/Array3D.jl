@@ -31,6 +31,9 @@ end
 
 (+){T}(a::SubVector{T}, b::SubVector{T}) = T[a[1]+b[1], a[2]+b[2], a[3]+b[3]]
 (-){T}(a::SubVector{T}, b::SubVector{T}) = T[a[1]-b[1], a[2]-b[2], a[3]-b[3]]
+# Be carreful: no bounds checking for the Vectors !
+(-){T}(a::Vector{T}, b::SubVector{T}) = T[a[1]-b[1], a[2]-b[2], a[3]-b[3]]
+(-){T}(a::SubVector{T}, b::Vector{T}) = T[a[1]-b[1], a[2]-b[2], a[3]-b[3]]
 (.*){T}(a::SubVector{T}, b::Real) = T[a[1]*b, a[2]*b, a[3]*b]
 (.*){T}(a::Real, b::SubVector{T}) = (.*)(b, a)
 (./){T}(a::SubVector{T}, b::Real) = T[a[1]/b, a[2]/b, a[3]/b]
