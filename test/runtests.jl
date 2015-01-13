@@ -1,12 +1,5 @@
 using Jumos
-using Base.Test
-import Base: isapprox
-
 using FactCheck
-
-function isapprox{T<:Number, S<:Number}(a::Vector{T}, b::Vector{S})
-    return reduce(+, 0, map(isapprox, a, b)) == 3
-end
 
 const tests_available = Dict(
     :distances => "Distances computations",

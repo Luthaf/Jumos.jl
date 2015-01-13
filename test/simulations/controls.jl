@@ -2,6 +2,8 @@
 facts("Thermostats") do
     context("Berendsen thermostat") do
         sim = testing_simulation()
+        set_frame(sim, dummy_frame(50))
+
         add_control(sim, BerendsenThermostat(300, 10))
         create_velocities(sim, 200)
 
@@ -12,6 +14,8 @@ facts("Thermostats") do
 
     context("Velocity rescale thermostat") do
         sim = testing_simulation()
+        set_frame(sim, dummy_frame(50))
+
         add_control(sim, VelocityRescaleThermostat(300, 10))
         create_velocities(sim, 200)
 

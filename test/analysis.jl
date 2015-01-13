@@ -1,33 +1,28 @@
-#===============================================================================
-                        Test the histograms functions
-===============================================================================#
-
-TEST_DIR = dirname(@__FILE__)
-
-traj = Reader("$TEST_DIR/trjs/water.nc", topology="$TEST_DIR/trjs/water.lmp")
-
+facts("Analysis module") do
+    TRAJ_DIR = joinpath(dirname(@__FILE__), "trjs")
+    traj = Reader("$TRAJ_DIR/water.nc", topology="$TRAJ_DIR/water.lmp")
     tmp = tempname()
 
-    info("Testing DensityProfile")
-    @time begin
+    context("Density profile") do
         rho = DensityProfile("O", 3)
         for frame in eachframe(traj, start=50)
             update!(rho, frame)
         end
         normalize!(rho)
         write(rho, "dummy", outname=tmp)
+        @pending "add some more tests here" => :TODO
     end
 
-    info("Testing RDF")
-    @time begin
+    context("Radial distrubution function") do
         rdf = RDF("O")
         for frame in eachframe(traj, start=50)
             update!(rdf, frame)
         end
         normalize!(rdf)
         write(rdf, "dummy", outname=tmp)
+        @pending "add some more tests here" => :TODO
     end
 
     rm(tmp)
-
-close(traj)
+    close(traj)
+end
