@@ -74,6 +74,11 @@ The energy output write to a file the values of energy and temperature for the
 current step of the simulation. Values writen are the current step, the kinetic
 energy, the potential energy, the total energy and the temperature.
 
+.. function:: EnergyOutput(filename, [frequency])
+
+    This construct a ``EnergyOutput`` which can be used to the energy evolution
+    to a file.
+
 Defining a new output
 ---------------------
 
