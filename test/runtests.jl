@@ -2,6 +2,8 @@ using Jumos
 using Base.Test
 import Base: isapprox
 
+using FactCheck
+
 function isapprox{T<:Number, S<:Number}(a::Vector{T}, b::Vector{S})
     return reduce(+, 0, map(isapprox, a, b)) == 3
 end
@@ -37,6 +39,7 @@ function main()
     for test in tests_selected
         runtest(test)
     end
+    FactCheck.exitstatus()
 end
 
 function runtest(test)
