@@ -236,7 +236,7 @@ function output(sim::MolecularDynamic)
     for out in sim.outputs
         if out.current == out.frequency
             write(out, context)
-            out.current = 0
+            out.current = 1
         else
             out.current += 1
         end
