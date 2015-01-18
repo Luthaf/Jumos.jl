@@ -82,7 +82,7 @@ typealias Potential2Body Union(PairPotential, BondedPotential)
 The `DirectComputation` of a potential can always be used, but may not be the
 most effective way.
 " ->
-type DirectComputation <: PotentialComputation
+immutable DirectComputation <: PotentialComputation
     potential::PotentialFunction
 end
 
@@ -90,7 +90,7 @@ end
 A `CutoffComputation` of an interaction use a cutoff distance. After this distance,
 the energy and the force are set to be zero.
 " ->
-type CutoffComputation{T<:ShortRangePotential} <: PotentialComputation
+immutable CutoffComputation{T<:ShortRangePotential} <: PotentialComputation
     potential::T
     cutoff::Float64
     e_cutoff::Float64
@@ -105,7 +105,7 @@ abstract LongRangeComputation <: PotentialComputation
 @doc "
 `TableComputation` uses table lookup to compute pair interactions efficiently.
 " ->
-type TableComputation{T<:PotentialFunction, N} <: PotentialComputation
+immutable TableComputation{T<:PotentialFunction, N} <: PotentialComputation
     potential::T
     data::Array{Float64, 1}
     force::Array{Float64, 1}
@@ -179,7 +179,7 @@ end
 @doc "
 Null potential, for a system without interactions
 " ->
-type NullPotential <: PairPotential
+immutable NullPotential <: PairPotential
 end
 
 function call(::NullPotential, ::Float64)
@@ -195,7 +195,7 @@ end
 @doc "
 User defined potential, without any parameter
 " ->
-type UserPotential <: ShortRangePotential
+immutable UserPotential <: ShortRangePotential
     potential::Function
     force::Function
 end
@@ -222,7 +222,7 @@ end
 Lennard-Jones potential, using the following formulation
    \[ V(r) = 4\epsilon( (\sigma/r)^12 - (\sigma/r)^6 ) \]
 " ->
-type LennardJones <: ShortRangePotential
+immutable LennardJones <: ShortRangePotential
     epsilon :: Float64
     sigma   :: Float64
 end
@@ -246,7 +246,7 @@ Harmonic potential, with the following definition :
 `Harmonic(k, r0, depth=0.0)`
     This function creates an instance of an Harmonic potential.
 " ->
-type Harmonic <: BondedPotential
+immutable Harmonic <: BondedPotential
     k     :: Float64
     r0    :: Float64
     depth :: Float64
