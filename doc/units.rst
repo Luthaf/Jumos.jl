@@ -5,7 +5,7 @@ Internal units
 
 *Jumos* uses a set of internal units, converting back and forth to these units
 when needed. Conversion from SI units is always supported. Parenthesis indicate
-planned conversion not yet implemented.
+planned conversion that is not implemented yet.
 
 +---------------+-------------------------------------------------+-------------------------+
 |    Quantity   | Internal unit                                   | Supported conversions   |
@@ -40,7 +40,7 @@ package. You can convert from and to internal representation using the following
 
 .. function:: internal(value::SIQuantity)
 
-    Convert a value with unit to it's internal representation.
+    Converts a value with unit to its internal representation.
 
 .. code-block:: jlcon
 
@@ -52,15 +52,19 @@ package. You can convert from and to internal representation using the following
 
 .. function:: with_unit(value::Number, target_unit::SIUnit)
 
-    Convert an internal value to its value in the International System. The units are
-    not tracked in the code, so you can convert a position to a pressure. All the results
-    are returned in the main SI unit, without considering any power-of-ten prefix.
-    This leads to weird results like:
+    Converts an internal value to its value in the International System. You
+    shall note that units are not tracked in the code, so you can convert a
+    position to a pressure. And all the results are returned in the main SI unit,
+    without considering any power-of-ten prefix.
 
-.. code-block:: jlcon
+    This may leads to strange results like:
 
-    julia> with_unit(45, mJ)
-        188280.0 kg m²/s²
+    .. code-block:: jlcon
 
-    julia> with_unit(45, J)
-        188280.0 kg m²/s²
+        julia> with_unit(45, mJ)
+            188280.0 kg m²/s²
+
+        julia> with_unit(45, J)
+            188280.0 kg m²/s²
+
+    This behaviour will be corrected in future versions.

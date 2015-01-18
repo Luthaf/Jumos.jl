@@ -5,27 +5,27 @@ Trajectories
 
 When running molecular simulations, the trajectory of the system is commonly saved
 to the disk in prevision of future analysis or new simulations run. The `Trajectories`
-module offer facilities to read and write this kind of files.
+module offers facilities to read and write this files.
 
 Reading and writing trajectories
 --------------------------------
 
-From a trajectory, one want to read or write :ref:`frames <type-Frame>`. In order
-to do so, some other informations are needed : namely an :ref:`unit cell <type-UnitCell>`
-and a :ref:`topology <type-Topology>`. Both are optionals, but allow for better
-computations. Some file format already contains this kind of informations, so there
+One can read or write :ref:`frames <type-Frame>` from a trajectory. In order
+to do so,  more information is needed : namely an :ref:`unit cell <type-UnitCell>`
+and a :ref:`topology <type-Topology>`. Both are optional, but allow for better
+computations. Some file formats already contain this kind of informations so there
 is no need to provide it.
 
 Trajectories can exist in differents formats: text formats like the `XYZ`_ format,
 or binary formats. In `Jumos`, the format of a trajectory file is automatically
-guessed based on the file extension.
+determined based on the file extension.
 
 Base types
 ^^^^^^^^^^
 
-The two base types for reading and writing trajectories in files are respectively
+The two basic types for reading and writing trajectories in files are respectively
 the ``Reader`` and the ``Writer`` parametrised types. For each specific format,
-there will be a ``FormatWriter`` and/or ``FormatReader`` subtype implementing
+there is a ``FormatWriter`` and/or ``FormatReader`` subtype implementing
 the basic operations.
 
 Usage
@@ -35,8 +35,8 @@ The following functions are defined for the interactions with trajectory files.
 
 .. function:: opentraj(filename, [mode="r", topology="", kwargs...])
 
-    Open a trajectory file for reading or writing. The ``filename`` extension
-    determine the :ref:`format <trajectory-formats>` of the trajectory.
+    Opens a trajectory file for reading or writing. The ``filename`` extension
+    determines the :ref:`format <trajectory-formats>` of the trajectory.
 
     The ``mode`` argument can be ``"r"`` for reading or ``"w"`` for writing.
 
@@ -48,43 +48,43 @@ The following functions are defined for the interactions with trajectory files.
 
 .. function:: Reader(filename [, kwargs...])
 
-    Create a ``Reader`` object, by passing the keywords arguments ``kwargs`` to
+    Creates a ``Reader`` object, by passing the keywords arguments ``kwargs`` to
     the specific constructor. This is equivalent to use the `opentraj` function
     with ``"r"`` mode.
 
 .. function:: Writer(filename [, kwargs...])
 
-    Create a ``Writer`` object, by passing the keywords arguments ``kwargs`` to
+    Creates a ``Writer`` object, by passing the keywords arguments ``kwargs`` to
     the specific constructor. This is equivalent to use the `opentraj` function
     with ``"w"`` mode.
 
 .. function:: eachframe(::Reader [range::Range, start=first_step])
 
-    This function create an interator interface to a ``Reader``, allowing for
+    This function creates an [interator] interface to a ``Reader``, allowing for
     constructions like ``for frame in eachframe(reader)``.
 
 .. function:: read_next_frame!(::Reader, frame)
 
-    Read the next frame from  ``Reader``, and store it into ``frame``.
-    Raise an error in case of failure, and return ``true`` if their is some
-    other frame to read, ``false`` otherwise.
+    Reads the next frame from  ``Reader``, and stores it into ``frame``.
+    Raises an error in case of failure, and returns ``true`` if there are
+    other frames to read, ``false`` otherwise.
 
-    This function can be use in constructions like ``while read_next_frame!(traj)``.
+    This function can be used in constructions such as ``while read_next_frame!(traj)``.
 
 .. function:: read_frame!(::Reader, step, frame)
 
-    Read a frame at the step ``step`` from the ``Reader``, and store it into
-    ``frame``. Raise an error in the case of failure and return ``true`` if their
+    Reads a frame at the step ``step`` from the ``Reader``, and stores it into
+    ``frame``. Raises an error in the case of failure and returns ``true`` if there
     is a frame after the step ``step``, ``false`` otherwise.
 
 .. function:: write(::Writer, frame)
 
-    Write the :ref:`Frame <type-Frame>` ``frame`` to the file associated with the
+    Writes the :ref:`Frame <type-Frame>` ``frame`` to the file associated with the
     ``Writer``.
 
 .. function:: close(trajectory_file)
 
-    Close the file associated with a ``Reader`` or a ``Writer``.
+    Closes the file associated with a ``Reader`` or a ``Writer``.
 
 Reading frames from a file
 """"""""""""""""""""""""""
@@ -106,7 +106,7 @@ constructor, the ``cell`` keyword argument will be used to construct an
 Writing frames in a file
 """"""""""""""""""""""""
 
-Here is an example of how you can write frames to a file. This example convert a
+Here is an example of how you can write frames to a file. This example converts a
 trajectory from a file format to another. The ``topology`` keyword is used to
 read a :ref:`Topology <type-Topology>` from a file.
 
@@ -127,9 +127,9 @@ read a :ref:`Topology <type-Topology>` from a file.
 Supported formats
 ^^^^^^^^^^^^^^^^^
 
-The following table summarise the formats supported by `Jumos`, giving the reading
-and writing capacities of `Jumos`, as well as the presence or not of the unit cell
-and the topology informations in the files. The last column give the accepted keywords.
+The following table summarizes the formats supported by `Jumos`, giving the reading
+and writing capacities of `Jumos`, as well as the presence or absence of the unit cell
+and the topology information in the files. The last column indicates the accepted keywords.
 
 +------------------+--------------+--------+---------+---------+------------+-------------+
 |    Format        | Extension    | Read   | Write   |  Cell   | Topology   |  Keywords   |
@@ -156,15 +156,13 @@ Readind and writing topologies
 -------------------------------
 
 `Topologies <type-Topology>`_ can also be represented and stored in files. Some
-functions allow to read directly these file, but you don't usally need to use them
-directely.
+functions allow to read directly these files, but there is usally no need to use
+them directely.
 
 Supported formats for topology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The folowing formats are suported for topology reading. If you want to write a
-toplogy to a file, the best way for now is to create a frame with this topology,
-and write this frame to an XYZ file.
+Topology reading supports the formats in the following table.
 
 +----------------------+------------+------------+
 |    Format            | Reading ?  | Writing ?  |
@@ -175,6 +173,9 @@ and write this frame to an XYZ file.
 +----------------------+------------+------------+
 
 .. _LAMMPS: http://lammps.sandia.gov/doc/read_data.html
+
+If you want to write a toplogy to a file, the best way for now is to create a
+frame with this topology, and write this frame to an XYZ file.
 
 .. Adding new formats
    ^^^^^^^^^^^^^^^^^^^

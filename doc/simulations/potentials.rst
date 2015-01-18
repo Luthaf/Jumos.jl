@@ -7,14 +7,14 @@ Potentials
 Existing potentials
 ===================
 
-In molecular simulations, there is two main kind of potential : short-range
-potential and long-range potential. Short-range potential goes to zero faster
-than the :math:`1/r^3` function, and long-range potentials goes to zero at the
-same speed or slower than :math:`1/r^3`. Typical long-range potential is the
-Coulomb potential between charged paricles.
+Molecular simulations use 2 main kinds of potentials : short-range potentials
+and long-range potentials. Short-range potentials go to zero faster than the
+:math:`1/r^3` function, and long-range potentials go to zero at the same speed
+or more slowly than :math:`1/r^3`. A typical long-range potential is the Coulomb
+potential between charged particles.
 
-For now, `Jumos` only implement computations on short-range pair potentials, using a
-cutoff distance.
+For now, `Jumos` only implements computations on short-range pair potentials,
+using a cutoff distance.
 
 Short-range potentials
 ----------------------
@@ -22,8 +22,8 @@ Short-range potentials
 Cuttoff distance
 ^^^^^^^^^^^^^^^^
 
-Short range potentials are computed using a cutoff distance. This mean that all
-interactions at a longer distance are set to be zero. The default distance
+Short range potentials are computed using a cutoff distance, which means that all
+interactions at a longer distance are set to zero. The default distance
 is :math:`12\ A`, and this can be changed by passing a ``cutoff`` keyword argument
 to the ``Potential`` constructor, or to the ``add_interaction`` function.
 
@@ -62,12 +62,12 @@ This potential is a potential equal to zero everywhere. It can be used to define
 Adding interactions to a simulation
 ===================================
 
-Before runnning a simulation, one should define interactions between all the pairs
-of atomic types. The ``add_interaction`` function can be used for that.
+Before runnning a simulation, we should define interactions between all the pairs
+of atomic types. The ``add_interaction`` function should be used for that.
 
 .. function:: add_interaction(::MolecularDynamic, potential, atoms [, cutoff=12.0])
 
-    Add an interaction between the ``atoms`` in the simulation. The energy and
+    Adds an interaction between the ``atoms`` in the simulation. The energy and
     the forces for this interaction will be computed using the given ``potential``.
 
     ``atoms`` can be a string, an integer, or a tuple of strings and integers.
@@ -84,14 +84,15 @@ User potential
 --------------
 
 The easier way to define a new potential is to create ``UserPotential`` instances,
-providing potential and force functions. To add a potential, let's say an harmonic
-potential, one have to define two functions, a potential function and a force
+providing potential and force functions. To add a potential, for example an harmonic
+potential, we have to define two functions, a potential function and a force
 function. These functions should take a ``Float64`` value (the distance) and
 return a ``Float64`` (the value of the potential or the force at this distance).
 
 .. function:: UserPotential(potential, force)
 
-    Creates an UserPotential instance, using the ``potential`` and ``force`` functions.
+    Creates an UserPotential instance, using the ``potential`` and ``force``
+    functions.
 
     ``potential`` and ``force`` should take a ``Float64`` parameter and return a
     ``Float64`` value.
@@ -128,13 +129,15 @@ Here is an example of the user potential usage:
 Subtyping ShortRangePotential
 -----------------------------
 
-A better way to use custom potentials in a `Jumos` simulation would be to subtype
-``ShortRangePotential``. Here is an example, defining a Lennard-Jones potential using
-the second form:
+A more efficient way to use custom potential is to subtype ``ShortRangePotential``.
+Here is an example, defining a Lennard-Jones potential using the second form:
 
 .. math::
 
     V(r) = \frac{A}{r^{12}} - \frac{B}{r^{6}}
+
+To define a new potential, two functions are needed: `call` and `force`. It is
+necessary to import these two functions in the current scope before extending them.
 
 .. code-block:: julia
 
@@ -157,9 +160,7 @@ the second form:
         return 12 * pot.A/(r^13) - 6 * pot.B/(r^7)
     end
 
-To define a new potential, two functions are needed: `call` and `force`. It is
-necessary to import these two function in the current scope before extending them.
-The above example can the be use like this:
+The above example can the be used like this:
 
 .. code-block:: julia
 

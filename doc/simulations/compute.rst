@@ -3,32 +3,32 @@
 Computing values of interest
 ============================
 
-Various values can be computed from a simulation. The algorithms used to compute
-these values are represented in `Jumos` by subtypes of ``Basecompute`` and stored
-by a simulation.
+To compute physical values from a simulation, we can use algorithms represented
+by subtypes of ``Basecompute`` and associate these algorithms to a simulation.
 
-Users don't usualy need to use ``Basecompute`` directly, as all the output
-capacities are provided by the :ref:`outputs <simulation-outputs>`. Computed values
-can have various usages: they may be used in :ref:`outputs <simulation-outputs>`,
+Users don't usualy need to use these compute algorithms directly, as the output
+algorithms (see :ref:`simulation-outputs`) set the needed computations by themself.
+
+Computed values can have various usages: they may be used in :ref:`outputs <simulation-outputs>`,
 or in :ref:`controls <simulation-controls>`. The data is shared between algorithms
 using the ``MolecularDynamic.data`` field. This field is a dictionnary associating
 symbols and any kind of value.
 
-This page of documentation present the implemented computations. Each computation
-can be registered with a specific :ref:`simulation <type-Simulation>` using the
+This page of documentation presents the implemented computations. Each computation
+can be associated with a specific :ref:`simulation <type-Simulation>` using the
 ``add_compute`` function.
 
 .. function:: add_compute(::MolecularDynamic, ::BaseCompute)
     :noindex:
 
-    This function register a computation for a given simulation. Example usage:
+    This function registers a computation for a given simulation. Example usage:
 
     .. code-block:: julia
 
         sim = MolecularDynamic() # Create a simulation
         # ...
 
-        # Don't forget the parentheses to instanciate the computation
+        # Do not forget the parentheses to instanciate the computation
         add_compute(sim, MyCompute())
 
         run!(sim, 10)
@@ -37,7 +37,7 @@ can be registered with a specific :ref:`simulation <type-Simulation>` using the
         sim.data[:my_compute]
 
 
-A more advanced usage can be done by directly calling the instance of ``MyCompute``.
+You can also call directly any instance of ``MyCompute``:
 
 .. code-block:: julia
 
@@ -48,8 +48,8 @@ A more advanced usage can be done by directly calling the instance of ``MyComput
     value = compute(sim) # Compute the value
 
 
-The following paragraphs sum up the implemented computations, given for each of
-them the return value (for direct calling), and the setted keys of
+The following paragraphs sums up the implemented computations, giving for each
+algorithm the return value (for direct calling), and the associated keys in
 ``MolecularDynamic.data``.
 
 Energy related values
@@ -57,7 +57,7 @@ Energy related values
 
 .. jl:type:: TemperatureCompute
 
-    Compute the temperature of the simulation. All the masses have to be set.
+    Computes the temperature of the simulation. All the masses have to be set.
 
     **Key**: ``:temperature``
 
@@ -65,7 +65,7 @@ Energy related values
 
 .. jl:type:: EnergyCompute
 
-    Compute the potential, kinetic and total energy of the current simulation step.
+    Computes the potential, kinetic and total energy of the current simulation step.
 
     **Keys**: ``:E_kinetic``, ``:E_potential``, ``:E_total``
 
@@ -91,7 +91,7 @@ Volume
 
 .. jl:type:: VolumeCompute
 
-    Compute the volume of the current :ref:`unit cell <type-UnitCell>`.
+    Computes the volume of the current :ref:`unit cell <type-UnitCell>`.
 
     **Key**: ``:volume``
 
@@ -111,8 +111,9 @@ Pressure
 Computing other values
 ----------------------
 
-To add your own compute (``MyCompute``), you have to subtype ``BaseCompute`` and
-provide a specialised ``call`` function with the following signature:
+To add a new compute algorithm (``MyCompute``), we have to subtype ``BaseCompute``
+and provide specialised implementation for the ``call`` function; with the
+following signature:
 
 .. function:: call(::MyCompute, ::MolecularDynamic)
 

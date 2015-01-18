@@ -14,20 +14,20 @@ two ways:
 
 .. function:: MolecularDynamic(timestep)
 
-    Create an empty molecular dynamic simulation using a Velocity-Verlet
+    Creates an empty molecular dynamic simulation using a Velocity-Verlet
     integrator with the specified timestep.
 
     Without any :ref:`thermostat <thermostat>` or :ref:`barostat <barostat>`, this
-    perform a NVE integration of the system.
+    performs a NVE integration of the system.
 
 .. function:: MolecularDynamic(::Integrator)
 
-    Create an empty simulation with the specified :ref:`integrator <type-Integrator>`.
+    Creates an empty simulation with the specified :ref:`integrator <type-Integrator>`.
 
 Default algorithms
 ------------------
 
-By default, the following algorithm are used in the molecular dynamic run.
+Default algorithms for molecular dynamic are presented in the following table:
 
 +---------------------+----------------------------------------------------------------------+
 |  Simulation step    |                 Default algorithms                                   |
@@ -49,22 +49,22 @@ By default, the following algorithm are used in the molecular dynamic run.
 Using non default algorithms
 ----------------------------
 
-The six following functions are the main way to select some algorithm for the
-simulation. They allow to add other checks, other outputs, and to change the
-integrator, even in the middle of a run.
+The six following functions are used to to select specific algorithms for the
+simulation. They allow to add and change all the algorithms, even in the middle
+of a run.
 
 .. function:: set_integrator(sim, integrator)
 
-    Set the simulation integrator to ``integrator``.
+    Sets the simulation integrator to ``integrator``.
 
     Usage example:
 
     .. code-block:: julia
 
-        # Create the integrator directly in the function
+        # Creates the integrator directly in the function
         set_integrator(sim, Verlet(2.5))
 
-        # Bind the integrator to a variable if you want to change a parameter
+        # Binds the integrator to a variable if you want to change a parameter
         integrator = Verlet(0.5)
         set_integrator(sim, integrator)
         run!(sim, 300)   # Run with a 0.5 fs timestep
@@ -73,12 +73,12 @@ integrator, even in the middle of a run.
 
 .. function:: set_forces_computation(sim, forces_computer)
 
-    Set the simulation alorithm for forces computation to ``forces_computer``.
+    Sets the simulation algorithm for forces computation to ``forces_computer``.
 
 .. function:: add_check(sim, check)
 
-    Add a :ref:`check <simulation-checks>` to the simulation check list. If the
-    check is already present, a warning is issued.
+    Adds a :ref:`check <simulation-checks>` to the simulation check list and
+    issues a warning if the check is already present.
 
     Usage example:
 
@@ -89,7 +89,7 @@ integrator, even in the middle of a run.
 
 .. function:: add_control(sim, control)
 
-    Add a :ref:`control <simulation-controls>` algorithm to the simulation
+    Adds a :ref:`control <simulation-controls>` algorithm to the simulation
     list. If the control algorithm is already present, a warning is issued.
 
     Usage example:
@@ -100,7 +100,7 @@ integrator, even in the middle of a run.
 
 .. function:: add_compute(sim, compute)
 
-    Add a :ref:`compute <simulation-computes>` algorithm to the simulation
+    Adds a :ref:`compute <simulation-computes>` algorithm to the simulation
     list. If the algorithm is already present, a warning is issued.
 
     Usage example:
@@ -112,7 +112,7 @@ integrator, even in the middle of a run.
 
 .. function:: add_output(sim, output)
 
-    Add an :ref:`output <simulation-outputs>` algorithm to the simulation
+    Adds an :ref:`output <simulation-outputs>` algorithm to the simulation
     list. If the algorithm is already present, a warning is issued.
 
     Usage example:

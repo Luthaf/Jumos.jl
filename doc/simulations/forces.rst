@@ -6,8 +6,8 @@ Computing the forces
 Naive force computation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``NaiveForceComputer`` algorithm compute the forces by iterating over all the
-pairs of atoms, and caling the appropriate interaction potential. This algorithm
+The ``NaiveForceComputer`` algorithm computes the forces by iterating over all the
+pairs of atoms, and calling the appropriate interaction potential. This algorithm
 is the default in `Jumos`.
 
 New algorithm for forces computations
@@ -19,12 +19,13 @@ and provide the method ``call(::BaseForcesComputer, forces::Array3D, frame::Fram
 This method should fill the forces array with the forces acting on each particles:
 ``forces[i]`` should be the 3D vector of forces acting on the atom ``i``. In order
 to do this, the algorithm can use the ``frame.posistions`` and ``frame.velocities``.
-The ``interactions`` is a dictionary associating tuples of integers (the atoms types)
-to :ref:`potential <potentials>`. The ``get_potential`` function can be usefull.
+``interactions`` is a dictionary associating tuples of integers (the atoms types)
+to :ref:`potential <potentials>`. The ``get_potential`` function can be useful
+to get a the potential function acting on two particles.
 
 .. function:: get_potential(interactions, topology, i, j)
 
-    Return the potential between the atom i and the atom j in the topology.
+    Returns the potential between the atom i and the atom j in the topology.
 
 Due to the internal unit system, forces returned by the potentials are in
 :math:`kJ/(mol \cdot A)`, and should be in :math:`uma \cdot A / fs^2` for being
