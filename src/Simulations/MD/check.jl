@@ -38,12 +38,14 @@ function call(::AllPositionsAreDefined, sim::MolecularDynamic)
     const natoms = size(sim.frame)
     for i=1:natoms, j=1:3
         isfinite(sim.frame.positions[j, i]) || throw(CheckError(
-            "All positions are not defined."
+            "Lost atom at step $(sim.frame.step): atom n° $i
+                (position not defined)"
         ))
     end
     for i=1:natoms, j=1:3
         isfinite(sim.frame.velocities[j, i]) || throw(CheckError(
-            "All velocities are not defined."
+            "Lost atom at step $(sim.frame.step): atom n° $i.
+                (velocities not defined)"
         ))
     end
 end
