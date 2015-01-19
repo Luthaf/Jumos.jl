@@ -91,7 +91,7 @@ end
 function setup(integrator::Verlet, sim::MolecularDynamic)
     natoms = size(sim.frame)
 
-    integrator.wrap_velocities = ispresent(sim, WrapParticles)
+    integrator.wrap_velocities = ispresent(sim, WrapParticles())
 
     if length(integrator.prevpos) != natoms || length(integrator.tmp) != natoms
         integrator.prevpos = resize(integrator.prevpos, natoms)
