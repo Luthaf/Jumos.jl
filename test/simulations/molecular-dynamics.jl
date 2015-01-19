@@ -66,6 +66,6 @@ facts("Simulation physical consistency") do
 
         _, __, Etot_final = energy(sim)
         # The big tolerance is here because the simulation only have 50 atoms.
-        @fact abs(Etot_final - Etot_initial) => less_than(2.0)
+        @fact abs(Etot_final - Etot_initial) => less_than(5.0)
     end
 end
