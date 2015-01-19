@@ -178,6 +178,8 @@ end
 
 # Setup the needed values for outputs and controls
 function setup(sim::MolecularDynamic)
+    setup(sim.integrator, sim)
+    
     for control in sim.controls
         setup(control, sim)
     end

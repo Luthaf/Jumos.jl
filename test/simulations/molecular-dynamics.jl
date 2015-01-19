@@ -45,30 +45,27 @@ end
 
 facts("Simulation physical consistency") do
     context("Constant energy for VelocityVerlet integrator") do
-        sim = testing_simulation()
+        sim = testing_simulation(50)
         Ekin, Epot, Etot_initial = energy(sim)
 
         @fact Ekin + Epot => Etot_initial
         run!(sim, 500)
 
         _, __, Etot_final = energy(sim)
-        # This is failing for now
-        @pending Etot_final => roughly(Etot_initial, rtol=1e-2)
+        # The big tolerance is here because the simulation only have 50 atoms.
+        @fact abs(Etot_final - Etot_initial) => less_than(1.0)
     end
 
     context("Constant energy for Verlet integrator") do
-        sim = testing_simulation()
+        sim = testing_simulation(50)
         sim.integrator = Verlet(1.0)
         Ekin, Epot, Etot_initial = energy(sim)
 
         @fact Ekin + Epot => Etot_initial
-        try
-            # This is failing for now
-            run!(sim, 500)
-        end
+        run!(sim, 500)
 
-        _, __, Etot_finale = energy(sim)
-
-        @pending Etot_finale => roughly(Etot_initial, rtol=1e-2)
+        _, __, Etot_final = energy(sim)
+        # The big tolerance is here because the simulation only have 50 atoms.
+        @fact abs(Etot_final - Etot_initial) => less_than(2.0)
     end
 end

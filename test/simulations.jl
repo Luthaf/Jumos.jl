@@ -1,5 +1,5 @@
 # Some handy functions
-function dummy_frame(n=4)
+function dummy_frame(n)
     top = Topology(n)
     for i=1:n
         top[i] = Atom("He")
@@ -20,9 +20,9 @@ function dummy_frame(n=4)
     return frame
 end
 
-function testing_simulation()
+function testing_simulation(n=4)
     sim = MolecularDynamic(1.0)
-    set_frame(sim, dummy_frame())
+    set_frame(sim, dummy_frame(n))
     add_interaction(sim, LennardJones(0.8, 2.0), "He")
     create_velocities(sim, 300)
     return sim
