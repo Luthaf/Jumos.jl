@@ -1,8 +1,7 @@
-# This is an example of thermostating a simulation using a Berendsen thermostat
 using Jumos
 
 # ============================================================================ #
-# Rescale velocities thermostat
+#       Thermostating a simulation using a velocities rescale thermostat       #
 # ============================================================================ #
 
 sim = MolecularDynamic(1.0)
@@ -20,7 +19,7 @@ add_enforce(sim, VelocityRescaleThermostat(300, 10))
 run!(sim, 5000)
 
 # ============================================================================ #
-# Berendsen thermostat
+#           Thermostating a simulation using a Berendsen thermostat            #
 # ============================================================================ #
 
 sim = MolecularDynamic(1.0)
