@@ -3,18 +3,18 @@
 Checking the simulation consistency
 ===================================
 
-Molecular dynamic is usually a `garbage in, garbage out` set of algorithm. The
+Molecular dynamic is usually a `garbage in, garbage out` set of algorithms. The
 numeric and physical issues are not caught by the algorithm themselves, and the
 physical (and chemical) consistency of the simulation should be checked often.
 
-In `Jumos`, this is achieved by the ``Check`` algorithms, presented here. All the
-type names defines what is checked by the algorithm. Checks can be added to a
-simulation by using the ``add_check`` function.
+In `Jumos`, this is achieved by the ``Check`` algorithms, which are presented in
+this section. Checking algorithms can be added to a simulation by using the
+``add_check`` function.
 
 .. function:: add_check(::MolecularDynamic, check)
     :noindex:
 
-    Add a check to the simulation check list. If the check is already present,
+    Adds a checking algorithm to the simulation. If the algorithm is already present,
     a warning is issued.
 
     Usage example:
@@ -23,7 +23,7 @@ simulation by using the ``add_check`` function.
 
         sim = MolecularDynamic()
 
-        # Note the parentheses, needed to instanciate the new check.
+        # Note that parentheses are needed to instanciate the new algorithm.
         add_check(sim, AllPositionsAreDefined())
 
 Existing checks
@@ -43,7 +43,7 @@ Existing checks
 
 .. jl:type:: AllPositionsAreDefined
 
-    This algorithm check is all the positions and all the velocities are defined
+    This algorithm checks is all the positions and all the velocities are defined
     numbers, *i.e.* if all the values are not infinity or the ``NaN`` (not a number)
     values.
 
@@ -58,7 +58,7 @@ exception of type ``CheckError`` if the checked condition is not fullfiled.
 
 .. jl:type:: CheckError
 
-    Custom exception providing a specific error message for simulation checking.
+    Customs exception providing a specific error message for simulation checking.
 
     .. code-block:: jlcon
 
