@@ -13,7 +13,7 @@ One shall start by setting the simulation : positions of the particles,
 velocities (either from a file or from a random gaussian distribution), timestep,
 atomic types, potential to use between the atoms, and so on.
 
-Then we can run the simulation for a given number of steps ``n_run``. During the
+Then we can run the simulation for a given number of steps ``n_steps``. During the
 run, the three main steps are: computing the forces from the potentials;
 integrating the movement and outputing the quantities of interest : trajectories,
 energy, temperature, pressure, `etc.`
