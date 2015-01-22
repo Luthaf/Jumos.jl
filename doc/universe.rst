@@ -44,7 +44,7 @@ Creating simulation cell
     is a ``TriclinicCell``.
 
     If no value is given for ``alpha, beta, gamma``, they are set to :math:`\pi/2`.
-    If no value is given for ``Lx, Ly``, they are set to be equal to ``Lx``.
+    If no value is given for ``Ly, Lz``, they are set to be equal to ``Lx``.
     This creates a cubic cell. If no value is given for ``Lx``, a cell with lenghts
     of :math:`0 A` and :math:`\pi/2` angles is constructed.
 

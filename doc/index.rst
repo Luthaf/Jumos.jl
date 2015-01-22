@@ -3,7 +3,7 @@ Welcome to Jumos's documentation!
 
 `Jumos` is a package for molecular simulations using the
 `Julia <http://julialang.org/>`_ language. It aims at being as flexible as
-possible, and to to allows the easy use and development of novel algorithm for
+possible, and allowing the easy use and development of novel algorithm for
 each part of a simulation. Every algorithm, from potential computation, long
 range interactions, pair lists computing, outputs, `etc.` can be customised.
 
