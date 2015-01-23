@@ -107,15 +107,3 @@ Pressure
     **Key**:
 
     **Return value**:
-
-Computing other values
-----------------------
-
-To add a new compute algorithm (``MyCompute``), we have to subtype ``BaseCompute``
-and provide specialised implementation for the ``call`` function; with the
-following signature:
-
-.. function:: call(::MyCompute, ::MolecularDynamic)
-
-    This function can set a ``MolecularDynamic.data`` entry with any kind of key
-    to store the computed value.

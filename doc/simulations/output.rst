@@ -8,7 +8,7 @@ a data file. Further analysis can be differed by writing the trajectory to a
 file, and running existing tools on these trajectories.
 
 In `Jumos`, outputs are subtypes of the ``BaseOutput`` type, and can be added to
-a simulation by using the ``add_output`` function.
+a simulation by using the :func:`add_output` function.
 
 .. function:: add_output(sim, output)
     :noindex:
@@ -83,9 +83,9 @@ Defining a new output
 ---------------------
 
 Adding a new output with custom values, can be done either by using a custom output
-or by subtyping the ``BaseOutput`` type to define a new output. The the former way
-is to be prefered when adding a *one-shot* output, and the latter when adding an
-output which will be re-used.
+or by :ref:`subtyping <new-output>` the ``BaseOutput`` type to define a new output.
+The the former wayis to be prefered when adding a *one-shot* output, and the
+latter when adding an output which will be re-used.
 
 Custom output
 ^^^^^^^^^^^^^
@@ -115,66 +115,3 @@ page for a list of keys.
 
         temperature_output = CustomOutput("Sim-Temp.dat", [:temperature])
         add_output(sim, temperature_output)
-
-
-Reusable output: subtyping ``BaseOutput``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-An other way to create a custom output is to subtype ``BaseOutput``. The subtyped
-type must have two integer fields: ``current`` and ``frequency``, and the constructor
-should initialize ``current`` to 0. The ``write`` function should also be overloaded
-for the signature ``write(::BaseOutput, ::Dict)``. The dictionairy parameter
-contains all the values set up by the :ref:`computation algorithms <simulation-computes>`,
-and a special key ``:frame`` refering to the current simulation :ref:`frame <type-Frame>`.
-
-``BaseOutput`` subtypes can also define a ``setup(::BaseOutput, ::MolecularDynamic)``
-function to do some setup job, like adding the needed computations to the
-simulation.
-
-As an example, let's build a custom output writing the ``x`` position of the
-first atom of the simulation at each step. This position will be taken from the
-frame, so no specific computation algorithm is needed here. But this position
-will be writen in bohr, so some conversion from Angstroms will be needed.
-
-.. code-block:: julia
-
-    # File FirstX.jl
-
-    using Jumos
-
-    import Base.write
-    import Jumos.setup
-
-    type FirstX <: BaseOutput
-        file::IOStream
-        current::Integer
-        frequency::Integer
-    end
-
-    # Default values constructor
-    function FirstX(filename, frequency=1)
-        file = open(filename, "w")
-        return FirstX(file, 0, frequency)
-    end
-
-    function write(out::FirstX, context::Dict)
-        frame = context[:frame]
-        x = frame.positions[1][1]
-        x = x/0.529 # Converting to bohr
-        write(out.file, "$x \n")
-    end
-
-    # Not needed here
-    # function setup(::FirstX, ::MolecularDynamic)
-
-This type can be used like this:
-
-.. code-block:: julia
-
-    using Jumos
-    require("FirstX.jl")
-
-    sim = MolecularDynamic(1.0)
-    # ...
-
-    add_output(sim, FirstX("The-first-x-file.dat"))
