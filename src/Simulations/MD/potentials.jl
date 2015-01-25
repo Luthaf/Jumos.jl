@@ -8,7 +8,7 @@
 #                    Potentials: energy and forces primitives
 # ============================================================================ #
 
-import Base: call, show
+import Base: call, show, size
 export PotentialError
 export PotentialFunction, PairPotential, BondedPotential, AnglePotential,
        DihedralPotential, ShortRangePotential, LongRangePotential
@@ -104,12 +104,14 @@ abstract LongRangeComputation <: PotentialComputation
 
 @doc "
 `TableComputation` uses table lookup to compute pair interactions efficiently.
+
+A linear interpolation is used.
 " ->
-immutable TableComputation{T<:PotentialFunction, N} <: PotentialComputation
-    potential::T
-    data::Array{Float64, 1}
+immutable TableComputation{N} <: PotentialComputation
+    potential::Array{Float64, 1}
     force::Array{Float64, 1}
     rmax::Float64
+    dr::Float64
 end
 
 # ============================================================================ #
@@ -162,15 +164,41 @@ end
 
 # Only the default constructor is needed for DirectComputation(::PotentialFunction)
 
-@inline function call{T<:PotentialFunction}(pot::DirectComputation{T}, r::Real)
+@inline function call(pot::DirectComputation, r::Real)
     return pot.potential(r)
 end
 
-@inline function force{T<:PotentialFunction}(pot::DirectComputation{T}, r::Real)
+@inline function force(pot::DirectComputation, r::Real)
     return force(pot.potential, r)
 end
 
-# TODO: LongRangeComputation & TableComputation
+
+function TableComputation(pot::PotentialFunction, N::Integer, rmax::Real)
+    dr = float(rmax)/N
+    x = linspace(dr, rmax, N)
+    potential_array = map(pot, x)
+    force_array = map(u->force(pot, u), x)
+
+    return TableComputation{N}(potential_array, force_array, rmax, dr)
+end
+
+@inline function call{N}(pot::TableComputation{N}, r::Real)
+    bin = floor(Int, r/pot.dr)
+    bin < N ? nothing : return 0.0
+    delta = r - bin*pot.dr
+    slope = (pot.potential[bin + 1] - pot.potential[bin])/pot.dr
+    return pot.potential[bin] + delta*slope
+end
+
+@inline function force{N}(pot::TableComputation{N}, r::Real)
+    bin = floor(Int, r/pot.dr)
+    bin < N ? nothing : return 0.0
+    delta = r - bin*pot.dr
+    slope = (pot.force[bin + 1] - pot.force[bin])/pot.dr
+    return pot.force[bin] + delta*slope
+end
+
+# TODO: LongRangeComputation
 
 # ============================================================================ #
 #                           Potential functions
@@ -179,8 +207,7 @@ end
 @doc "
 Null potential, for a system without interactions
 " ->
-immutable NullPotential <: PairPotential
-end
+immutable NullPotential <: PairPotential end
 
 function call(::NullPotential, ::Float64)
     return 0.0
@@ -259,5 +286,5 @@ Harmonic(k::Real, r0::Real) = Harmonic(k, r0, 0.0)
 end
 
 @inline function force(pot::Harmonic, r::Real)
-    return - pot.k * (r - pot.r0)
+    return pot.k * (pot.r0 - r)
 end

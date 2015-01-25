@@ -104,6 +104,8 @@ function internal(val::SIQuantity)
     return res
 end
 
+internal(val::Real) = val
+
 SI = Union(SIQuantity, NonSIQuantity, SIUnit, NonSIUnit)
 
 unit(u::SIUnit) = u
