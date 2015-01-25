@@ -1,6 +1,6 @@
 # Testing potentials
 
-facts("Basic Potentials usage") do
+facts("Potentials functions") do
     context("Harmonic potential") do
         harmonic = Harmonic(30, 2.0, -0.5)
 
@@ -31,15 +31,70 @@ facts("Basic Potentials usage") do
         @fact force(user_1, 3.0) => g(3)
         @fact force(user_2, 3.0) => roughly(g(3), atol=10-6)
     end
+end
 
-    context("Short-range potential") do
-        lj = LennardJones(0.8, 2.0)
-        short = Potential(lj, cutoff=8.0)
+facts("Potentials computation") do
+    lj = LennardJones(0.8, 2.0)
+    f(x) = 3*(x-3.5)^4
+    g(x) = 12*(x-3.5)^3
+
+    user_1 = UserPotential(f, g)
+    user_2 = UserPotential(f)
+    harmonic = Harmonic(30, 2.0, -0.5)
+
+    context("Cutoff computation") do
+        short = CutoffComputation(lj, cutoff=8.0)
 
         @fact short.cutoff => 8.0
         @fact short.e_cutoff => lj(8.0)
         @fact short(9) => 0.0
-        @fact short(3.) => lj(3.0) + short.e_cutoff
+        @fact short(3.0) => lj(3.0) + short.e_cutoff
+        @fact force(short, 9) => 0.0
+        @fact force(short, 3.0) => force(lj, 3.0)
     end
 
+    context("Direct computation") do
+        context("Pair potentials") do
+            direct = DirectComputation(lj)
+            @fact direct(3.0) => lj(3.0)
+            @fact direct(13.0) => lj(13.0)
+            @fact force(direct, 3.0) => force(lj, 3.0)
+            @fact force(direct, 13.0) => force(lj, 13.0)
+        end
+
+        context("Bonded potentials") do
+            direct = DirectComputation(harmonic)
+            @fact direct(3.0) => harmonic(3.0)
+            @fact force(direct, 3.0) => force(harmonic, 3.0)
+        end
+
+        context("User potentials") do
+            direct = DirectComputation(user_1)
+            @fact direct(3.0) => user_1(3.0)
+            @fact force(direct, 3.0) => force(user_1, 3.0)
+        end
+    end
+
+    context("Table computation") do
+        context("Pair potentials") do
+            table = TableComputation(lj, 1000, 12.0)
+            @fact table(3.0) => roughly(lj(3.0))
+            @fact force(table, 3.0) => roughly(force(lj, 3.0))
+
+            @fact table(13.0) => 0.0
+            @fact force(table, 13.0) => 0.0
+        end
+
+        context("Bonded potentials") do
+            table = TableComputation(harmonic, 1000, 12.0)
+            @fact table(3.0) => roughly(harmonic(3.0))
+            @fact force(table, 3.0) => roughly(force(harmonic, 3.0))
+        end
+
+        context("User potentials") do
+            table = TableComputation(user_1, 1000, 12.0)
+            @fact table(3.0) => roughly(user_1(3.0))
+            @fact force(table, 3.0) => roughly(force(user_1, 3.0))
+        end
+    end
 end
