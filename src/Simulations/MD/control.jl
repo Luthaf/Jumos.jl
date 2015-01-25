@@ -22,8 +22,7 @@ end
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
-type WrapParticles <: BaseControl
-end
+immutable WrapParticles <: BaseControl end
 
 function call(::WrapParticles, sim::MolecularDynamic)
     @inbounds for i=1:size(sim.frame)
@@ -46,7 +45,7 @@ rescaled.
 
 The main constructor is `VelocityRescaleThermostat(T0, tol)`.
 " ->
-type VelocityRescaleThermostat <: Thermostat
+immutable VelocityRescaleThermostat <: Thermostat
     T::Float64
     tol::Float64
 end
@@ -71,7 +70,7 @@ expressed in multiples of $\Delta t$. This assume a constant $\Delta t$.
 
 The algorithm come from doi:10.1063/1.448118.
 " ->
-type BerendsenThermostat <: Thermostat
+immutable BerendsenThermostat <: Thermostat
     T::Float64
     tau::Float64
 end
@@ -86,7 +85,6 @@ function call(th::BerendsenThermostat, sim::MolecularDynamic)
     end
 end
 
-
-type BerendsenBarostat <: BaseControl
+immutable BerendsenBarostat <: BaseControl
     tau::Float64
 end

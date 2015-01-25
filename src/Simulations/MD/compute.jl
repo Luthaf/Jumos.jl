@@ -21,7 +21,7 @@ export TemperatureCompute, PressureCompute, VolumeCompute, EnergyCompute
 Compute the temperature of a simulation frame using the relation
 	T = 1/kB * 2K/(3N) with K the kinetic energy
 " ->
-type TemperatureCompute <: BaseCompute end
+immutable TemperatureCompute <: BaseCompute end
 
 function call(::TemperatureCompute, sim::MolecularDynamic)
 	T = 0.0
@@ -36,21 +36,18 @@ end
 @doc "
 Compute the pressure of the system.
 " ->
-type PressureCompute <: BaseCompute
-
-end
+immutable PressureCompute <: BaseCompute end
 
 @doc "
 Compute the volume of the current simulation cell
 " ->
-type VolumeCompute <: BaseCompute end
+immutable VolumeCompute <: BaseCompute end
 
 function call(::VolumeCompute, sim::MolecularDynamic)
     V = volume(sim.frame.cell)
     sim.data[:volume] = V
     return V
 end
-
 
 @doc "
 Compute the energy of a simulation.

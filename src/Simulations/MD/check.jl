@@ -31,8 +31,7 @@ end
 @doc "
 Check if all the positions and all the velocities are number : not NaN neither Inf.
 " ->
-type AllPositionsAreDefined <: BaseCheck
-end
+immutable AllPositionsAreDefined <: BaseCheck end
 
 function call(::AllPositionsAreDefined, sim::MolecularDynamic)
     const natoms = size(sim.frame)
@@ -54,8 +53,7 @@ end
 @doc "
 Check if the overall velocity is null, with a 1e-5 tolerance.
 " ->
-type GlobalVelocityIsNull <: BaseCheck
-end
+immutable GlobalVelocityIsNull <: BaseCheck end
 
 function call(::GlobalVelocityIsNull, sim::MolecularDynamic)
     const natoms = size(sim.frame)
@@ -72,8 +70,7 @@ end
 @doc "
 Check if the sum of the forces is effectively null, with a 1e-5 tolerance.
 " ->
-type TotalForceIsNull <: BaseCheck
-end
+immutable TotalForceIsNull <: BaseCheck end
 
 function call(::TotalForceIsNull, sim::MolecularDynamic)
     const natoms = size(sim.frame)

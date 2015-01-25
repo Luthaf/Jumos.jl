@@ -32,8 +32,7 @@ end
 Naive forces computation : just get the vector between two particles, and
 call the force function for these particles.
 "->
-type NaiveForces <: BaseForcesComputer
-end
+immutable NaiveForces <: BaseForcesComputer end
 
 function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
 
