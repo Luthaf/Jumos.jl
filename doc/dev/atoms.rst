@@ -62,8 +62,7 @@ Periodic table information
 The ``Atoms`` module also defines two dictonaries that store information about
 atoms:
 
-``ATOMIC_MASSES`` is a ``Dict{String, Float64}`` associating atoms symbols
-and atomic masses, in :ref:`internal units <intenal_units>` ;
-
-``VDW_RADIUS`` is a ``Dict{String, Integer}`` associating atoms symbols
-and Van der Waals radii, in :ref:`internal units <intenal_units>`.
+* ``ATOMIC_MASSES`` is a ``Dict{String, Float64}`` associating atoms symbols
+  and atomic masses, in :ref:`internal units <intenal_units>` ;
+* ``VDW_RADIUS`` is a ``Dict{String, Integer}`` associating atoms symbols
+  and Van der Waals radii, in :ref:`internal units <intenal_units>`.
