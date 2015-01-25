@@ -146,8 +146,8 @@ force(pot::PotentialFunction, r::Real) = force(pot, convert(Float64, r))
 #                        Computations implementations
 # ============================================================================ #
 
-# The default cutoff is set in angstroms. Others units should be added after
 function CutoffComputation(pot::PotentialFunction; cutoff=12.0)
+    cutoff = internal(cutoff)
     e_cutoff = pot(cutoff)
     return CutoffComputation(pot, cutoff, e_cutoff)
 end
