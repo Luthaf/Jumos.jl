@@ -182,6 +182,11 @@ function TableComputation(pot::PotentialFunction, N::Integer, rmax::Real)
     return TableComputation{N}(potential_array, force_array, rmax, dr)
 end
 
+# Keyword version of the function
+function TableComputation(pot::PotentialFunction; numpoints=2000, rmax=12)
+    return TableComputation(pot, numpoints, rmax)
+end
+
 @inline function call{N}(pot::TableComputation{N}, r::Real)
     bin = floor(Int, r/pot.dr)
     bin < N ? nothing : return 0.0
@@ -198,7 +203,8 @@ end
     return pot.force[bin] + delta*slope
 end
 
-# TODO: LongRangeComputation
+# TODO: PPPM <: LongRangeComputation
+# TODO: EwaldSumation <: LongRangeComputation
 
 # ============================================================================ #
 #                           Potential functions

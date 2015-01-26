@@ -66,11 +66,10 @@ end
 COMPUTATIONS = Dict(
     :cutoff=>CutoffComputation,
     :direct=>DirectComputation,
-    :long_range=>LongRangeComputation,
     :table=>TableComputation,
 )
 
-function get_computation(potential::PairPotential; kwargs...)
+function get_computation(potential::ShortRangePotential; kwargs...)
     kwargs = Dict{Symbol, Any}(kwargs)
     if kwargs[:computation] == :auto
         if !haskey(kwargs, :cutoff)
