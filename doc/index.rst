@@ -21,6 +21,15 @@ molecular dynamic simulation. The second part is the developer documentation,
 exposing the internal of `Jumos`, and how we can use them to programm new
 algorithms.
 
+Installation
+------------
+
+To install `Jumos`, simply run ``Pkg.add("Jumos")`` at julia prompt. You may
+also want to run ``Pkg.test("Jumos")`` to run the tests.
+
+Only julia 0.4 prerelease version is supported, because `Jumos` makes use of
+a lot of features from the 0.4 version.
+
 User manual
 -----------
 
@@ -39,12 +48,3 @@ Developer documentation
     :maxdepth: 2
 
     dev/index
-
-Installation
-------------
-
-To install, simply run ``Pkg.clone(https://github.com/Luthaf/Jumos.jl)`` at
-julia prompt. You may also want to run ``Pkg.test("Jumos")`` to run the tests.
-
-Only 0.4 julia prerelease version is supported, because `Jumos` makes use of
-features from the 0.4 version.

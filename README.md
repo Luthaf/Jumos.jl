@@ -36,11 +36,15 @@ algorithms, and experiment with them.
 Jumos needs the nighlty version (0.4) of Julia. Then, enter the following at the
 REPL:
 ```jlcon
-julia> Pkg.add("https://github.com/Luthaf/Jumos.jl")
+julia> Pkg.add("Jumos")
 
-# And get started by importing the package
-julia> using Jumos
+julia> using Jumos # And then get started by importing the package
 ```
+
+### Documentation
+
+The [documentation](http://jumos.readthedocs.org) is kindly hosted by ReadTheDocs.
+Many thanks to them !
 
 ### First run
 
