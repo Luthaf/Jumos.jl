@@ -6,6 +6,6 @@ julia -e 'Pkg.clone(pwd())'
 julia -e 'Pkg.add("FactCheck")'
 
 if [ -f test/runtests.jl ]; then
-    julia --check-bounds=yes -e 'Pkg.test("Jumos", coverage=true)'
+    julia --check-bounds=yes --inline=no -e 'Pkg.test("Jumos", coverage=true)'
 fi
 
