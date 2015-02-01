@@ -51,25 +51,24 @@ function call(integrator::VelocityVerlet, sim::MolecularDynamic)
     natoms = size(sim.frame)
 
     # Update positions at t + ∆t
-    @inbounds for i=1:natoms
-        positions[i] .+= velocities[i].*dt .+ 0.5.*accelerations[i].*dt^2
+    @inbounds for i=1:natoms, dim=1:3
+            positions[dim, i] += velocities[dim, i]*dt + 0.5*accelerations[dim, i]*dt^2
     end
 
     # Update velocities at t + ∆t/2
-    @inbounds for i=1:natoms
-        velocities[i] .+= 0.5.*accelerations[i].*dt
+    @inbounds for i=1:natoms, dim=1:3
+            velocities[dim, i] += 0.5*accelerations[dim, i]*dt
     end
 
     get_forces!(sim)
-
     # Update accelerations at t + ∆t
-    @inbounds for i=1:natoms
-        accelerations[i] = sim.forces[i] ./ masses[i]
+    @inbounds for i=1:natoms, dim=1:3
+            accelerations[dim, i] = sim.forces[dim, i] / masses[i]
     end
 
     # Update velocities at t + ∆t
-    @inbounds for i=1:natoms
-        velocities[i] .+= 0.5.*accelerations[i].*dt
+    @inbounds for i=1:natoms, dim=1:3
+            velocities[dim, i] += 0.5*accelerations[dim, i]*dt
     end
 end
 
@@ -124,31 +123,36 @@ function call(integrator::Verlet, sim::MolecularDynamic)
     get_forces!(sim)
 
     # Save positions at t
-    @inbounds for i=1:natoms
-        tmp[i] = positions[i]
+    @inbounds for i=1:natoms, dim=1:3
+        tmp[dim, i] = positions[dim, i]
     end
 
     # Update positions at t + ∆t
-    @inbounds for i=1:natoms
-        t = 2.0 .* positions[i] - prevpos[i] + (dt^2 / masses[i]) .* sim.forces[i]
-        positions[i] = t
+    @inbounds for i=1:natoms, dim=1:3
+        positions[dim, i] = (2.0 * positions[dim, i] - prevpos[dim, i] +
+                                        (dt^2 / masses[i]) * sim.forces[dim, i])
     end
 
     # Update velocities at t
     if integrator.wrap_velocities
-        # If the postions are wrapped, position is updated, but not prevpos
+        # If the postions are wrapped in the simulation, position is updated,
+        # but not prevpos. So let's do it now.
+        delta_pos = zeros(Float64, 3)
         @inbounds for i=1:natoms
-            velocities[i] = minimal_image(positions[i] - prevpos[i], sim.frame.cell) ./ (2.0 * dt)
+            delta_pos = positions[i] - prevpos[i]
+            minimal_image!(delta_pos, sim.frame.cell)
+            for dim=1:3
+                velocities[dim, i] = delta_pos[dim] / (2.0 * dt)
+            end
         end
     else
-        @inbounds for i=1:natoms
-            velocities[i] = (positions[i] - prevpos[i]) ./ (2.0 * dt)
+        @inbounds for i=1:natoms, dim=1:3
+            velocities[dim, i] = (positions[dim, i] - prevpos[dim, i]) / (2.0 * dt)
         end
     end
 
-
     # Update saved position
-    @inbounds for i=1:natoms
-        prevpos[i] = tmp[i]
+    @inbounds for i=1:natoms, dim=1:3
+        prevpos[dim, i] = tmp[dim, i]
     end
 end

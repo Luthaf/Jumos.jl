@@ -135,7 +135,7 @@ getindex{T, N}(A::Array3D{T,N}, i::Real, j::Real) = getindex(A.data, i, j)
 function setindex!{T, N}(A::Array3D{T, N}, x, i::Real)
     A.data[:, i] = x
 end
-setindex!{T, N}(A::Array3D{T,N}, x, i::FloatingPoint, j::Real) = setindex!(A.data, x, i, j)
+setindex!{T, N}(A::Array3D{T,N}, x, i::Real, j::Real) = setindex!(A.data, x, i, j)
 
 # Operators
 (.+){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D{T, N}(a.data .+ b.data)

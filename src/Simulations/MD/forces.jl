@@ -36,10 +36,12 @@ immutable NaiveForces <: BaseForcesComputer end
 
 function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
 
-    # Temporary vector
-    r = Array(Float64, 3)
     natoms = size(frame)
+
+    # Temporary values
+    r = Array(Float64, 3)
     dist = 0.0
+    f = 0.0
     potential = NullPotential()
 
     if length(forces) != natoms
@@ -56,11 +58,18 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         dist = norm(r)
         unit!(r)
         potential = get_potential(interactions, frame.topology, i, j)
-        r *= force(potential, dist)
+        f = force(potential, dist)
+        for dim=1:3
+            r[dim] *= f
+        end
 
-        forces[i] .+= -r
-        forces[j] .+= r
+        for dim=1:3
+            forces[dim, i] += -r[dim]
+        end
+
+        for dim=1:3
+            forces[dim, j] += r[dim]
+        end
     end
-    force_array_to_internal!(forces)
-    return forces
+    return force_array_to_internal!(forces)
 end

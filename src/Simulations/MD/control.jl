@@ -26,7 +26,7 @@ immutable WrapParticles <: BaseControl end
 
 function call(::WrapParticles, sim::MolecularDynamic)
     @inbounds for i=1:size(sim.frame)
-        sim.frame.positions[i] = minimal_image(sim.frame.positions[i], sim.cell)
+        minimal_image!(sim.frame.positions[i], sim.cell)
     end
 end
 
@@ -53,8 +53,8 @@ end
 function call(th::VelocityRescaleThermostat, sim::MolecularDynamic)
     T = sim.data[:temperature]
     if abs(T - th.T) > th.tol # Let's rescale the velocities
-        @inbounds for i=1:size(sim.frame)
-            sim.frame.velocities[i] *= sqrt(th.T/T)
+        @inbounds for i=1:size(sim.frame), dim=1:3
+            sim.frame.velocities[dim, i] *= sqrt(th.T/T)
         end
     end
     return nothing
@@ -80,8 +80,8 @@ BerendsenThermostat(T) = BerendsenThermostat(T, 100)
 function call(th::BerendsenThermostat, sim::MolecularDynamic)
     T = sim.data[:temperature]
     λ = sqrt(1 + 1/th.tau*(th.T/T - 1))
-    @inbounds for i=1:size(sim.frame)
-        sim.frame.velocities[i] = sim.frame.velocities[i] .* λ
+    @inbounds for i=1:size(sim.frame), dim=1:3
+        sim.frame.velocities[dim, i] *= λ
     end
 end
 
