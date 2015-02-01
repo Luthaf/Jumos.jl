@@ -130,7 +130,7 @@ include("XYZ/Writer.jl")
 include("NetCDF/Reader.jl")
 include("NetCDF/Writer.jl")
 
-@doc """
+"""
 This function returns an object of type <TRAJ_TYPE><Reader|Writer>,
 or raise an error if it is impossible to create such object.
 The trajectory format is guessed from the extension.
@@ -146,7 +146,7 @@ Keyword arguments
  - mode::String, "r" for read or "w" for write;
  - tologogy::String, path to a topology file, for reading;
  - All other keywords arguments are passed to the TrajectoryIO contructor.
-""" ->
+"""
 function opentraj(filename::String; mode="r", topology="", kwargs...)
     extension = split(strip(filename), ".")[end]
     if mode == "r"
