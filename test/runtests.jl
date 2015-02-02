@@ -2,7 +2,7 @@ using Jumos
 using FactCheck
 
 const tests_available = Dict(
-    :distances => "Distances computations",
+    :distance => "Distances computations",
     :units => "Units conversions",
     :trajectories => "TrajectoriesIO capacities",
     :analysis => "Trajectories analysis",
