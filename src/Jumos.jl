@@ -16,22 +16,16 @@ module Jumos
     include("Constants.jl")
     include("Array3D.jl")
 
+    type NotImplementedError <: Exception
+        message::String
+    end
+    Base.show(io::IO, e::NotImplementedError) = show(io, "Not implemented : $(e.message)")
+    export NotImplementedError
+
     " The `Systems` module defines all the usefull types for storage of a molecular
     system definition. "
     @reexport module Systems
         using Jumos
-        import Base: show
-
-        type NotImplementedError <: Exception
-            message::String
-        end
-
-        function show(io::IO, e::NotImplementedError)
-            show(io, "Not implemented : $(e.message)")
-        end
-
-        export NotImplementedError
-
         include("Universe/Universe.jl")
     end
 
@@ -49,7 +43,7 @@ module Jumos
     @reexport module Simulations
         using Jumos
     #    include("Simulations/Analysis/Histograms.jl")
-    #    include("Simulations/MolecularDynamics.jl")
+        include("Simulations/Simulations.jl")
     end
 
 

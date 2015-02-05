@@ -9,30 +9,35 @@
 # ============================================================================ #
 
 import Base: call
-export BaseControl
-export BerendsenBarostat, WrapParticles
-export BerendsenThermostat, VelocityRescaleThermostat
 
-# abstract BaseControl -> Defined in MolecularDynamics.jl
+# abstract BaseControl -> Defined in Simulation.jl
+export BaseControl
+export WrapParticles
+export BerendsenThermostat, VelocityRescaleThermostat
+# export BerendsenBarostat
 
 function setup(::BaseControl, ::MolecularDynamic)
     return nothing
 end
+
+# ============================================================================ #
 
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
 immutable WrapParticles <: BaseControl end
 
-function call(::WrapParticles, sim::MolecularDynamic)
-    @inbounds for i=1:size(sim.frame)
-        minimal_image!(sim.frame.positions[i], sim.cell)
+function call(::WrapParticles, univ::Universe)
+    for i=1:size(univ.frame)
+        @inbounds minimal_image!(univ.frame.positions[i], univ.cell)
     end
 end
 
+# ============================================================================ #
+
 abstract Thermostat <: BaseControl
 
-function setup(::Thermostat, sim::MolecularDynamic)
+function setup(::Thermostat, sim::Simulation)
     if !have_compute(sim, TemperatureCompute)
         push!(sim.computes, TemperatureCompute())
     end
@@ -50,16 +55,16 @@ immutable VelocityRescaleThermostat <: Thermostat
     tol::Float64
 end
 
-function call(th::VelocityRescaleThermostat, sim::MolecularDynamic)
-    T = sim.data[:temperature]
+function call(th::VelocityRescaleThermostat, univ::Universe)
+    T = univ.data[:temperature]
     if abs(T - th.T) > th.tol # Let's rescale the velocities
-        @inbounds for i=1:size(sim.frame), dim=1:3
-            sim.frame.velocities[dim, i] *= sqrt(th.T/T)
+        for i=1:size(univ.frame), dim=1:3
+            @inbounds univ.frame.velocities[dim, i] *= sqrt(th.T/T)
         end
     end
-    return nothing
 end
 
+# ============================================================================ #
 
 @doc doc"
 Berendsen thermostat, created by multiplicating the velocities by a factor $\lambda$:
@@ -77,14 +82,16 @@ end
 
 BerendsenThermostat(T) = BerendsenThermostat(T, 100)
 
-function call(th::BerendsenThermostat, sim::MolecularDynamic)
-    T = sim.data[:temperature]
+function call(th::BerendsenThermostat, univ::Universe)
+    T = univ.data[:temperature]
     λ = sqrt(1 + 1/th.tau*(th.T/T - 1))
-    @inbounds for i=1:size(sim.frame), dim=1:3
-        sim.frame.velocities[dim, i] *= λ
+    for i=1:size(sim.frame), dim=1:3
+        @inbounds univ.frame.velocities[dim, i] *= λ
     end
 end
 
-immutable BerendsenBarostat <: BaseControl
-    tau::Float64
-end
+# ============================================================================ #
+
+#immutable BerendsenBarostat <: BaseControl
+#    tau::Float64
+#end

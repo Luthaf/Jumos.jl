@@ -33,18 +33,18 @@ Check if all the positions and all the velocities are number : not NaN neither I
 " ->
 immutable AllPositionsAreDefined <: BaseCheck end
 
-function call(::AllPositionsAreDefined, sim::MolecularDynamic)
-    const natoms = size(sim.frame)
-    for i=1:natoms, j=1:3
-        isfinite(sim.frame.positions[j, i]) || throw(CheckError(
+function call(::AllPositionsAreDefined, univ::Universe, ::MolecularDynamics)
+    const natoms = size(univ.frame)
+    for i=1:natoms, dim=1:3
+        isfinite(univ.frame.positions[dim, i]) || throw(CheckError(
             "Lost atom at step $(sim.frame.step): atom n° $i
                 (position not defined)"
         ))
     end
-    for i=1:natoms, j=1:3
-        isfinite(sim.frame.velocities[j, i]) || throw(CheckError(
+    for i=1:natoms, dim=1:3
+        isfinite(univ.frame.velocities[dim, i]) || throw(CheckError(
             "Lost atom at step $(sim.frame.step): atom n° $i.
-                (velocities not defined)"
+                (velocity not defined)"
         ))
     end
 end
@@ -55,11 +55,11 @@ Check if the overall velocity is null, with a 1e-5 tolerance.
 " ->
 immutable GlobalVelocityIsNull <: BaseCheck end
 
-function call(::GlobalVelocityIsNull, sim::MolecularDynamic)
-    const natoms = size(sim.frame)
+function call(::GlobalVelocityIsNull, univ::Universe, ::MolecularDynamics)
+    const natoms = size(univ.frame)
     V = 0.0
     for i=1:natoms, j=1:3
-        V += sim.frame.velocities[j, i]
+        V += univ.frame.velocities[j, i]
     end
     isapprox(V, 0.0, atol=1e-5) || throw(CheckError(
         "The global velocity is not null."
@@ -72,11 +72,11 @@ Check if the sum of the forces is effectively null, with a 1e-5 tolerance.
 " ->
 immutable TotalForceIsNull <: BaseCheck end
 
-function call(::TotalForceIsNull, sim::MolecularDynamic)
-    const natoms = size(sim.frame)
+function call(::TotalForceIsNull, univ::Universe, propag::MolecularDynamics)
+    const natoms = size(univ.frame)
     F = 0.0
-    for i=1:natoms, j=1:3
-        F += sim.forces[j, i]
+    for i=1:natoms, dim=1:3
+        F += propag.forces[dim, i]
     end
     isapprox(F, 0.0, atol=1e-5) || throw(CheckError(
         "The global force is not null."

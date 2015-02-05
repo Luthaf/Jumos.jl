@@ -1,0 +1,102 @@
+# Copyright (c) Guillaume Fraux 2014
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# ============================================================================ #
+#                       Compute interesting values
+# ============================================================================ #
+
+import Base: call
+using Jumos.Constants #kB
+
+# abstract BaseCompute -> Defined in Simulations.jl
+export BaseCompute
+export TemperatureCompute, VolumeCompute, EnergyCompute
+#export PressureCompute
+
+function have_compute{T<:BaseCompute}(sim::Simulation, compute_type::Type{T})
+	for compute in sim.computes
+		if isa(compute, compute_type)
+			return true
+		end
+	end
+	return false
+end
+
+# ============================================================================ #
+
+@doc "
+Compute the temperature of a simulation frame using the relation
+	T = 1/kB * 2K/(3N) with K the kinetic energy
+" ->
+immutable TemperatureCompute <: BaseCompute end
+
+function call(::TemperatureCompute, univ::Universe)
+	T = 0.0
+    K = kinetic_energy(univ)*1e-4
+    natoms = size(univ.frame)
+	T = 1/kB * 2*K/(3*natoms)
+	univ.data[:temperature] = T
+	return T
+end
+
+# ============================================================================ #
+
+#@doc "
+#Compute the pressure of the system.
+#" ->
+#immutable PressureCompute <: BaseCompute end
+
+# ============================================================================ #
+
+@doc "
+Compute the volume of the current simulation cell
+" ->
+immutable VolumeCompute <: BaseCompute end
+
+function call(::VolumeCompute, univ::Universe)
+    V = volume(univ.cell)
+	univ.data[:volume] = V
+    return V
+end
+
+# ============================================================================ #
+
+@doc "
+Compute the energy of a simulation.
+    EnergyCompute()(simulation::MolecularDynamic) returns a tuple
+    (Kinetic_energy, Potential_energy, Total_energy)
+" ->
+immutable EnergyCompute <: BaseCompute end
+
+function call(::EnergyCompute, univ::Universe)
+    K = kinetic_energy(univ)
+    P = potential_energy(univ)
+	univ.data[:E_kinetic] = K
+	univ.data[:E_potential] = P
+	univ.data[:E_total] = P + K
+	return K, P, P + K
+end
+
+function kinetic_energy(univ::Universe)
+    K = 0.0
+	natoms = size(univ.frame)
+	@simd for i=1:natoms
+		@inbounds K += 0.5 * univ.masses[i] * norm2(univ.frame.velocities[i])
+	end
+    return K*1e4  # TODO: better handling of energy conversions
+end
+
+function potential_energy(univ::Universe)
+    E = 0.0
+	natoms = size(univ.frame)
+	@inbounds for i=1:natoms, j=(i+1):natoms
+        atom_i = univ.topology.atoms[i]
+        atom_j = univ.topology.atoms[j]
+        potential = interaction(univ, (atom_i, atom_j))
+		E += potential(distance(univ.frame, i, j))
+	end
+    return E
+end

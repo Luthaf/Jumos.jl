@@ -12,7 +12,7 @@ export add_interaction, set_cell, read_topology, read_positions, set_frame,
        add_compute, add_control, add_check, add_output
 
 # Todo: Way to add a catchall interaction
-function add_interaction(sim::MolecularDynamic, potential::PotentialFunction, atoms...;
+function add_interaction(sim::Simulation, potential::PotentialFunction, atoms...;
                          computation=:auto, kwargs...)
     atoms_id = get_atoms_id(sim, atoms...)
 
@@ -24,13 +24,24 @@ function add_interaction(sim::MolecularDynamic, potential::PotentialFunction, at
     return nothing
 end
 
-function get_atoms_id(sim::MolecularDynamic, atoms...)
+function get_atoms_id(sim::Simulation, atoms...)
     idx = Int[]
     for atom in atoms
         atom_idx = isa(atom, Integer) ? atom : get_id_from_name(sim.topology, atom)
         push!(idx, atom_idx)
     end
     return idx
+end
+
+
+type SimulationConfigurationError <: Exception
+    msg :: String
+end
+export SimulationConfigurationError
+
+function show(io::IO, e::SimulationConfigurationError)
+    print(io, "Simulation Configuration Error : \n")
+    print(io, e.msg)
 end
 
 @doc "
@@ -93,23 +104,23 @@ function get_computation(potential::BondedPotential; kwargs...)
     return computation
 end
 
-function set_cell(sim::MolecularDynamic, cell::UnitCell)
+function set_cell(sim::Simulation, cell::UnitCell)
     sim.cell = cell
 end
 
-function set_cell(sim::MolecularDynamic, size)
+function set_cell(sim::Simulation, size)
     return set_cell(sim, UnitCell(size...))
 end
 
-function set_cell{T<:Type{Universe.AbstractCellType}}(sim::MolecularDynamic, cell_type::T, size = (0.0,))
+function set_cell{T<:Type{Universe.AbstractCellType}}(sim::Simulation, cell_type::T, size = (0.0,))
     return set_cell(sim, UnitCell(cell_type(), size...))
 end
 
-function read_topology(sim::MolecularDynamic, filename::AbstractString)
+function read_topology(sim::Simulation, filename::AbstractString)
     sim.topology = Topology(filename)
 end
 
-function read_positions(sim::MolecularDynamic, filename::AbstractString)
+function read_positions(sim::Simulation, filename::AbstractString)
     reader = opentraj(filename, cell=sim.cell, topology=sim.topology)
     read_frame!(reader, 1, sim.frame)
 
@@ -118,9 +129,9 @@ function read_positions(sim::MolecularDynamic, filename::AbstractString)
 end
 
 # Todo:
-# function read_velocities(sim::MolecularDynamic, filename::AbstractString)
+# function read_velocities(sim::Simulation, filename::AbstractString)
 
-function add_output(sim::MolecularDynamic, output::BaseOutput)
+function add_output(sim::Simulation, output::BaseOutput)
     if !ispresent(sim, output)
         push!(sim.outputs, output)
     else
@@ -129,7 +140,7 @@ function add_output(sim::MolecularDynamic, output::BaseOutput)
     return sim.outputs
 end
 
-function add_compute(sim::MolecularDynamic, compute::BaseCompute)
+function add_compute(sim::Simulation, compute::BaseCompute)
     if !ispresent(sim, compute)
         push!(sim.computes, compute)
     else
@@ -138,7 +149,7 @@ function add_compute(sim::MolecularDynamic, compute::BaseCompute)
     return sim.computes
 end
 
-function add_control(sim::MolecularDynamic, control::BaseControl)
+function add_control(sim::Simulation, control::BaseControl)
     if !ispresent(sim, control)
         push!(sim.controls, control)
     else
@@ -147,7 +158,7 @@ function add_control(sim::MolecularDynamic, control::BaseControl)
     return sim.controls
 end
 
-function add_check(sim::MolecularDynamic, check::BaseCheck)
+function add_check(sim::Simulation, check::BaseCheck)
     if !ispresent(sim, check)
         push!(sim.checks, check)
     else
@@ -156,7 +167,7 @@ function add_check(sim::MolecularDynamic, check::BaseCheck)
     return sim.checks
 end
 
-function ispresent(sim::MolecularDynamic, algo)
+function ispresent(sim::Simulation, algo)
     algo_type = typeof(algo)
     for field in [:checks, :computes, :outputs, :controls]
         for elem in getfield(sim, field)
@@ -169,11 +180,11 @@ function ispresent(sim::MolecularDynamic, algo)
 end
 
 @doc "
-`set_frame(sim::MolecularDynamic, frame::Frame)`
+`set_frame(sim::Simulation, frame::Frame)`
 
 Set the simulation frame to `frame`, and update internal values
 " ->
-function set_frame(sim::MolecularDynamic, frame::Frame)
+function set_frame(sim::Simulation, frame::Frame)
     sim.frame = frame
     sim.cell = frame.cell
     sim.data[:frame] = sim.frame
@@ -183,10 +194,10 @@ function set_frame(sim::MolecularDynamic, frame::Frame)
     return nothing
 end
 
-function set_integrator(sim::MolecularDynamic, integrator::BaseIntegrator)
+function set_integrator(sim::Simulation, integrator::BaseIntegrator)
     sim.integrator = integrator
 end
 
-function set_forces_computation(sim::MolecularDynamic, forces_computer::BaseForcesComputer)
+function set_force_computation(sim::Simulation, forces_computer::BaseForcesComputer)
     sim.forces_computer = forces_computer
 end

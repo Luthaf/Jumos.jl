@@ -28,8 +28,8 @@ function VelocityVerlet(timestep::Float64)
     return VelocityVerlet(timestep, accelerations)
 end
 
-function setup(integrator::VelocityVerlet, sim::MolecularDynamic)
-    natoms = size(sim.frame)
+function setup(integrator::VelocityVerlet, univ::Universe)
+    natoms = size(univ.frame)
     if length(integrator.accelerations) != natoms
         integrator.accelerations = resize(integrator.accelerations, natoms)
         # re-initialize the accelerations
@@ -39,16 +39,16 @@ function setup(integrator::VelocityVerlet, sim::MolecularDynamic)
     end
 end
 
-function call(integrator::VelocityVerlet, sim::MolecularDynamic)
+function call(integrator::VelocityVerlet, univ::Universe, propag::MolecularDynamics)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
-    positions = sim.frame.positions
-    velocities = sim.frame.velocities
+    positions = univ.frame.positions
+    velocities = univ.frame.velocities
     accelerations = integrator.accelerations
-    masses = sim.masses
+    masses = propag.masses
 
-    natoms = size(sim.frame)
+    natoms = size(univ.frame)
 
     # Update positions at t + ∆t
     @inbounds for i=1:natoms, dim=1:3
@@ -60,10 +60,10 @@ function call(integrator::VelocityVerlet, sim::MolecularDynamic)
             velocities[dim, i] += 0.5*accelerations[dim, i]*dt
     end
 
-    get_forces!(sim)
+    get_forces!(propag, universe)
     # Update accelerations at t + ∆t
     @inbounds for i=1:natoms, dim=1:3
-            accelerations[dim, i] = sim.forces[dim, i] / masses[i]
+            accelerations[dim, i] = propag.forces[dim, i] / masses[i]
     end
 
     # Update velocities at t + ∆t
@@ -87,7 +87,7 @@ function Verlet(timestep::Float64)
     return Verlet(timestep, Array3D(Float64, 0), Array3D(Float64, 0), false)
 end
 
-function setup(integrator::Verlet, sim::MolecularDynamic)
+function setup(integrator::Verlet, sim::Simulation)
     natoms = size(sim.frame)
 
     integrator.wrap_velocities = ispresent(sim, WrapParticles())
@@ -109,7 +109,7 @@ function setup(integrator::Verlet, sim::MolecularDynamic)
     end
 end
 
-function call(integrator::Verlet, sim::MolecularDynamic)
+function call(integrator::Verlet, sim::Simulation)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading

@@ -21,24 +21,44 @@ end
 const EOL="\n"
 const TAB="\t"
 
+type OutputFrequency
+    frequency::Int
+    current::Int
+end
+
+OutputFrequency(freq::Int) = OutputFrequency(freq, 0)
+OutputFrequency() = OutputFrequency(1)
+function Base.step(out::BaseOutput)
+    out.frequency.current += 1
+end
+function Base.done(out::BaseOutput)
+    if out.frequency.current == out.frequency.frequency
+        out.frequency.current = 0
+        return true
+    end
+    return false
+end
+
+# ============================================================================ #
+
 @doc "
 Write the trajectory to a file. The trajectory format is guessed from the extension.
 " ->
 type TrajectoryOutput <: BaseOutput
     writer::Writer
-    frequency::Integer
-    current::Integer
+    frequency::OutputFrequency
 end
 
 function TrajectoryOutput(filename::String, frequency=1)
     writer = Writer(filename)
-    return TrajectoryOutput(writer, frequency, 0)
+    return TrajectoryOutput(writer, OutputFrequency(frequency))
 end
 
 function write(out::TrajectoryOutput, context::Dict)
     write(out.writer, context[:frame])
 end
 
+# ============================================================================ #
 
 @doc "
 Write values to a file, each line containing the results of string
@@ -52,8 +72,7 @@ interpolation of the `values` vector of symbol.
 type CustomOutput <: BaseOutput
     file::IOStream
     values::Vector{Symbol}
-    frequency::Integer
-    current::Integer
+    frequency::OutputFrequency
 end
 
 function CustomOutput(filename::String, values::Vector{Symbol}, frequency=1;
@@ -65,7 +84,7 @@ function CustomOutput(filename::String, values::Vector{Symbol}, frequency=1;
         s *= string(name) * "   "
     end
     write(file, s * EOL)
-    return CustomOutput(file, values, frequency, 0)
+    return CustomOutput(file, values, OutputFrequency(frequency))
 end
 
 function write(out::CustomOutput, context::Dict)
@@ -80,21 +99,21 @@ function write(out::CustomOutput, context::Dict)
     write(out.file, s * EOL)
 end
 
+# ============================================================================ #
 
 @doc "
 Output the energy of a simulation to a file.
 " ->
 type EnergyOutput <: BaseOutput
     file::IOStream
-    frequency::Integer
-    current::Integer
+    frequency::OutputFrequency
 end
 
 function EnergyOutput(filename::String, frequency=1)
     file = open(filename, "w")
     write(file, "# Energy from Jumos simulation" * EOL)
     write(file, "# step\tEkin(kJ/mol)\tEpot(kJ/mol)\tEtot(kJ/mol)\tT(K)" * EOL)
-    return EnergyOutput(file, frequency, 0)
+    return EnergyOutput(file, OutputFrequency(frequency))
 end
 
 function write(out::EnergyOutput, context::Dict)
@@ -107,12 +126,11 @@ function write(out::EnergyOutput, context::Dict)
     write(out.file, s * EOL)
 end
 
-function setup(::EnergyOutput, sim::MolecularDynamic)
+function setup(::EnergyOutput, sim::Simulation)
     if !have_compute(sim, TemperatureCompute)
         push!(sim.computes, TemperatureCompute())
     end
     if !have_compute(sim, EnergyCompute)
         push!(sim.computes, EnergyCompute())
     end
-    return nothing
 end

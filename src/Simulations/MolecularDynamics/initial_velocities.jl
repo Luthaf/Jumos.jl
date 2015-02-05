@@ -11,7 +11,7 @@
 using Jumos.Constants # kB
 export create_velocities
 
-function create_velocities(sim::MolecularDynamic, temp::Number; initializer="boltzman")
+function create_velocities(sim::Simulation, temp::Number; initializer="boltzman")
     # Allocate the velocity array
     sim.frame.velocities = Array3D(Float64, size(sim.frame))
 
@@ -27,7 +27,7 @@ function create_velocities(sim::MolecularDynamic, temp::Number; initializer="bol
     sim.data[:temperature] = temp
 end
 
-function init_boltzman_velocities(sim::MolecularDynamic, temp::Number)
+function init_boltzman_velocities(sim::Simulation, temp::Number)
     velocities = sim.frame.velocities
     masses = sim.masses
     @inbounds for i=1:size(sim.frame)
@@ -39,7 +39,7 @@ end
     return sqrt(kB*T/m)*randn(3)
 end
 
-function init_random_velocities(sim::MolecularDynamic, temp::Number)
+function init_random_velocities(sim::Simulation, temp::Number)
     velocities = sim.frame.velocities
     masses = sim.masses
     @inbounds for i=1:size(sim.frame)

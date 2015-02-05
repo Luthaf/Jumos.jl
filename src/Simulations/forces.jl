@@ -10,7 +10,7 @@
 
 export BaseForcesComputer, NaiveForces
 
-# abstract BaseForcesComputer -> Defined in MolecularDynamics.jl
+abstract BaseForcesComputer
 
 # TODO: More thought about this
 function force_array_to_internal!(a::Array3D)
@@ -22,11 +22,20 @@ function force_array_to_internal!(a::Array3D)
     return a
 end
 
-function get_potential(interactions::Interactions, topology::Topology, i::Integer, j::Integer)
+function get_potential(interactions::Vector{Interaction}, topology::Topology, i::Integer, j::Integer)
     atom_i = topology.atoms[i]
     atom_j = topology.atoms[j]
+    for int in interactions
+        isa(int, PairInteraction) || continue
+
     return interactions[(atom_i, atom_j)]
 end
+
+function get_forces!(universe::Universe, forces=Array3D)
+    # TODO !
+end
+
+# ============================================================================ #
 
 @doc "
 Naive forces computation : just get the vector between two particles, and
@@ -53,22 +62,19 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Intera
         forces[i] = zeros(Float64, 3)
     end
 
-    @inbounds for i=1:(natoms-1), j=(i+1):natoms
+    for i=1:(natoms-1), j=(i+1):natoms
         r = distance3d(frame, i, j)
         dist = norm(r)
         unit!(r)
         potential = get_potential(interactions, frame.topology, i, j)
         f = force(potential, dist)
-        for dim=1:3
-            r[dim] *= f
+        @simd for dim=1:3
+            @inbounds r[dim] *= f
         end
 
-        for dim=1:3
-            forces[dim, i] += -r[dim]
-        end
-
-        for dim=1:3
-            forces[dim, j] += r[dim]
+        @simd for dim=1:3
+            @inbounds forces[dim, i] += -r[dim]
+            @inbounds forces[dim, j] += r[dim]
         end
     end
     return force_array_to_internal!(forces)
