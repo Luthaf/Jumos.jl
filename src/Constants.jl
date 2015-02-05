@@ -10,7 +10,7 @@
 
 module Constants
 	using SIUnits.ShortUnits
-	using Jumos.Units
+	using Jumos
 
     export kB, NA
 
