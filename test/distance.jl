@@ -1,12 +1,13 @@
-function testing_frame(cell)
+function testing_universe(cell)
     top = dummy_topology(4)
-    frame = Frame(top)
+    frame = Frame(4)
     frame.positions[1] = [2, 2, 4]
     frame.positions[2] = [2, 2, 2]
     frame.positions[3] = [-45, 2, 300.56]
     frame.positions[4] = [29, 22, 45]
-    frame.cell = cell
-    return frame
+    universe = Universe(cell, top)
+    universe.frame = frame
+    return universe
 end
 
 # Cell for later usage
@@ -23,23 +24,21 @@ facts("Distances computations") do
     end
 
     context("Basic distance computations") do
-        frame = testing_frame(UnitCell(10.))
-        @fact distance(frame, 1, 2) => 2.0
-        @pending "distance(ref, conf, i, j) method" => :TODO
-        @pending "distance(ref, conf, i) method" => :TODO
+        universe = testing_universe(UnitCell(10.))
+        @fact distance(universe, 1, 2) => 2.0
     end
 
     context("Equivalent orthorombic and triclinic") do
-        frame = testing_frame(orthorombic)
-        frame2 = testing_frame(triclinic2)
-        @fact distance_array(frame2) => distance_array(frame)
+        universe = testing_universe(orthorombic)
+        universe2 = testing_universe(triclinic2)
+        @fact distance_array(universe) => distance_array(universe2)
     end
 
     context("Distance symetry") do
         for cell in [orthorombic, infitite, triclinic1, triclinic2]
-            frame = testing_frame(cell)
+            universe = testing_universe(cell)
             for i=1:4, j=1:4
-                @fact distance(frame, i, j) => distance(frame, j, i)
+                @fact distance(universe, i, j) => distance(universe, j, i)
             end
         end
     end
@@ -47,28 +46,28 @@ end
 
 facts("Minimal images") do
     context("Orthorombic cell") do
-        frame = testing_frame(orthorombic)
-        @fact minimal_image(frame.positions[1], orthorombic) => frame.positions[1]
-        @fact minimal_image(frame.positions[3], orthorombic) => roughly([-5.0, 2.0, 0.56])
-        @fact minimal_image(frame.positions[4], orthorombic) => roughly([-1.0, 2.0, 5.0])
+        universe = testing_universe(orthorombic)
+        @fact minimal_image(universe.frame.positions[1], orthorombic) => universe.frame.positions[1]
+        @fact minimal_image(universe.frame.positions[3], orthorombic) => roughly([-5.0, 2.0, 0.56])
+        @fact minimal_image(universe.frame.positions[4], orthorombic) => roughly([-1.0, 2.0, 5.0])
 
         # Mutating version
-        minimal_image!(frame.positions[4], orthorombic)
-        @fact [frame.positions[4]...] => roughly([-1.0, 2.0, 5.0])
+        minimal_image!(universe.frame.positions[4], orthorombic)
+        @fact [universe.frame.positions[4]...] => roughly([-1.0, 2.0, 5.0])
     end
 
     context("Triclinic cell") do
-        frame = testing_frame(orthorombic)
+        universe = testing_universe(orthorombic)
 
-        @fact minimal_image(frame.positions[1], triclinic2) => [frame.positions[1]...]
-        @pending minimal_image(frame.positions[1], triclinic1) => ["compute the real values"]
+        @fact minimal_image(universe.frame.positions[1], triclinic2) => [universe.frame.positions[1]...]
+        @pending minimal_image(universe.frame.positions[1], triclinic1) => ["compute the real values"]
     end
 
     context("Infinite cell") do
-        frame = testing_frame(infitite)
-        @fact minimal_image(frame.positions[1], infitite) => [frame.positions[1]...]
-        @fact minimal_image(frame.positions[3], infitite) => [frame.positions[3]...]
-        @fact minimal_image(frame.positions[4], infitite) => [frame.positions[4]...]
+        universe = testing_universe(infitite)
+        @fact minimal_image(universe.frame.positions[1], infitite) => [universe.frame.positions[1]...]
+        @fact minimal_image(universe.frame.positions[3], infitite) => [universe.frame.positions[3]...]
+        @fact minimal_image(universe.frame.positions[4], infitite) => [universe.frame.positions[4]...]
     end
 end
 

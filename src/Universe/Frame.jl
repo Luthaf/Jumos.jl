@@ -8,28 +8,21 @@
 #                              Frame type
 # ============================================================================ #
 
-import Base: size
 export Frame, set_frame_size!
 
 @doc "
-The Frame type holds a frame,
-i.e. all the data from one step of a simulation.
+The type Frame holds the variables data from a simulation, i.e the current step,
+the positions and the velocities.
 " ->
 type Frame
-    step::Integer
-    cell::UnitCell
-    topology::Topology
     positions::Array3D
     velocities::Array3D
+    step::Int64
 end
 
-Frame(topology::Topology) = Frame(1, UnitCell(), topology, Array3D(Float64, size(topology)), Array3D(Float64, 0))
-
-# Empty frame construction
-Frame() = Frame(1, UnitCell(), Topology(), Array3D(Float64, 0), Array3D(Float64, 0))
-
-size(frame::Frame) = length(frame.positions)
-
+Frame(natoms) = Frame(Array3D(Float64, natoms), Array3D(Float64, 0), 0)
+Frame() = Frame(0)
+Base.size(frame::Frame) = length(frame.positions)
 
 function set_frame_size!(frame::Frame, wanted_size::Integer; velocities=false)
     if size(frame) != wanted_size

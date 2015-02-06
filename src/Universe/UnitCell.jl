@@ -10,7 +10,7 @@
 
 import Base: ==, show
 export UnitCell, InfiniteCell, OrthorombicCell, TriclinicCell
-export volume
+export volume, cellmatrix
 
 abstract AbstractCellType
 immutable InfiniteCell <: AbstractCellType end
@@ -18,9 +18,9 @@ immutable OrthorombicCell <: AbstractCellType end
 immutable TriclinicCell <: AbstractCellType end
 
 type UnitCell{T<:AbstractCellType}
-    x :: Float64
-    y :: Float64
-    z :: Float64
+    a :: Float64
+    b :: Float64
+    c :: Float64
     alpha :: Float64
     beta  :: Float64
     gamma :: Float64
@@ -30,7 +30,7 @@ function show(io::IO, cell::UnitCell)
     ctype = split(string(celltype(cell)), ".")[end]
     print(io, ctype)
     if !(celltype(cell) == InfiniteCell)
-        print(io, "\n   Lenghts: ", cell.x, ", ", cell.y, ", ", cell.z)
+        print(io, "\n   Lenghts: ", cell.a, ", ", cell.b, ", ", cell.c)
         if celltype(cell) == TriclinicCell
             print(io, "\n   Angles: ", cell.alpha, ", ", cell.beta, ", ", cell.gamma)
         end
@@ -41,11 +41,11 @@ celltype{T<:AbstractCellType}(::UnitCell{T}) = T
 
 function getindex(b::UnitCell, i::Int)
     if i == 1
-        return b.x
+        return b.a
     elseif i == 2
-        return b.y
+        return b.b
     elseif i == 3
-        return b.z
+        return b.c
     elseif i == 4
         return b.alpha
     elseif i == 5
@@ -56,24 +56,23 @@ function getindex(b::UnitCell, i::Int)
     throw(BoundsError())
 end
 
-function ==(a::UnitCell, b::UnitCell)
-    return a.x == b.x && a.y == b.y && a.z == b.z && a.alpha == b.alpha && a.beta == b.beta && a.gamma == b.gamma
+function (==)(a::UnitCell, b::UnitCell)
+    return a.a == b.a && a.b == b.b && a.c == b.c &&
+           a.alpha == b.alpha && a.beta == b.beta && a.gamma == b.gamma
 end
 
-
 #==============================================================================#
-# Automatic cell type
 
-function UnitCell(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real)
+function UnitCell(a, b, c, alpha, beta, gamma)
     if a == pi/2 && b == pi/2 && c == pi/2
         cell_type = OrthorombicCell
     else
         cell_type = TriclinicCell
     end
-    return UnitCell{cell_type}(Lx, Ly, Lz, a, b, c)
+    return UnitCell{cell_type}(a, b, c, alpha, beta, gamma)
 end
 
-UnitCell(Lx::Real, Ly::Real, Lz::Real) = UnitCell(Lx, Ly, Lz, pi/2, pi/2, pi/2)
+UnitCell(a, b, c) = UnitCell(a, b, c, pi/2, pi/2, pi/2)
 
 function UnitCell(u::Vector)
     if length(u) == 3 || length(u) == 6
@@ -93,14 +92,15 @@ end
 
 UnitCell(L::Real) = UnitCell(L, L, L)
 UnitCell() = UnitCell(0.0)
-
 UnitCell(b::UnitCell) = b
 
 #==============================================================================#
-# Manual cell type
-UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, a::Real, b::Real, c::Real, celltype::T) = UnitCell{celltype}(Lx, Ly, Lz, a, b, c)
 
-UnitCell{T<:Type{AbstractCellType}}(Lx::Real, Ly::Real, Lz::Real, celltype::T) = UnitCell(Lx, Ly, Lz, pi/2, pi/2, pi/2, celltype)
+UnitCell{T<:Type{AbstractCellType}}(a, b, c, alpha, beta, gamma, celltype::T) =
+    UnitCell{celltype}(a, b, c, alpha, beta, gamma)
+
+UnitCell{T<:Type{AbstractCellType}}(a, b, c, celltype::T) =
+    UnitCell(a, b, c, pi/2, pi/2, pi/2, celltype)
 
 function UnitCell{T<:Type{AbstractCellType}}(u::Vector, celltype::T)
     if length(u) == 3 || length(u) == 6
@@ -122,12 +122,13 @@ UnitCell{T<:Type{AbstractCellType}}(L::Real, celltype::T) = UnitCell(L, L, L, ce
 UnitCell{T<:Type{AbstractCellType}}(celltype::T) = UnitCell(0.0, celltype)
 
 #==============================================================================#
-function volume(::UnitCell)
+
+function volume(::UnitCell{InfiniteCell})
     return 0.0
 end
 
 function volume(cell::UnitCell{OrthorombicCell})
-    return cell.x * cell.y * cell.z
+    return cell.a * cell.b * cell.c
 end
 
 function volume(cell::UnitCell{TriclinicCell})
@@ -135,7 +136,29 @@ function volume(cell::UnitCell{TriclinicCell})
     β = cell.beta
     γ = cell.gamma
 
-    V = cell.x * cell.y * cell.z
+    V = cell.a * cell.b * cell.c
     factor = sqrt(1 - cos(α)^2 - cos(β)^2 - cos(γ)^2 + 2*cos(α)*cos(β)*cos(γ))
     return V * factor
+end
+
+#==============================================================================#
+
+function cellmatrix(c::UnitCell)
+    res = zeros(Float64, 3, 3)
+
+    res[1,1] = c.a
+
+    res[2,1] = c.b * cos(c.gamma)
+    res[2,2] = c.b * sin(c.gamma)
+
+    res[3,1] = c.c * ((cos(c.alpha) - 1)*cos(c.beta))/(cos(c.beta)*cos(c.gamma) - 1)
+    res[3,1] += c.c * cos(c.gamma) * (cos(c.beta)*cos(c.gamma)
+                        - cos(c.alpha)) / (cos(c.beta)*cos(c.gamma) - 1)
+
+    res[3,2] = c.c * sin(c.gamma) * (cos(c.beta)*cos(c.gamma)
+                        - cos(c.alpha)) / (cos(c.beta)*cos(c.gamma) - 1)
+
+    res[3,3] = c.c * ((cos(c.alpha)-1)*(cos(c.beta)+ cos(c.gamma))*cos(c.gamma)
+                          + sin(c.alpha)^2) / (1 - cos(c.gamma)cos(c.beta))
+    return res
 end

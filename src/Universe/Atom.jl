@@ -8,54 +8,71 @@
 #                       Atom type in topologies
 # ============================================================================ #
 
-import Base.show
+export Atom, mass
 
-export Atom, get_mass, set_mass!
+include("PeriodicTable.jl")
 
-type Atom
-    name::String                # atom name
-    symbol::String              # atom chemical type
-    mass::Float64               # atomic mass
-    special::Dict{String, Any}  # special values (charge, ...)
+abstract AtomType
+immutable DummyAtom <: AtomType end
+immutable Element <: AtomType end
+immutable CorseGrain <: AtomType end
+immutable UnknownAtom <: AtomType end
+
+type Atom{T <: AtomType}
+    label::Symbol                   # atom name
+    liaisons::Vector{Atom}          # references to other existing atoms
+    # Atomic data
+    mass::Float64                   # atom mass
+    charge::Float64                 # atom charge
+    properties::Dict{Symbol, Any}   # any special special property
 end
 
-Atom(s::String) = Atom(s, s, get_mass(s), Dict())
-Atom() = Atom("")
-
-function show(io::IO, atom::Atom)
-    show(io, "Atom $(atom.name) ($(atom.symbol))")
-end
-
-function get_mass(atom::Atom)
-    mass = get_mass(atom.symbol)
-    if mass == 0.0 # Mass not found
-        mass = get_mass(atom.name)
-    end
-    return mass
-end
-
-function get_mass(name::String)
-    mass = 0.0
-    if haskey(ATOMIC_MASSES, name)
-        # TODO: fix the method error is internal(ATOMIC_MASSES[name])
-        mass =  ATOMIC_MASSES[name].val
-    end
-    return mass
-end
-
-function set_mass!(atom::Atom)
-    atom.mass = get_mass(atom)
-end
-
-function set_mass!(atom::Atom, mass::Number)
-    atom.mass = mass
-end
-
-function (==)(this::Atom, other::Atom)
-    for name in names(Atom)
-        if getfield(this, name) != getfield(other, name)
-            return false
+function Atom(s::String, atype = AtomType)
+    if atype == AtomType
+        if Symbol(s) in PERIODIC_TABLE
+            atype = Element
+        else
+            atype = CorseGrain
         end
     end
-    return true
+    return Atom{atype}(Symbol(s), Atom[], mass(Symbol(s)), 0, Dict{Symbol, Any}())
+end
+Atom() = Atom("", UnknownAtom)
+
+function Base.show(io::IO, atom::Atom)
+    show(io, "Atom $(atom.label)")
+end
+
+function mass(atom::Atom)
+    return mass(atom.label)
+end
+
+function mass(name::Symbol)
+    res = 0.0
+    if haskey(ATOMIC_MASSES, name)
+        # TODO: fix the method error in internal(ATOMIC_MASSES[name])
+        res =  ATOMIC_MASSES[name].val
+    end
+    return res
+end
+
+function add_liaison!(this::Atom, other::Atom)
+    if other in this.liaisons
+        warn("Atoms $this and $other are already linked.")
+    end
+    push!(this.liaisons, other)
+end
+
+function remove_liaison!(this::Atom, other::Atom)
+    if !(other in this.liaisons)
+        warn("Atoms $this and $other are not linked.")
+    end
+    idx = 1
+    for atom in this.liaisons
+        if atom == other
+            deleteat!(this.liaisons, idx)
+        end
+        idx += 1
+    end
+    return nothing
 end

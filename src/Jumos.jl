@@ -14,15 +14,13 @@ module Jumos
     using SIUnits
     include("Units.jl")
     include("Constants.jl")
+    include("Array3D.jl")
 
-    # This module define some basic types like 3D vectors
-    @reexport module Universe
+    " The `Systems` module defines all the usefull types for storage of a molecular
+    system definition. "
+    @reexport module Systems
         using Jumos
         import Base: show
-
-        include("Universe/PeriodicTable.jl")
-        include("Universe/Atom.jl")
-        include("Universe/Topology.jl")
 
         type NotImplementedError <: Exception
             message::String
@@ -34,16 +32,11 @@ module Jumos
 
         export NotImplementedError
 
-        include("Universe/Array3D.jl")
-        include("Universe/UnitCell.jl")
-        include("Universe/Frame.jl")
-        include("Universe/Distances.jl")
+        include("Universe/Universe.jl")
     end
 
 
-    # This module allow reading and writing trajectories to files
-    # A trajectory is built with a topology (atomic names and relations)
-    # and some arrays of positions, velocities and forces.
+    " The `Trajectories` module allow reading and writing trajectories to files."
     @reexport module Trajectories
         using Jumos
 
@@ -51,11 +44,12 @@ module Jumos
         include("Trajectories/Trajectory.jl")
     end
 
+
+    " The `Simulations` module defines functions for running an analysing simulations."
     @reexport module Simulations
         using Jumos
-        include("Simulations/Analysis/Histograms.jl")
-
-        include("Simulations/MolecularDynamics.jl")
+    #    include("Simulations/Analysis/Histograms.jl")
+    #    include("Simulations/MolecularDynamics.jl")
     end
 
 
