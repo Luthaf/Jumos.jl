@@ -8,6 +8,8 @@
 #      Type Array3D: representing arrays of 3D vectors in an efficient way
 # ============================================================================ #
 
+# TODO: remove this and use FixedSize Array when they are disponibles
+
 importall Base
 
 export Array3D
@@ -38,7 +40,8 @@ end
 (.*){T}(a::Real, b::SubVector{T}) = (.*)(b, a)
 (./){T}(a::SubVector{T}, b::Real) = T[a[1]/b, a[2]/b, a[3]/b]
 
-norm(a::SubVector) = sumabs2(a)
+norm2(a::SubVector) = a[1]*a[1] + a[2]*a[2] + a[3]*a[3]
+dot(a::SubVector) = sqrt(norm2(a))
 cross{T}(u::SubVector{T}, v::SubVector{T}) = [u[2]*v[3] - u[3]*v[2],
     u[3]*v[1] - u[1]*v[3],
     u[1]*v[2] - u[2]*v[1]]
