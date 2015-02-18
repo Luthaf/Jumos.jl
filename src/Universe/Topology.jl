@@ -32,35 +32,44 @@ end
 
 Connectivity() = Connectivity(0, Bond[], Angle[], Dihedral[])
 
+share_one_element(a, b) = length(intersect(a, b)) == 1
+
 @doc "
 The `update!(connectivity, atoms)` function updates the connectivity by scaning
 all the liaisons of all the atoms in `atoms`, and building the bonds, angles and
 dihedral angles from these liaisons.
 " ->
-function update!(connectivity::Connectivity, all_atoms::Vector{Atom})
-    hash(all_atoms) == connectivity.hash && return
+function update!(connectivity::Connectivity, liaisons::Vector{(Int64, Int64)})
+    hash(liaisons) == connectivity.hash && return
+    connectivity.hash = hash(liaisons)
 
-    connectivity.hash = hash(all_atoms)
+    empty!(connectivity.bonds)
+    empty!(connectivity.angles)
+    empty!(connectivity.dihedrals)
 
-    for (i, atom) in enumerate(all_atoms)
-        for atom2 in atom.liaisons
-            # Get bonds
-            j = indexin(atom2, topology.atoms)
-            push!(connectivity.bonds, (i, j))
-            push!(connectivity.bonds, (j, i))
-            for atom3 in atom2.liaisons
-                # Get angles
-                k = indexin(atom3, topology.atoms)
-                k == i && continue
-                push!(connectivity.angles, (i, j, k))
-                push!(connectivity.angles, (k, j, i))
-                for atom4 in atom3.liaisons
-                    # Get dihedral angles
-                    m = indexin(atom4, topology.atoms)
-                    m == j && continue
-                    push!(connectivity.angles, (i, j, k, m))
-                    push!(connectivity.angles, (m, k, j, i))
-                end
+    for (i, j) in liaisons
+        # Get bonds
+        push!(connectivity.bonds, (min(i, j), max(i, j)))
+        for (k, m) in liaisons
+            # Get angles
+            share_one_element((k, m), (i, j)) || continue
+            at2 = intersect((k, m), (i, j))[1]
+            at1 = setdiff((i, j), (at2,))[1]
+            at3 = setdiff((k, m), (at2,))[1]
+            # Maintains order in the angle storage
+            at1, at3 = minmax(at1, at3)
+            push!(connectivity.angles, (at1, at2, at3))
+            for (n, o) in liaisons
+                # Get dihedral angles
+                share_one_element((at1, at2, at3), (n, o)) || continue
+                tmp3 = intersect((at1, at2, at3), (n, o))[1]
+                at1, at2 = setdiff((at1, at2, at3), (tmp3,))[1:2]
+                at3 = tmp3
+                at4 = setdiff((n, o), (at3,))[1]
+                # Maintains order in the dihedral storage
+                at1, at4 = minmax(at1, at4)
+                at2, at3 = minmax(at2, at3)
+                push!(connectivity.dihedral, (at1, at2, at3, at4))
             end
         end
     end
@@ -68,7 +77,9 @@ function update!(connectivity::Connectivity, all_atoms::Vector{Atom})
 end
 
 immutable Topology
-    atoms::Vector{Atom}
+    atomic_templates::Vector{Atom}
+    atoms::Vector{Int}
+    liaisons::Vector{Bond}
     connectivity::Connectivity
 end
 
@@ -85,10 +96,12 @@ Base.done(t::Topology, state) = (state > size(t))
 Base.next(t::Topology, state) = (t[state], state + 1)
 
 @doc "
+`update_cache!(topology)`
+
 This function updates the connectivity cache of a topology.
 " ->
 function update_cache!(topology::Topology)
-    update!(topology.connectivity, topology.atoms)
+    update!(topology.connectivity, topology.liasons)
 end
 
 function Base.show(io::IO, topology::Topology)
@@ -103,7 +116,7 @@ function Base.show(io::IO, topology::Topology)
              "$n_bonds bonds, $n_angles angles, and $n_dihedrals dihedrals.")
 end
 
-Base.getindex(topology::Topology, i) = return topology.atoms[i]
+Base.getindex(topology::Topology, i) = topology.atomic_templates[topology.atoms[i]]
 Base.setindex!(topology::Topology, atom::Atom, i) = setindex!(topology.atoms, atom, i)
 
 @doc "
@@ -114,61 +127,45 @@ function add_atom!(topology::Topology, atom::Atom)
 end
 
 @doc "
-`add_liaison!(topology, atom_i, atom_j)`
+`add_liaison!(topology, i, j)`
 
-Adds a liaison between the atom `atom_i` and the atom `atom_j`. Both atoms can
-be of type `Atom` or integers.
+Adds a liaison between the atoms at indexes `i` and `j`.
 " ->
-function add_liaison!(topology::Topology, atom_i::Atom, atom_j::Atom)
-    found = 0
-    for atom in topology
-        if atom == atom_i
-            add_liaison!(atom, atom_j)
-            found += 1
-        elseif atom == atom_j
-            add_liaison!(atom, atom_i)
-            found += 1
-        end
-        found == 2 && break
-    end
-    found == 2 || throw(
-        "Can not add a liaison between atoms from outside of the universe."
-    )
+function add_liaison!(topology::Topology, i::Integer, j::Integer)
+    assert(i < size(topology))
+    assert(j < size(topology))
+    push!(topology.liaisons, (min(i, j), max(i, j)))
     return nothing
 end
 
-add_liaison!(t::Topology, ai::Integer, aj::Integer) = add_liaison!(t, t[ai], t[aj])
-
 @doc "
+`remove_atom!(topology, i)`
+
 Remove an atom by index in the topology.
 " ->
-function remove_atom!(topology::Topology, i::Real)
-    deleteat!(topology.atoms, i)
-end
-
-@doc "
-Remove a liaison between two atoms. The atoms can be specified either by index or
-as instances of `Atom` type.
-" ->
-function remove_liaison!(topology::Topology, atom_i::Atom, atom_j::Atom)
-    found = 0
-    for atom in topology
-        if atom == atom_i
-            remove_liaison!(atom, atom_j)
-            found += 1
-        elseif atom == atom_j
-            remove_liaison!(atom, atom_i)
-            found += 1
+function remove_atom!(topology::Topology, idx::Real)
+    deleteat!(topology.atoms, idx)
+    liaisons = []
+    for (k, (i, j)) in topology.liaisons
+        if idx in (i, j)
+            deleteat!(topology.liaisons, k)
         end
-        found == 2 && break
     end
-    found == 2 || throw(
-        "Can not remove a liaison between atoms from outside of the universe."
-    )
     return nothing
 end
 
-remove_liaison!(t::Topology, ai::Integer, aj::Integer) = remove_liaison!(t, t[ai], t[aj])
+@doc "
+`remove_liaison!(topology, i, j)`
+
+Remove a liaison between two atoms, specified either by index.
+" ->
+function remove_liaison!(topology::Topology, i::Integer, j::Integer)
+    idx = findin(topology.liaisons, Bond[(min(i, j), max(i, j)])
+    if length(idx) == 1
+        deleteat!(topology.liaisons, idx[1])
+    end
+    return nothing
+end
 
 @doc "
 `atomic_masses(topology)`

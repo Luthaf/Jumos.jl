@@ -20,7 +20,6 @@ immutable UnknownAtom <: AtomType end
 
 type Atom{T <: AtomType}
     label::Symbol                   # atom name
-    liaisons::Vector{Atom}          # references to other existing atoms
     # Atomic data
     mass::Float64                   # atom mass
     charge::Float64                 # atom charge
@@ -54,25 +53,4 @@ function mass(name::Symbol)
         res =  ATOMIC_MASSES[name].val
     end
     return res
-end
-
-function add_liaison!(this::Atom, other::Atom)
-    if other in this.liaisons
-        warn("Atoms $this and $other are already linked.")
-    end
-    push!(this.liaisons, other)
-end
-
-function remove_liaison!(this::Atom, other::Atom)
-    if !(other in this.liaisons)
-        warn("Atoms $this and $other are not linked.")
-    end
-    idx = 1
-    for atom in this.liaisons
-        if atom == other
-            deleteat!(this.liaisons, idx)
-        end
-        idx += 1
-    end
-    return nothing
 end
