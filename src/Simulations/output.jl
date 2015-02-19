@@ -14,7 +14,7 @@ export TrajectoryOutput, CustomOutput, EnergyOutput
 
 # abstract BaseOutput -> Defined in MolecularDynamics.jl
 
-function setup(::BaseOutput, ::MolecularDynamic)
+function setup(::BaseOutput, ::Simulation)
     return nothing
 end
 

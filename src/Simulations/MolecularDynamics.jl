@@ -41,7 +41,7 @@ include("MolecularDynamics/check.jl")
 
 include("MolecularDynamics/initial_velocities.jl")
 
-function setup(MD::MolecularDynamic, universe::Universe)
+function setup(MD::MolecularDynamics, universe::Universe)
     get_masses!(universe)
 
     check_settings(MD)

@@ -24,13 +24,23 @@ type Universe
     data::Dict{Symbol, Any}
 end
 
-function Universe(cell::UnitCell, topology::Topology)
-    interactions = Interaction[]
-    frame = Frame(size(topology))
-    data = Dict{Symbol, Any}()
-    masses = Float64[]
-    return Universe(cell, topology, interactions, frame, masses, data)
-end
+Universe(cell::UnitCell, topology::Topology) = Universe(
+    cell,
+    topology,
+    Interaction[],
+    Frame(size(topology)),
+    Float64[],
+    Dict{Symbol, Any}()
+)
+
+Universe(natoms::Integer) = Universe(
+    UnitCell(),
+    Topology(),
+    Interaction[],
+    Frame(natoms),
+    Float64[],
+    Dict{Symbol, Any}()
+)
 
 function get_masses!(u::Universe)
     u.masses = atomic_masses(u.topology)

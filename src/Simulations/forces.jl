@@ -27,6 +27,7 @@ function get_potential(interactions::Vector{Interaction}, topology::Topology, i:
     atom_j = topology.atoms[j]
     for int in interactions
         isa(int, PairInteraction) || continue
+    end
 
     return interactions[(atom_i, atom_j)]
 end
@@ -43,7 +44,7 @@ call the force function for these particles.
 "->
 immutable NaiveForces <: BaseForcesComputer end
 
-function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Interactions)
+function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Vector{Interaction})
 
     natoms = size(frame)
 

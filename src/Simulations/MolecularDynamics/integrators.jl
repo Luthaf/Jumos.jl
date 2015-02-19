@@ -13,7 +13,7 @@ export BaseIntegrator
 export VelocityVerlet, Verlet
 # abstract BaseIntegrator -> Defined in MolecularDynamics.jl
 
-function setup(::BaseIntegrator, ::MolecularDynamic) end
+function setup(::BaseIntegrator, ::Simulation) end
 
 @doc "
 Velocity Verlet integrator

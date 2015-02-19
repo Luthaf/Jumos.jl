@@ -12,10 +12,10 @@
 # See http://ambermd.org/netcdf/nctraj.xhtml for the convention.
 # ============================================================================ #
 
-using NetCDF
+import NetCDF
 
 type NCReader <: FormatReader
-    file::NcFile
+    file::NetCDF.NcFile
 end
 
 register_reader(extension="nc", filetype="Amber NetCDF", reader=NCReader)
@@ -38,27 +38,27 @@ function get_traj_infos(r::NCReader)
     return natoms, nsteps
 end
 
-function read_next_frame!(traj::Reader{NCReader}, frame::Frame)
+function read_next_frame!(traj::Reader{NCReader}, universe::Universe)
     traj.current_step += 1
-    read_frame!(traj, traj.current_step, frame)
+    read_frame!(traj, traj.current_step, universe)
 end
 
-function read_frame!(traj::Reader{NCReader}, step::Integer, frame::Frame)
+function read_frame!(traj::Reader{NCReader}, step::Integer, universe::Universe)
     if step > traj.nsteps || step < 1
         max = traj.nsteps
         error("Can not read step $step. Maximum step: $max")
     end
-    frame.step = step
-    frame.positions = NetCDF.readvar(traj.reader.file,
-                               "coordinates",
-                               start=[1,1,step],
-                               count=[-1,-1,1])[:,:,1]
+    universe.data[:step] = step
+    universe.frame.positions = NetCDF.readvar(traj.reader.file,
+                                              "coordinates",
+                                              start=[1,1,step],
+                                              count=[-1,-1,1])[:,:,1]
 
     if false # Todo: add a velocity parameter
-        frame.velocities = NetCDF.readvar(traj.reader.file,
-                                   "velocities",
-                                   start=[1,1,step],
-                                   count=[-1,-1,1])[:,:,1]
+        universe.frame.velocities = NetCDF.readvar(traj.reader.file,
+                                                   "velocities",
+                                                   start=[1,1,step],
+                                                   count=[-1,-1,1])[:,:,1]
     end
 
     length = NetCDF.readvar(traj.reader.file,
@@ -69,7 +69,7 @@ function read_frame!(traj::Reader{NCReader}, step::Integer, frame::Frame)
                                "cell_angles",
                                start=[1, step],
                                count=[-1,1])[:,1]
-    frame.cell = UnitCell(length, angles)
+    universe.cell = UnitCell(length, angles)
     if step >= traj.nsteps
         return false
     else
@@ -77,4 +77,4 @@ function read_frame!(traj::Reader{NCReader}, step::Integer, frame::Frame)
     end
 end
 
-close(traj::Reader{NCReader}) = ncclose(traj.reader.file.name)
+Base.close(traj::Reader{NCReader}) = NetCDF.ncclose(traj.reader.file.name)

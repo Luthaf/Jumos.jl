@@ -15,21 +15,15 @@
 
 type XYZReader <: FormatReader
     file::IOStream
-    cell::UnitCell
+    filename::UTF8String
 end
 
 register_reader(extension="xyz", filetype="XYZ", reader=XYZReader)
 
-# Constructor of XYZReader: open the file and get some informations
+"Constructor of XYZReader: open the file and get some informations"
 function XYZReader(filename::String; kwargs...)
-
-    cell = UnitCell(get_in_kwargs(kwargs, :cell, UnitCell()))
-    if cell == UnitCell()
-        warn("No unit cell size while opening XYZ trajectories")
-    end
-
     file = open(filename, "r")
-    return XYZReader(file, cell)
+    return XYZReader(file, filename)
 end
 
 function get_traj_infos(r::XYZReader)
@@ -45,8 +39,8 @@ function get_traj_infos(r::XYZReader)
     return natoms, nsteps
 end
 
-# Read a given step of am XYZ Trajectory
-function read_frame!(traj::Reader{XYZReader}, step::Integer, frame::Frame)
+@doc "Read a given step of am XYZ Trajectory" ->
+function read_frame!(traj::Reader{XYZReader}, step::Integer, universe::Universe)
     if !(step == traj.current_step+1)
         go_to_step!(traj.reader, step)
         traj.current_step = step
@@ -55,26 +49,34 @@ function read_frame!(traj::Reader{XYZReader}, step::Integer, frame::Frame)
         max = traj.nsteps
         error("Can not read step $step. Maximum step: $max")
     end
-    return read_next_frame!(traj, frame)
+    return read_next_frame!(traj, universe)
 end
 
-# Read the next step of a trajectory.
-# Assumes that the cursor is already at the good place.
-# Return True if there is still some step to read, false otherwhile
-function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
+@doc "
+Read the next step of a trajectory.
+Assumes that the cursor is already at the good place.
+Return True if there is still some step to read, false otherwhile
+" ->
+function read_next_frame!(traj::Reader{XYZReader}, universe::Universe)
     traj.natoms = int(readline(traj.reader.file))
 
-    set_frame_size!(frame, traj.natoms)
+    if traj.natoms != size(universe.topology)
+        pos = position(traj.reader.file)
+        seekstart(traj.reader.file)
+        universe.topology = read_topology(traj.reader.filename)
+        seek(traj.reader.file, pos)
+    end
 
     readline(traj.reader.file)  # comment
+
 
     for i = 1:traj.natoms
         line = readline(traj.reader.file)
         position = read_atom_from_line(line)
-        frame.positions[i] = position
+        universe.frame.positions[i] = position
     end
-    frame.cell = traj.reader.cell
-    frame.step = traj.current_step
+    # TODO: update topology as needed
+    universe.data[:step] = traj.current_step
     traj.current_step += 1
     if traj.current_step >= traj.nsteps
         return false
@@ -83,13 +85,13 @@ function read_next_frame!(traj::Reader{XYZReader}, frame::Frame)
     end
 end
 
-# Read the atomic informations from a line of a XYZ file
+"Read the atomic informations from a line of a XYZ file"
 function read_atom_from_line(line::String)
     sp = split(line)
     return [float32(sp[2]), float32(sp[3]), float32(sp[4])]
 end
 
-# Move file cursor to the first line of the step.
+"Move file cursor to the first line of the step."
 function go_to_step!(traj::XYZReader, step::Integer)
     seekstart(traj.file)
     current = 1

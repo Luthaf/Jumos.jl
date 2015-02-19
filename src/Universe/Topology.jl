@@ -77,16 +77,15 @@ function update!(connectivity::Connectivity, liaisons::Vector{(Int64, Int64)})
 end
 
 immutable Topology
-    atomic_templates::Vector{Atom}
+    templates::Vector{Atom}
     atoms::Vector{Int}
     liaisons::Vector{Bond}
     connectivity::Connectivity
 end
 
 function Topology(natoms::Integer)
-    atoms = Array(Atom, natoms)
-    fill!(atoms, Atom())
-    return Topology(atoms, Connectivity())
+    atoms = Array(Int, natoms)
+    return Topology(Atom[], atoms, Bond[], Connectivity())
 end
 Topology() = Topology(0)
 
@@ -116,14 +115,46 @@ function Base.show(io::IO, topology::Topology)
              "$n_bonds bonds, $n_angles angles, and $n_dihedrals dihedrals.")
 end
 
-Base.getindex(topology::Topology, i) = topology.atomic_templates[topology.atoms[i]]
-Base.setindex!(topology::Topology, atom::Atom, i) = setindex!(topology.atoms, atom, i)
+Base.getindex(topology::Topology, i) = topology.templates[topology.atoms[i]]
+
+@doc "
+`firstin(a, i)`
+
+Get the first element equals to `i` in `a`" ->
+@inline function firstin(a, i)
+    for (idx, val) in enumerate(a)
+        if i == val
+            return idx
+        end
+    end
+    return -1
+end
+
+function Base.setindex!(topology::Topology, atom::Atom, i)
+    0 < i <= size(topology) || throw(BoundsError(
+            "$(size(topology))-atoms topology at index $i"))
+
+    if atom in topology.templates
+        topology.atoms[i] = firstin(topology.templates, atom)
+    else
+        # Create a new atomic template
+        push!(topology.templates, atom)
+        topology.atoms[i] = size(topology.templates, 1)
+    end
+end
 
 @doc "
 Adds an atom in the topology.
 " ->
 function add_atom!(topology::Topology, atom::Atom)
-    push!(topology.atoms, atom)
+    atom_idx = findin(topology.templates, [atom])
+    if length(atom_idx) == 1
+        push!(topology.atoms, atom_idx[1])
+    else
+        # Create a new atomic template
+        push!(topology.templates, atom)
+        push!(topology.atoms, size(topology.templates, 1))
+    end
 end
 
 @doc "
@@ -132,8 +163,8 @@ end
 Adds a liaison between the atoms at indexes `i` and `j`.
 " ->
 function add_liaison!(topology::Topology, i::Integer, j::Integer)
-    assert(i < size(topology))
-    assert(j < size(topology))
+    assert(i <= size(topology))
+    assert(j <= size(topology))
     push!(topology.liaisons, (min(i, j), max(i, j)))
     return nothing
 end
@@ -160,7 +191,7 @@ end
 Remove a liaison between two atoms, specified either by index.
 " ->
 function remove_liaison!(topology::Topology, i::Integer, j::Integer)
-    idx = findin(topology.liaisons, Bond[(min(i, j), max(i, j)])
+    idx = findin(topology.liaisons, Bond[(min(i, j), max(i, j))])
     if length(idx) == 1
         deleteat!(topology.liaisons, idx[1])
     end

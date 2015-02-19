@@ -8,51 +8,38 @@
 #            Trajectories reading and writing through iterators
 # ============================================================================ #
 
-import Base: close, show
-
 export Reader, Writer
-export eachframe, read_next_frame!, read_frame!, opentraj
+export read_next_frame!, read_frame!, opentraj
 export register_reader, register_writer
-
-abstract TrajectoryIO
 
 type TrajectoryIOError <: Exception
     message::String
 end
 
-function show(io::IO, e::TrajectoryIOError)
+function Base.show(io::IO, e::TrajectoryIOError)
     show(io, e.message)
 end
 
-
-abstract FormatReader <: TrajectoryIO
+abstract FormatReader
 type Reader{T<:FormatReader}
     natoms::Int
     nsteps::Int
     current_step::Int
-    topology::Topology
     reader::T
 end
 
-function Reader(r::FormatReader, topology=Topology())
+function Reader(r::FormatReader)
     natoms, nsteps = get_traj_infos(r)
-    if natoms > 0 && size(topology) == 0
-        topology = dummy_topology(natoms)
-    end
-    return Reader(natoms, nsteps, 0, topology, r)
+    return Reader(natoms, nsteps, 0, r)
 end
 
-import Jumos: Frame
-Frame(reader::Reader) = Frame(reader.topology)
-
-abstract FormatWriter <: TrajectoryIO
+abstract FormatWriter
 type Writer{T<:FormatWriter}
     current_step::Int
     writer::T
 end
 
 Writer(IOWriter::FormatWriter) = Writer(0, IOWriter)
-Frame(writer::Writer) = Frame(writer.topology)
 
 # These dicts stores associations between extensions and file types.
 # The key is the default extension, the values are tuples (file_type, Reader|Writer).
@@ -73,40 +60,12 @@ function register_writer(;extension="", filetype="", writer=Any)
     # TODO: add check on methods
 end
 
-# ============================================================================ #
-#                 Iterator interface for trajectories IO
-# ============================================================================ #
-
-# Only reads some specific steps
-function eachframe(t::Reader, range::Range{Integer})
-    frame = Frame(t)
-    function _it()
-        for i in range
-            read_frame!(t, i, frame)
-            produce(frame)
-        end
-    end
-    return Task(_it)
-end
-
-# Reads every steps of a trajectory, given a starting point
-function eachframe(t::Reader; start=1)
-    t.current_step = start - 1
-    frame = Frame(t)
-    function _it()
-        while read_next_frame!(t, frame)
-            produce(frame)
-        end
-    end
-    return Task(_it)
-end
-
-function read_next_frame!{T<:FormatReader}(t::Reader{T}, ::Frame)
+function read_next_frame!{T<:FormatReader}(t::Reader{T}, ::Universe)
    throw(NotImplementedError("Method read_next_frame! not implemented for "*
                              "$(typeof(t.reader)) trajectory type"))
 end
 
-function read_frame!{T<:FormatReader}(t::Reader{T}, ::Integer, ::Frame)
+function read_frame!{T<:FormatReader}(t::Reader{T}, ::Integer, ::Universe)
     throw(NotImplementedError("Method read_frame! not implemented for "*
                               "$(typeof(t.reader)) trajectory type"))
 end
@@ -131,21 +90,21 @@ include("NetCDF/Reader.jl")
 include("NetCDF/Writer.jl")
 
 """
-This function returns an object of type <TRAJ_TYPE><Reader|Writer>,
-or raise an error if it is impossible to create such object.
-The trajectory format is guessed from the extension.
+`opentraj(filename; mode="r", kwargs...)`
 
-Positional argument
--------------------
+This function returns an object of type <TRAJ_TYPE><Reader|Writer>, or raise an
+error if it is impossible to create such object. The trajectory format is
+guessed from the extension.
 
- - filename::String, the file path
+# Positional argument
 
-Keyword arguments
------------------
+- filename::String, the file path
 
- - mode::String, "r" for read or "w" for write;
- - tologogy::String, path to a topology file, for reading;
- - All other keywords arguments are passed to the TrajectoryIO contructor.
+# Keyword arguments
+
+- `mode::String`, "r" for read or "w" for write;
+- `tologogy::String`, path to a topology file, for reading;
+- Any other keywords arguments are passed to the TrajectoryIO contructor.
 """
 function opentraj(filename::String; mode="r", topology="", kwargs...)
     extension = split(strip(filename), ".")[end]
@@ -155,25 +114,16 @@ function opentraj(filename::String; mode="r", topology="", kwargs...)
             info(".$extension extension, assuming $trajtype trajectory at input")
             FormatReader = reader(filename; kwargs...)
         else
-            error("The '$extension' extension is not recognized. " *
-                  "Please provide a trajectory type.")
+            error("The '$extension' extension is not recognized.")
         end
-        natoms, _ = get_traj_infos(FormatReader)
-        if topology != ""
-            topo = Topology(topology)
-        else
-            info("You may want to use atomic names, providing a topology file")
-            topo = dummy_topology(natoms)
-        end
-        return Reader(FormatReader, topo)
+        return Reader(FormatReader)
     elseif mode =="w"
         if haskey(TRAJECTORIES_WRITERS, extension)
             trajtype, writer = TRAJECTORIES_WRITERS[extension]
             info(".$extension extension, assuming $trajtype trajectory at output")
             FormatWriter = writer(filename; kwargs...)
         else
-            error("The '$extension' extension is not recognized. " *
-                  "Please provide a trajectory type.")
+            error("The '$extension' extension is not recognized.")
         end
         return Writer(FormatWriter)
     else
@@ -185,8 +135,8 @@ end
 Reader(filename::String; kwargs...) = opentraj(filename; mode="r", kwargs...)
 Writer(filename::String; kwargs...) = opentraj(filename; mode="w", kwargs...)
 
-close(traj::Reader) = close(traj.reader.file)
-isopen(traj::Reader)= isopen(traj.reader.file)
+Base.close(traj::Reader) = close(traj.reader.file)
+Base.isopen(traj::Reader)= isopen(traj.reader.file)
 
-close(traj::Writer) = close(traj.writer.file)
-isopen(traj::Writer)= isopen(traj.writer.file)
+Base.close(traj::Writer) = close(traj.writer.file)
+Base.isopen(traj::Writer)= isopen(traj.writer.file)

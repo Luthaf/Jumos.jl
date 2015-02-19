@@ -2,18 +2,17 @@ facts("Trajectory IO") do
     TRAJ_DIR = joinpath(dirname(@__FILE__), "trjs")
 
     context("NetCDF") do
-        traj = Reader("$TRAJ_DIR/water.nc", topology="$TRAJ_DIR/water.lmp")
-        frame = Frame(traj)
-        read_next_frame!(traj, frame)
+        traj = Reader("$TRAJ_DIR/water.nc")
+        topology = read_topology("$TRAJ_DIR/water.lmp")
+        uni = Universe(UnitCell(), topology)
+        read_next_frame!(traj, uni)
 
-        @fact length(frame.positions) => traj.natoms
+        @fact length(uni.frame.positions) => traj.natoms
 
-        @fact frame.topology[1].name => "O"
-        @fact frame.topology[1].symbol => "O"
-        @fact frame.topology[2].name => "H"
-        @fact frame.topology[2].symbol => "H"
-        @fact frame.topology[1].mass => 15.999
-        @fact size(frame.topology.atom_types, 1) => 2
+        @fact uni.topology[1].label => :O
+        @fact uni.topology[2].label => :H
+        @fact uni.topology[1].mass => 15.999
+        @fact size(uni.topology.templates, 1) => 2
 
         close(traj)
     end
@@ -21,31 +20,20 @@ facts("Trajectory IO") do
     context("XYZ") do
         tmp = tempname()
         outtraj = Writer("$tmp.xyz")
-        traj = Reader("$TRAJ_DIR/water.xyz",
-                      topology="$TRAJ_DIR/water.xyz", cell=[15.0, 15.0, 15.0])
+        traj = Reader("$TRAJ_DIR/water.xyz")
+        uni = Universe(traj.natoms)
 
         context("Reading") do
-            frame = Frame(traj)
-            read_frame!(traj, 50, frame)
-            @fact length(frame.positions) => traj.natoms
+            read_frame!(traj, 50, uni)
+            @fact length(uni.frame.positions) => traj.natoms
 
-            @fact frame.topology[4].name => "O"
-            @fact frame.topology[4].symbol => "O"
-            @fact frame.topology[4].mass => ATOMIC_MASSES["O"].val
+            @fact uni.topology[4].label => :O
+            @fact uni.topology[4].mass => ATOMIC_MASSES[:O].val
         end
 
         context("Writing") do
-            frame = Frame(traj)
-            read_frame!(traj, 50, frame)
-            write(outtraj, frame)
-
-            frames = Frame[]
-            for i=1:10
-                read_frame!(traj, i, frame)
-                push!(frames, frame)
-            end
-            write(outtraj, frames)
-
+            read_frame!(traj, 50, uni)
+            write(outtraj, uni)
             @pending "check the first and last lines of the writen traj" => :TODO
         end
 

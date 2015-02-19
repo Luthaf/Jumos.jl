@@ -16,7 +16,7 @@ export WrapParticles
 export BerendsenThermostat, VelocityRescaleThermostat
 # export BerendsenBarostat
 
-function setup(::BaseControl, ::MolecularDynamic)
+function setup(::BaseControl, ::Simulation)
     return nothing
 end
 

@@ -8,11 +8,25 @@
 #                       Topologie read and write
 # ============================================================================ #
 
-export read_topology
+export read_topology, read_topology!
 
 include("Topologies/XYZ.jl")
 include("Topologies/LAMMPS.jl")
 
+@doc "
+`read_topology!(universe, filename)`
+
+Read the topology from the file `filename` into the `universe.topology`.
+" ->
+function read_topology!(universe, filename)
+    universe.topology = read_topology(filename)
+end
+
+@doc "
+`read_topology(filename)`
+
+Read the topology from the file `filename` and return it.
+" ->
 function read_topology(filename)
     extension = split(strip(filename), ".")[end]
     if extension == "xyz"

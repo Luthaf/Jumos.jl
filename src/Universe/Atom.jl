@@ -34,9 +34,14 @@ function Atom(s::String, atype = AtomType)
             atype = CorseGrain
         end
     end
-    return Atom{atype}(Symbol(s), Atom[], mass(Symbol(s)), 0, Dict{Symbol, Any}())
+    return Atom{atype}(Symbol(s), mass(Symbol(s)), 0, Dict{Symbol, Any}())
 end
 Atom() = Atom("", UnknownAtom)
+
+function (==)(this::Atom, other::Atom)
+    return this.label == other.label && this.mass == other.mass &&
+           this.charge == other.charge && this.properties == other.properties
+end
 
 function Base.show(io::IO, atom::Atom)
     show(io, "Atom $(atom.label)")

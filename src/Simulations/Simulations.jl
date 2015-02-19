@@ -92,4 +92,4 @@ function output(sim::Simulation, universe::Universe)
 end
 
 include("MolecularDynamics.jl")
-include("UI.jl")
+#include("UI.jl")
