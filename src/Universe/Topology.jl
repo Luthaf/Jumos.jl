@@ -218,6 +218,8 @@ Get a dummy topology of size `natoms`.
 " ->
 function dummy_topology(natoms::Integer)
     topology = Topology(natoms)
-    fill!(topology.atoms, Atom("", DummyAtom))
+    for i=1:natoms
+        topology[i] = Atom("", DummyAtom)
+    end
     return topology
 end

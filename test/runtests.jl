@@ -5,7 +5,7 @@ const tests_available = Dict(
     :distance => "Distances computations",
     :units => "Units conversions",
     :trajectories => "TrajectoriesIO capacities",
-    :analysis => "Trajectories analysis",
+    #:analysis => "Trajectories analysis",
     :simulations => "Running MD Simulations"
 )
 
