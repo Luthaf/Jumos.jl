@@ -23,7 +23,7 @@ type VelocityVerlet <: BaseIntegrator
     accelerations::Array3D
 end
 
-function VelocityVerlet(timestep::Float64)
+function VelocityVerlet(timestep::Real)
     accelerations = Array3D(Float64, 0)
     return VelocityVerlet(timestep, accelerations)
 end
@@ -83,7 +83,7 @@ type Verlet <: BaseIntegrator
     wrap_velocities::Bool
 end
 
-function Verlet(timestep::Float64)
+function Verlet(timestep::Real)
     return Verlet(timestep, Array3D(Float64, 0), Array3D(Float64, 0), false)
 end
 

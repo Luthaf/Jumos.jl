@@ -22,6 +22,12 @@ module Jumos
     Base.show(io::IO, e::NotImplementedError) = show(io, "Not implemented : $(e.message)")
     export NotImplementedError
 
+    type JumosError <: Exception
+        message::String
+    end
+    Base.show(io::IO, e::JumosError) = show(io, e.message)
+    export JumosError
+
     " The `Systems` module defines all the usefull types for storage of a molecular
     system definition. "
     @reexport module Systems
@@ -42,8 +48,10 @@ module Jumos
     " The `Simulations` module defines functions for running an analysing simulations."
     @reexport module Simulations
         using Jumos
-    #    include("Simulations/Analysis/Histograms.jl")
         include("Simulations/Simulations.jl")
+        include("Simulations/MolecularDynamics.jl")
+
+        #    include("Simulations/Analysis/Histograms.jl")
     end
 
 

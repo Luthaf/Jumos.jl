@@ -9,6 +9,7 @@
 # ============================================================================ #
 
 export MolecularDynamics
+export set_integrator!
 
 abstract BaseIntegrator
 abstract BaseControl
@@ -87,6 +88,48 @@ function check(sim::Simulation)
     for callback in sim.checks
         callback(sim)
     end
+end
+
+# ============================================================================ #
+
+function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
+    assert(isa(sim.propagator, MolecularDynamics),
+           "We can only add controls to a MolecularDynamics Simulation.")
+    if !ispresent(sim, control)
+        push!(sim.controls, control)
+    else
+        warn("$control is aleady present in this simulation")
+    end
+    return sim.controls
+end
+
+function Base.push!(sim::Simulation, check::BaseCheck)
+    assert(isa(sim.propagator, MolecularDynamics),
+           "We can only add checks to a MolecularDynamics Simulation.")
+    if !ispresent(sim, check)
+        push!(sim.checks, check)
+    else
+        warn("$check is aleady present in this simulation")
+    end
+    return sim.checks
+end
+
+function ispresent(sim::Simulation, algo::Union(BaseCheck, BaseControl))
+    algo_type = typeof(algo)
+    for field in [:outputs, :controls]
+        for elem in getfield(sim, field)
+            if isa(elem, algo_type)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function set_integrator!(sim::Simulation, integrator::BaseIntegrator)
+    assert(isa(sim.propagator, MolecularDynamics),
+           "We can only set integrator for MolecularDynamics Simulation.")
+    sim.integrator = integrator
 end
 
 # ============================================================================ #

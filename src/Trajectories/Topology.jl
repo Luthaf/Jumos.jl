@@ -7,11 +7,7 @@
 # ============================================================================ #
 #                       Topologie read and write
 # ============================================================================ #
-
-export read_topology, read_topology!
-
-include("Topologies/XYZ.jl")
-include("Topologies/LAMMPS.jl")
+export topology_from_file!
 
 @doc "
 `read_topology!(universe, filename)`
@@ -23,11 +19,11 @@ function read_topology!(universe, filename)
 end
 
 @doc "
-`read_topology(filename)`
+`Topology(filename)`
 
 Read the topology from the file `filename` and return it.
 " ->
-function read_topology(filename)
+function Universe.Topology(filename)
     extension = split(strip(filename), ".")[end]
     if extension == "xyz"
         info("Reading topology in XYZ format")
@@ -40,5 +36,9 @@ function read_topology(filename)
     end
 end
 
-import Jumos: Topology
-Topology(filename::String) = read_topology(filename)
+function topology_from_file!(univ::Universe, filename::AbstractString)
+    univ.topology = Topology(filename)
+end
+
+include("Topologies/XYZ.jl")
+include("Topologies/LAMMPS.jl")

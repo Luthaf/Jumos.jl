@@ -8,6 +8,7 @@
 #             Universe type, holding all the simulated system data
 # ============================================================================ #
 export Universe, Interaction
+export setframe!
 
 include("Topology.jl")
 include("UnitCell.jl")
@@ -61,6 +62,50 @@ end
 
 function remove_liaison!(u::Universe, atom_i::Atom, atom_j::Atom)
     remove_liaison!(u.topology, atom_i, atom_j)
+end
+
+@doc "
+`setframe!(universe, frame)`: set the `universe` frame to `frame`.
+" ->
+function setframe!(univ::Universe, frame::Frame)
+    univ.frame = frame
+    return nothing
+end
+
+@doc "
+`setcell!(universe, cell)`
+
+Set the universe unit cell. `cell` can be an UnitCell instance or a list of cell
+lenghts and angles.
+
+`setcell!(universe, celltype, params)`
+
+Set the universe unit cell to a cell with type `celltype` and cell parameters from
+`params`
+" ->
+function setcell!(univ::Universe, cell::UnitCell)
+    sim.cell = cell
+end
+
+function setcell!(univ::Universe, params)
+    return setcell!(sim, UnitCell(params...))
+end
+
+function setcell!{T<:Type{AbstractCellType}}(univ::Universe, celltype::T, params = (0.0,))
+    return setcell!(sim, UnitCell(celltype(), params...))
+end
+
+# Todo: Way to add a catchall interaction
+function add_interaction(sim::Simulation, potential::PotentialFunction, atoms...;
+                         computation=:auto, kwargs...)
+    atoms_id = get_atoms_id(sim, atoms...)
+
+    interactions = get_interactions(potential, atoms_id...; computation=computation, kwargs...)
+
+    for (index, potential_computation) in interactions
+        sim.interactions[index] = potential_computation
+    end
+    return nothing
 end
 
 include("Distances.jl")

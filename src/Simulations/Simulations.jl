@@ -9,41 +9,45 @@
 # ============================================================================ #
 
 export propagate!
+export Simulation, Propagator
 
 abstract Propagator
 abstract BaseCompute
 abstract BaseOutput
 
-type Simulation{T<:Propagator}
+type Simulation
     # Algorithms
     propagator      :: Propagator
     computes        :: Vector{BaseCompute}
     outputs         :: Vector{BaseOutput}
 end
 
-include("potentials.jl")
-# abstract Interaction -> In the Universe module
-immutable PairInteraction <: Interaction
-    i::UInt64
-    j::UInt64
-    potential::PotentialComputation
-end
+Simulation(p::Propagator) = Simulation(p, BaseCompute[], BaseOutput[])
 
-immutable Interaction3Body <: Interaction
-    i::UInt64
-    j::UInt64
-    potential::PotentialComputation
-end
-
-immutable PairInteraction <: Interaction
-    i::UInt64
-    j::UInt64
-    potential::PotentialComputation
+function Simulation(propagator::Symbol, args...)
+    if propagator == :MD || propagator == :md || propagator == :moleculardynamics
+        p = MolecularDynamics(args...)
+    else
+        throw(JumosError("Unknown propagator in simulation: $propagator."))
+    end
+    return Simulation(p)
 end
 
 include("forces.jl")
 include("compute.jl")
 include("output.jl")
+
+type SimulationConfigurationError <: Exception
+    msg :: String
+end
+export SimulationConfigurationError
+
+function show(io::IO, e::SimulationConfigurationError)
+    print(io, "Simulation Configuration Error : \n")
+    print(io, e.msg)
+end
+
+# TODO: check initial consistency of a simulation.
 
 @doc "
 `propagate!(simulation, universe, nsteps)`
@@ -91,5 +95,32 @@ function output(sim::Simulation, universe::Universe)
     end
 end
 
-include("MolecularDynamics.jl")
-#include("UI.jl")
+function Base.push!(sim::Simulation, output::BaseOutput)
+    if !ispresent(sim, output)
+        push!(sim.outputs, output)
+    else
+        warn("$output is aleady present in this simulation")
+    end
+    return sim.outputs
+end
+
+function Base.push!(sim::Simulation, compute::BaseCompute)
+    if !ispresent(sim, compute)
+        push!(sim.computes, compute)
+    else
+        warn("$compute is aleady present in this simulation")
+    end
+    return sim.computes
+end
+
+function ispresent(sim::Simulation, algo::Union(BaseCompute, BaseOutput))
+    algo_type = typeof(algo)
+    for field in [:outputs, :controls]
+        for elem in getfield(sim, field)
+            if isa(elem, algo_type)
+                return true
+            end
+        end
+    end
+    return false
+end

@@ -140,3 +140,14 @@ Base.isopen(traj::Reader)= isopen(traj.reader.file)
 
 Base.close(traj::Writer) = close(traj.writer.file)
 Base.isopen(traj::Writer)= isopen(traj.writer.file)
+
+export positions_from_file!
+
+function positions_from_file!(univ::Universe, filename::AbstractString)
+    reader = opentraj(filename)
+    read_next_frame!(reader, univ)
+    reader.close()
+end
+
+# Todo:
+# function velocities_from_file!
