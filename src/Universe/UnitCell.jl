@@ -8,7 +8,6 @@
 #                          Simulation cell type
 # ============================================================================ #
 
-import Base: ==, show
 export UnitCell, InfiniteCell, OrthorombicCell, TriclinicCell
 export volume, cellmatrix
 
@@ -26,7 +25,7 @@ type UnitCell{T<:AbstractCellType}
     gamma :: Float64
 end
 
-function show(io::IO, cell::UnitCell)
+function Base.show(io::IO, cell::UnitCell)
     ctype = split(string(celltype(cell)), ".")[end]
     print(io, ctype)
     if !(celltype(cell) == InfiniteCell)

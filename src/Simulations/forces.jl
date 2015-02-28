@@ -30,8 +30,7 @@ call the force function for these particles.
 "->
 immutable NaiveForces <: BaseForcesComputer end
 
-
-function call(::NaiveForces, univ::Universe, forces::Array3D)
+function Base.call(::NaiveForces, univ::Universe, forces::Array3D)
     interactions = univ.interactions
     const natoms = size(univ)
 

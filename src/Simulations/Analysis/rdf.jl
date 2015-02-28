@@ -7,8 +7,6 @@
 # ============================================================================ #
 #                 Computing radial distribution functions
 # ============================================================================ #
-
-import Base: write
 export RDF
 
 type RDF
@@ -60,7 +58,7 @@ function initialize!(rdf::RDF, frame::Frame)
     rdf.values.max = 0.5*min(rdf.cell.x, rdf.cell.y, rdf.cell.z)
 end
 
-function write(rdf::RDF, trajname::String; outname="")
+function Base.write(rdf::RDF, trajname::String; outname="")
     if outname == ""
         outname = join(split(trajname, '.')[1:end-1], '.')
         outname = "$outname-$(rdf.atom_i)-$(rdf.atom_j).rdf"

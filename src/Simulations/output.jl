@@ -8,7 +8,6 @@
 #                       Compute interesting values
 # ============================================================================ #
 
-import Base: write
 export BaseOutput
 export TrajectoryOutput, CustomOutput, EnergyOutput
 
@@ -54,7 +53,7 @@ function TrajectoryOutput(filename::String, frequency=1)
     return TrajectoryOutput(writer, OutputFrequency(frequency))
 end
 
-function write(out::TrajectoryOutput, context::Dict)
+function Base.write(out::TrajectoryOutput, context::Dict)
     write(out.writer, context[:frame])
 end
 
@@ -87,7 +86,7 @@ function CustomOutput(filename::String, values::Vector{Symbol}, frequency=1;
     return CustomOutput(file, values, OutputFrequency(frequency))
 end
 
-function write(out::CustomOutput, context::Dict)
+function Base.write(out::CustomOutput, context::Dict)
     s = ""
     for value in out.values
         if haskey(context, value)
@@ -116,7 +115,7 @@ function EnergyOutput(filename::String, frequency=1)
     return EnergyOutput(file, OutputFrequency(frequency))
 end
 
-function write(out::EnergyOutput, context::Dict)
+function Base.write(out::EnergyOutput, context::Dict)
     T = context[:temperature]
     Ekin = context[:E_kinetic]
     Epot = context[:E_potential]

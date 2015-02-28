@@ -42,7 +42,7 @@ type SimulationConfigurationError <: Exception
 end
 export SimulationConfigurationError
 
-function show(io::IO, e::SimulationConfigurationError)
+function Base.show(io::IO, e::SimulationConfigurationError)
     print(io, "Simulation Configuration Error : \n")
     print(io, e.msg)
 end

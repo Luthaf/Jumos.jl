@@ -8,8 +8,6 @@
 #                           Chemistry specific units
 # ============================================================================ #
 
-
-import Base: convert, show
 import SIUnits: SIUnit, NonSIUnit, SIQuantity, NonSIQuantity, unit
 
 # ============================================================================ #
@@ -17,19 +15,19 @@ import SIUnits: SIUnit, NonSIUnit, SIQuantity, NonSIQuantity, unit
 export Calorie, Angstrom, Ångström, AtomicMass, Bar, Atmosphere
 
 const Calorie = NonSIUnit{typeof(Joule),:cal}()
-convert(::Type{SIQuantity},::typeof(Calorie)) = 4.184Joule
+Base.convert(::Type{SIQuantity},::typeof(Calorie)) = 4.184Joule
 
 const Angstrom = NonSIUnit{typeof(Meter),:Å}()
-convert(::Type{SIQuantity},::typeof(Angstrom)) = 0.1Nano*Meter
+Base.convert(::Type{SIQuantity},::typeof(Angstrom)) = 0.1Nano*Meter
 
 const AtomicMass = NonSIUnit{typeof(KiloGram),:amu}()
-convert(::Type{SIQuantity},::typeof(AtomicMass)) = 1.660538921e-27KiloGram
+Base.convert(::Type{SIQuantity},::typeof(AtomicMass)) = 1.660538921e-27KiloGram
 
 const Bar = NonSIUnit{typeof(Pascal),:bar}()
-convert(::Type{SIQuantity},::typeof(Bar)) = 1e5Pascal
+Base.convert(::Type{SIQuantity},::typeof(Bar)) = 1e5Pascal
 
 const Atmosphere = NonSIUnit{typeof(Pascal),:atm}()
-convert(::Type{SIQuantity},::typeof(Bar)) = 101325Pascal
+Base.convert(::Type{SIQuantity},::typeof(Bar)) = 101325Pascal
 
 # UTF-8 version
 const Ångström = Angstrom
@@ -65,7 +63,7 @@ type UnitError <: Exception
     message::String
 end
 
-function show(io::IO, e::UnitError)
+function Base.show(io::IO, e::UnitError)
     show(io, "Unit conversion error: $(e.message)")
 end
 

@@ -8,21 +8,16 @@
 #                    Checking the simulation consistency
 # ============================================================================ #
 
-import Base: show, call
 export BaseCheck
 export GlobalVelocityIsNull, TotalForceIsNull, AllPositionsAreDefined
 # abstract BaseCheck -> Defined in MolecularDynamics.jl
-
-function show(io::IO, a::BaseCheck)
-    show(io, typeof(a))
-end
 
 type CheckError <: Exception
     msg :: String
 end
 export CheckError
 
-function show(io::IO, e::CheckError)
+function Base.call(io::IO, e::CheckError)
     print(io, "Error in simulation : \n")
     print(io, e.msg)
 end
@@ -33,7 +28,7 @@ Check if all the positions and all the velocities are number : not NaN neither I
 " ->
 immutable AllPositionsAreDefined <: BaseCheck end
 
-function call(::AllPositionsAreDefined, univ::Universe, ::MolecularDynamics)
+function Base.call(::AllPositionsAreDefined, univ::Universe, ::MolecularDynamics)
     const natoms = size(univ.frame)
     for i=1:natoms, dim=1:3
         isfinite(univ.frame.positions[dim, i]) || throw(CheckError(
@@ -55,7 +50,7 @@ Check if the overall velocity is null, with a 1e-5 tolerance.
 " ->
 immutable GlobalVelocityIsNull <: BaseCheck end
 
-function call(::GlobalVelocityIsNull, univ::Universe, ::MolecularDynamics)
+function Base.call(::GlobalVelocityIsNull, univ::Universe, ::MolecularDynamics)
     const natoms = size(univ.frame)
     V = 0.0
     for i=1:natoms, j=1:3
@@ -72,7 +67,7 @@ Check if the sum of the forces is effectively null, with a 1e-5 tolerance.
 " ->
 immutable TotalForceIsNull <: BaseCheck end
 
-function call(::TotalForceIsNull, univ::Universe, propag::MolecularDynamics)
+function Base.call(::TotalForceIsNull, univ::Universe, propag::MolecularDynamics)
     const natoms = size(univ.frame)
     F = 0.0
     for i=1:natoms, dim=1:3

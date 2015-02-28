@@ -39,7 +39,7 @@ function setup(integrator::VelocityVerlet, univ::Universe)
     end
 end
 
-function call(integrator::VelocityVerlet, univ::Universe, propag::MolecularDynamics)
+function Base.call(integrator::VelocityVerlet, univ::Universe, propag::MolecularDynamics)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading
@@ -109,7 +109,7 @@ function setup(integrator::Verlet, sim::Simulation)
     end
 end
 
-function call(integrator::Verlet, sim::Simulation)
+function Base.call(integrator::Verlet, sim::Simulation)
     const dt = integrator.timestep
 
     # Getting pointers to facilitate further reading

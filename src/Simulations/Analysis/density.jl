@@ -8,7 +8,6 @@
 #                   Computing density profiles
 # ============================================================================ #
 
-import Base: write
 export DensityProfile
 
 type DensityProfile
@@ -42,7 +41,7 @@ function update!(density::DensityProfile, frame::Frame)
     return nothing
 end
 
-function write(density::DensityProfile, trajname::String; outname="")
+function Base.write(density::DensityProfile, trajname::String; outname="")
     if outname == ""
         outname = join(split(trajname, '.')[1:end-1], '.')
         outname = "$outname-$(density.atom).rho"

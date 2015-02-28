@@ -8,7 +8,6 @@
 #                       Compute interesting values
 # ============================================================================ #
 
-import Base: call
 using Jumos.Constants #kB
 
 # abstract BaseCompute -> Defined in Simulations.jl
@@ -33,7 +32,7 @@ Compute the temperature of a simulation frame using the relation
 " ->
 immutable TemperatureCompute <: BaseCompute end
 
-function call(::TemperatureCompute, univ::Universe)
+function Base.call(::TemperatureCompute, univ::Universe)
 	T = 0.0
     K = kinetic_energy(univ)*1e-4
     natoms = size(univ.frame)
@@ -56,7 +55,7 @@ Compute the volume of the current simulation cell
 " ->
 immutable VolumeCompute <: BaseCompute end
 
-function call(::VolumeCompute, univ::Universe)
+function Base.call(::VolumeCompute, univ::Universe)
     V = volume(univ.cell)
 	univ.data[:volume] = V
     return V
@@ -71,7 +70,7 @@ Compute the energy of a simulation.
 " ->
 immutable EnergyCompute <: BaseCompute end
 
-function call(::EnergyCompute, univ::Universe)
+function Base.call(::EnergyCompute, univ::Universe)
     K = kinetic_energy(univ)
     P = potential_energy(univ)
 	univ.data[:E_kinetic] = K

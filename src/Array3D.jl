@@ -9,7 +9,7 @@
 # ============================================================================ #
 
 # TODO: remove this and use FixedSize Array when they are disponibles
-
+module JumosArray
 importall Base
 
 export Array3D
@@ -158,3 +158,5 @@ setindex!{T, N}(A::Array3D{T,N}, x, i::Real, j::Real) = setindex!(A.data, x, i, 
 
 (+){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data + b.data)
 (-){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data - b.data)
+
+end
