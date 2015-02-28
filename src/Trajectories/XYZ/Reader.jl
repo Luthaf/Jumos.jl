@@ -63,7 +63,7 @@ function read_next_frame!(traj::Reader{XYZReader}, universe::Universe)
     if traj.natoms != size(universe.topology)
         pos = position(traj.reader.file)
         seekstart(traj.reader.file)
-        universe.topology = read_topology(traj.reader.filename)
+        universe.topology = Topology(traj.reader.filename)
         seek(traj.reader.file, pos)
     end
 

@@ -18,12 +18,12 @@ function read_topology!(universe, filename)
     universe.topology = read_topology(filename)
 end
 
-@doc "
+"
 `Topology(filename)`
 
 Read the topology from the file `filename` and return it.
-" ->
-function Universe.Topology(filename)
+"
+function Systems.Topology(filename)
     extension = split(strip(filename), ".")[end]
     if extension == "xyz"
         info("Reading topology in XYZ format")

@@ -36,7 +36,7 @@ abstract PotentialFunction
 @doc "
 A `PotentialComputation` is a way to compute interactions.
 " ->
-abstract PotentialComputation
+abstract PotentialComputation{T<:PotentialFunction}
 
 # ============================================================================ #
 
@@ -82,15 +82,15 @@ typealias Potential2Body Union(PairPotential, BondedPotential)
 The `DirectComputation` of a potential can always be used, but may not be the
 most effective way.
 " ->
-immutable DirectComputation <: PotentialComputation
-    potential::PotentialFunction
+immutable DirectComputation{T<:PotentialFunction} <: PotentialComputation{T}
+    potential::T
 end
 
 @doc "
 A `CutoffComputation` of an interaction use a cutoff distance. After this distance,
 the energy and the force are set to be zero.
 " ->
-immutable CutoffComputation{T<:ShortRangePotential} <: PotentialComputation
+immutable CutoffComputation{T<:ShortRangePotential} <: PotentialComputation{T}
     potential::T
     cutoff::Float64
     e_cutoff::Float64
@@ -100,14 +100,14 @@ end
 `LongRangeComputation` should be used for pair potential which goes to zero slower
 than the $1/r^3$ function.
 " ->
-abstract LongRangeComputation <: PotentialComputation
+abstract LongRangeComputation{T<:LongRangePotential} <: PotentialComputation{T}
 
 @doc "
 `TableComputation` uses table lookup to compute pair interactions efficiently.
 
 A linear interpolation is used.
 " ->
-immutable TableComputation{N} <: PotentialComputation
+immutable TableComputation{T<:PotentialFunction, N} <: PotentialComputation{T}
     potential::Array{Float64, 1}
     force::Array{Float64, 1}
     rmax::Float64
@@ -173,21 +173,21 @@ end
 end
 
 
-function TableComputation(pot::PotentialFunction, N::Integer, rmax::Real)
+function TableComputation{T<:PotentialFunction}(pot::T, N::Integer, rmax::Real)
     dr = float(rmax)/N
     x = linspace(dr, rmax, N)
     potential_array = map(pot, x)
     force_array = map(u->force(pot, u), x)
 
-    return TableComputation{N}(potential_array, force_array, rmax, dr)
+    return TableComputation{T, N}(potential_array, force_array, rmax, dr)
 end
 
 # Keyword version of the function
-function TableComputation(pot::PotentialFunction; numpoints=2000, rmax=12)
+function TableComputation{T<:PotentialFunction}(pot::T; numpoints=2000, rmax=12)
     return TableComputation(pot, numpoints, rmax)
 end
 
-@inline function call{N}(pot::TableComputation{N}, r::Real)
+@inline function call{T, N}(pot::TableComputation{T, N}, r::Real)
     bin = floor(Int, r/pot.dr)
     bin < N ? nothing : return 0.0
     delta = r - bin*pot.dr
@@ -195,7 +195,7 @@ end
     return pot.potential[bin] + delta*slope
 end
 
-@inline function force{N}(pot::TableComputation{N}, r::Real)
+@inline function force{T, N}(pot::TableComputation{T, N}, r::Real)
     bin = floor(Int, r/pot.dr)
     bin < N ? nothing : return 0.0
     delta = r - bin*pot.dr

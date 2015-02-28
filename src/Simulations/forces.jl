@@ -22,20 +22,6 @@ function force_array_to_internal!(a::Array3D)
     return a
 end
 
-function get_potential(interactions::Vector{Interaction}, topology::Topology, i::Integer, j::Integer)
-    atom_i = topology.atoms[i]
-    atom_j = topology.atoms[j]
-    for int in interactions
-        isa(int, PairInteraction) || continue
-    end
-
-    return interactions[(atom_i, atom_j)]
-end
-
-function get_forces!(universe::Universe, forces=Array3D)
-    # TODO !
-end
-
 # ============================================================================ #
 
 @doc "
@@ -44,9 +30,10 @@ call the force function for these particles.
 "->
 immutable NaiveForces <: BaseForcesComputer end
 
-function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Vector{Interaction})
 
-    natoms = size(frame)
+function call(::NaiveForces, univ::Universe, forces::Array3D)
+    interactions = univ.interactions
+    const natoms = size(univ)
 
     # Temporary values
     r = Array(Float64, 3)
@@ -64,19 +51,36 @@ function call(::NaiveForces, forces::Array3D, frame::Frame, interactions::Vector
     end
 
     for i=1:(natoms-1), j=(i+1):natoms
-        r = distance3d(frame, i, j)
+        r = distance3d(univ, i, j)
         dist = norm(r)
         unit!(r)
-        potential = get_potential(interactions, frame.topology, i, j)
-        f = force(potential, dist)
-        @simd for dim=1:3
-            @inbounds r[dim] *= f
+
+        for pot in pairs(interactions, i, j)
+            f = force(pot, dist)
+            @simd for dim=1:3
+                @inbounds r[dim] *= f
+            end
+
+            @simd for dim=1:3
+                @inbounds forces[dim, i] += -r[dim]
+                @inbounds forces[dim, j] += r[dim]
+            end
         end
 
-        @simd for dim=1:3
-            @inbounds forces[dim, i] += -r[dim]
-            @inbounds forces[dim, j] += r[dim]
+        # Add an if-bonded test here
+        for pot in bonds(interactions, i, j)
+            f = force(pot, dist)
+            @simd for dim=1:3
+                @inbounds r[dim] *= f
+            end
+
+            @simd for dim=1:3
+                @inbounds forces[dim, i] += -r[dim]
+                @inbounds forces[dim, j] += r[dim]
+            end
         end
+
+        # add Angles and so on.
     end
     return force_array_to_internal!(forces)
 end

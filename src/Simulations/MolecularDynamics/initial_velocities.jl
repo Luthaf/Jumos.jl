@@ -9,28 +9,27 @@
 # ============================================================================ #
 
 using Jumos.Constants # kB
-export create_velocities
+export create_velocities!
 
-function create_velocities(sim::Simulation, temp::Number; initializer="boltzman")
+function create_velocities!(univ::Universe, temp::Number; initializer="boltzman")
     # Allocate the velocity array
-    sim.frame.velocities = Array3D(Float64, size(sim.frame))
+    univ.frame.velocities = Array3D(Float64, size(univ.frame))
 
     function_name = "init_" * initializer * "_velocities"
     funct = eval(Symbol(function_name))
 
     # Get masses
-    sim.masses = atomic_masses(sim.topology)
-    check_masses(sim)
+    get_masses!(univ)
+    check_masses(univ)
 
-    funct(sim, temp)
-
-    sim.data[:temperature] = temp
+    funct(univ, temp)
+    univ.data[:temperature] = temp
 end
 
-function init_boltzman_velocities(sim::Simulation, temp::Number)
-    velocities = sim.frame.velocities
-    masses = sim.masses
-    @inbounds for i=1:size(sim.frame)
+function init_boltzman_velocities(univ::Universe, temp::Number)
+    velocities = univ.frame.velocities
+    masses = univ.masses
+    @inbounds for i=1:size(univ.frame)
         velocities[i] = rand_vel_boltzman(masses[i], temp)
     end
 end
@@ -39,10 +38,10 @@ end
     return sqrt(kB*T/m)*randn(3)
 end
 
-function init_random_velocities(sim::Simulation, temp::Number)
-    velocities = sim.frame.velocities
-    masses = sim.masses
-    @inbounds for i=1:size(sim.frame)
+function init_random_velocities(univ::Universe, temp::Number)
+    velocities = univ.frame.velocities
+    masses = univ.masses
+    @inbounds for i=1:size(univ.frame)
         velocities[i] = rand_vel(masses[i], temp)
     end
 end

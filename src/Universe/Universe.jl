@@ -7,19 +7,18 @@
 # ============================================================================ #
 #             Universe type, holding all the simulated system data
 # ============================================================================ #
-export Universe, Interaction
-export setframe!
+export Universe
+export setframe!, setcell!, add_interaction!, get_masses!, check_masses
 
 include("Topology.jl")
 include("UnitCell.jl")
 include("Frame.jl")
-
-abstract Interaction
+include("Interactions.jl")
 
 type Universe
     cell::UnitCell
     topology::Topology
-    interactions::Vector{Interaction}
+    interactions::Interactions
     frame::Frame
     masses::Vector{Float64}
     data::Dict{Symbol, Any}
@@ -28,7 +27,7 @@ end
 Universe(cell::UnitCell, topology::Topology) = Universe(
     cell,
     topology,
-    Interaction[],
+    Interactions(),
     Frame(size(topology)),
     Float64[],
     Dict{Symbol, Any}()
@@ -37,15 +36,42 @@ Universe(cell::UnitCell, topology::Topology) = Universe(
 Universe(natoms::Integer) = Universe(
     UnitCell(),
     Topology(),
-    Interaction[],
+    Interactions(),
     Frame(natoms),
     Float64[],
     Dict{Symbol, Any}()
 )
 
+function Base.size(u::Universe)
+    assert(size(u.frame) == size(u.topology))
+    return size(u.frame)
+end
+
+@doc "
+`get_masses!(universe)`: get masses from the topology, and store them in the
+universe internal data. Returns the masses array.
+" ->
 function get_masses!(u::Universe)
     u.masses = atomic_masses(u.topology)
     return u.masses
+end
+
+@doc "
+`check_masses(universe)`: Check that all masses are defined and are not equals to 0.
+" ->
+function check_masses(univ::Universe)
+    if countnz(univ.masses) != size(univ.topology)
+        bad_masses = Set()
+        for (i, val) in enumerate(univ.masses)
+            if val == 0.0
+                union!(bad_masses, [univ.topology[i].name])
+            end
+        end
+        missing = join(bad_masses, " ")
+        throw(JumosError(
+                "Missing masses for the following atomic types: $missing."
+            ))
+    end
 end
 
 function add_atom!(u::Universe, atom::Atom)
@@ -96,15 +122,11 @@ function setcell!{T<:Type{AbstractCellType}}(univ::Universe, celltype::T, params
 end
 
 # Todo: Way to add a catchall interaction
-function add_interaction(sim::Simulation, potential::PotentialFunction, atoms...;
+function add_interaction!(univ::Universe, pot::PotentialFunction, atoms...;
                          computation=:auto, kwargs...)
-    atoms_id = get_atoms_id(sim, atoms...)
-
-    interactions = get_interactions(potential, atoms_id...; computation=computation, kwargs...)
-
-    for (index, potential_computation) in interactions
-        sim.interactions[index] = potential_computation
-    end
+    atoms_id = get_atoms_id(univ.topology, atoms...)
+    computation = get_computation(pot; computation=computation, kwargs...)
+    push!(univ.interactions, computation, atoms_id...)
     return nothing
 end
 

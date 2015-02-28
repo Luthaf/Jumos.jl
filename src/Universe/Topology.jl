@@ -223,3 +223,26 @@ function dummy_topology(natoms::Integer)
     end
     return topology
 end
+
+function get_atoms_id(topology::Topology, atoms...)
+    idx = Int[]
+    for atom in atoms
+        atom_idx = isa(atom, Integer) ? atom : get_id_from_name(topology, atom)
+        push!(idx, atom_idx)
+    end
+    return idx
+end
+
+"
+Try to guess the atomic id from the name. If multiple names are the same, the first
+one is picked.
+"
+function get_id_from_name(topology::Topology, atom_name)
+    name = Symbol(atom_name)
+    for (i, atom) in enumerate(topology.templates)
+        if name == atom.label
+            return i
+        end
+    end
+    throw(JumosError("I can not find the name $atom_name in this topology."))
+end

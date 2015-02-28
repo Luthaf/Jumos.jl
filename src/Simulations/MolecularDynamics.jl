@@ -92,7 +92,7 @@ end
 
 # ============================================================================ #
 
-function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
+function Base.push!(sim::Simulation, control::BaseControl)
     assert(isa(sim.propagator, MolecularDynamics),
            "We can only add controls to a MolecularDynamics Simulation.")
     if !ispresent(sim, control)
@@ -172,21 +172,5 @@ function check_interactions(sim::Simulation)
             $missings
             "
         ))
-    end
-end
-
-function check_masses(sim::Simulation)
-    # REDO
-    if countnz(sim.masses) != size(sim.topology)
-        bad_masses = Set()
-        for (i, val) in enumerate(sim.masses)
-            if val == 0.0
-                union!(bad_masses, [sim.topology[i].name])
-            end
-        end
-        missing = join(bad_masses, " ")
-        throw(SimulationConfigurationError(
-                "Missing masses for the following atomic types: $missing"
-            ))
     end
 end
