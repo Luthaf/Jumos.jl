@@ -25,17 +25,15 @@ The dihedral interactions corresponding to (i, j, k, m) atoms are stored in
 `Interactions.dihedral` at index `(min(i, m), min(j, k), max(j, k), max(i, m))`.
 "
 immutable Interactions
-    pairs::Matrix{Vector{PotentialComputation}}
-    bonds::Matrix{Vector{PotentialComputation}}
+    pairs::Dict{(Int, Int),Vector{PotentialComputation}}
+    bonds::Dict{(Int, Int),Vector{PotentialComputation}}
     angles::Dict{(Int, Int, Int), Vector{PotentialComputation}}
     dihedrals::Dict{(Int, Int, Int, Int), Vector{PotentialComputation}}
 end
 
-function Interactions(ntypes::Integer = 4)
-    pairs = Array(Vector{PotentialComputation}, ntypes, ntypes)
-    fill!(pairs, PotentialComputation[])
-    bonds = Array(Vector{PotentialComputation}, ntypes, ntypes)
-    fill!(bonds, PotentialComputation[])
+function Interactions()
+    pairs = Dict{(Int, Int),Vector{PotentialComputation}}()
+    bonds = Dict{(Int, Int),Vector{PotentialComputation}}()
     angles = Dict{(Int, Int, Int), Vector{PotentialComputation}}()
     dihedrals = Dict{(Int, Int, Int, Int), Vector{PotentialComputation}}()
     return Interactions(pairs, bonds, angles, dihedrals)
@@ -43,12 +41,20 @@ end
 
 function Base.push!{T<:ShortRangePotential}(int::Interactions, com::PotentialComputation{T}, i::Int, j::Int)
     i, j = minmax(i, j)
-    push!(int.pairs[i, j], com)
+    if haskey(int.pairs, (i, j))
+        push!(int.pairs[(i, j)], com)
+    else
+        int.pairs[(i, j)] = PotentialComputation[com,]
+    end
 end
 
 function Base.push!{T<:BondedPotential}(int::Interactions, com::PotentialComputation{T}, i::Int, j::Int)
     i, j = minmax(i, j)
-    push!(int.bonds[i, j], com)
+    if haskey(int.bonds, (i, j))
+        push!(int.bonds[(i, j)], com)
+    else
+        int.bonds[(i, j)] = PotentialComputation[com,]
+    end
 end
 
 function Base.push!{T<:AnglePotential}(int::Interactions, com::PotentialComputation{T}, i::Int, j::Int, k::Int)
@@ -84,7 +90,7 @@ Get a vector of applicable non-bonded interactions between the atoms with indexe
 " ->
 function pairs(int::Interactions, i::Int, j::Int)
     i, j = minmax(i, j)
-    return int.pairs[i, j]
+    return int.pairs[(i, j)]
 end
 
 @doc "
@@ -95,7 +101,7 @@ Get a vector of applicable bonded interactions between the atoms with indexes
 " ->
 function bonds(int::Interactions, i::Int, j::Int)
     i, j = minmax(i, j)
-    return int.bonds[i, j]
+    return int.bonds[(i, j)]
 end
 
 @doc "
