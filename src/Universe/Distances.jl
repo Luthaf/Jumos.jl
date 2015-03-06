@@ -31,9 +31,9 @@ function minimal_image(vect, cell::UnitCell)
 end
 
 function minimal_image!(vect::AbstractVector, cell::UnitCell{OrthorombicCell})
-    vect[1] = vect[1] - round(vect[1]/cell.x)*cell.x
-    vect[2] = vect[2] - round(vect[2]/cell.y)*cell.y
-    vect[3] = vect[3] - round(vect[3]/cell.z)*cell.z
+    vect[1] = vect[1] - round(vect[1]/cell.a)*cell.a
+    vect[2] = vect[2] - round(vect[2]/cell.b)*cell.b
+    vect[3] = vect[3] - round(vect[3]/cell.c)*cell.c
     return vect
 end
 
@@ -95,12 +95,10 @@ is `positions[j] - positions[i]`. `work` can be a pre-allocated vector of
 Float64 with 3 components.
 " ->
 function distance3d(universe::Universe, i::Integer, j::Integer, work=[0., 0., 0.])
-    return minimal_image!(
-                substract!(
-                    universe.frame.positions[j],
-                    universe.frame.positions[i],
-                    work),
-                universe.cell)
+    return minimal_image!(substract!(universe.frame.positions[j],
+                                     universe.frame.positions[i],
+                                     work),
+                          universe.cell)
 end
 
 @doc doc"

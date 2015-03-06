@@ -63,7 +63,7 @@ end
 #==============================================================================#
 
 function UnitCell(a, b, c, alpha, beta, gamma)
-    if a == pi/2 && b == pi/2 && c == pi/2
+    if alpha == pi/2 && beta == pi/2 && gamma == pi/2
         cell_type = OrthorombicCell
     else
         cell_type = TriclinicCell

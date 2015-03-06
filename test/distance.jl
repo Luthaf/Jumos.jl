@@ -21,6 +21,14 @@ facts("Distances computations") do
     context("UnitCell constructor") do
         @fact UnitCell(13.) => UnitCell(13., 13., 13.)
         @fact UnitCell(13.) => UnitCell(13., 13., 13., pi/2, pi/2, pi/2)
+
+        @fact isa(orthorombic, UnitCell{OrthorombicCell}) => true
+        @fact isa(infitite, UnitCell{InfiniteCell}) => true
+        @fact isa(triclinic1, UnitCell{TriclinicCell}) => true
+
+        @fact isa(UnitCell(10.0, OrthorombicCell), UnitCell{OrthorombicCell}) => true
+        @fact isa(UnitCell(10.0, TriclinicCell), UnitCell{TriclinicCell}) => true
+        @fact isa(UnitCell(10.0, InfiniteCell), UnitCell{InfiniteCell}) => true
     end
 
     context("Basic distance computations") do
