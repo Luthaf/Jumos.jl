@@ -13,7 +13,7 @@ module JumosArray
 importall Base
 
 export Array3D
-export cross, norm, norm2, unit!, substract!, resize
+export cross, norm, norm2, unit!, substract!
 
 immutable SubVector{T, A<:Array} <: AbstractArray{T, 1}
     a::A
@@ -84,33 +84,30 @@ end
 
 @doc """
 The `Array3D` type store a (3, N) array of floating point numbers.
-
-The size is part of the type, which allow for automatic method checking, *i.e.*
-it is impossible to add, substract, … two Array3D with different size.
 """ ->
-type Array3D{T<:FloatingPoint, N} <: AbstractMatrix{T}
+type Array3D{T<:FloatingPoint} <: AbstractMatrix{T}
     data::Array{T, 2}
 end
 
 function Array3D(Type, N::Integer)
     data = Array(Type, 3, N)
-    return Array3D{Type, N}(data)
+    return Array3D{Type}(data)
 end
 
 function convert{T}(::Type{Array3D}, data::Array{T, 2})
     i, j = size(data)
     i == 3 || throw(InexactError())
-    return Array3D{T, j}(data)
+    return Array3D{T}(data)
 end
 
 function show(io::IO, A::Array3D)
     return show(io, A.data)
 end
 
-eltype{T, N}(::Array3D{T, N}) = T
-length{T, N}(::Array3D{T, N}) = N
+eltype{T}(::Array3D{T}) = T
+length(A::Array3D) = Int(length(A.data)/3)
 ndims(::Array3D) = 1
-size{T, N}(::Array3D{T, N}) = (3, N)
+size(A::Array3D) = size(A.data)
 copy(A::Array3D) = Array3D(copy(A.data))
 
 # Iterator interface
@@ -118,45 +115,51 @@ start(::Array3D) = 1
 next(A::Array3D, state::Int) = (A[state], state+1)
 done(A::Array3D, state::Int) = length(A) < state
 
-function getindex{T, N}(A::Array3D{T, N}, i::Integer)
-    if i > length(A)
+function getindex{T}(A::Array3D{T}, i::Integer)
+    if i > size(A, 2)
         throw(BoundsError())
     end
     return view(A.data, :, i)
 end
 
-function resize(A::Array3D, size::Integer)
-    tmp = reshape(A.data, 3*length(A))
-    resize!(tmp, 3*size)
-    tmp = reshape(tmp, 3, size)
-    return Array3D(tmp)
+function resize!{T}(A::Array3D{T}, N::Integer)
+    if N > size(A, 1)
+        A.data = hcat(A.data, Array(T, 3, N - size(A, 2)))
+    elseif N < size(A, 1)
+        A.data = copy(A.data[:, 1:N])
+    end
+    return A
+end
+
+function fill!{T}(A::Array3D{T}, val::Real)
+    fill!(A.data, val)
 end
 
 # Function for show
-getindex{T, N}(A::Array3D{T,N}, i::Real, j::Real) = getindex(A.data, i, j)
+getindex(A::Array3D, i::Real, j::Real) = getindex(A.data, i, j)
 
-function setindex!{T, N}(A::Array3D{T, N}, x, i::Real)
+function setindex!(A::Array3D, x, i::Real)
     A.data[:, i] = x
 end
-setindex!{T, N}(A::Array3D{T,N}, x, i::Real, j::Real) = setindex!(A.data, x, i, j)
+setindex!(A::Array3D, x, i::Real, j::Real) = setindex!(A.data, x, i, j)
 
 # Operators
-(.+){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D{T, N}(a.data .+ b.data)
-(.+){T, N}(a::Array3D{T, N}, b::Real) = Array3D{T, N}(a.data .+ b)
-(.+){T, N}(a::Real, b::Array3D{T, N}) = Array3D{T, N}(a .+ b.data)
+(.+){T}(a::Array3D{T}, b::Array3D{T}) = Array3D{T}(a.data .+ b.data)
+(.+){T}(a::Array3D{T}, b::Real) = Array3D{T}(a.data .+ b)
+(.+){T}(a::Real, b::Array3D{T}) = Array3D{T}(a .+ b.data)
 
-(.-){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data .- b.data)
-(.-){T, N}(a::Array3D{T, N}, b::Real) = Array3D(a.data .- b)
-(.-){T, N}(a::Real, b::Array3D{T, N}) = Array3D(a .- b.data)
+(.-){T}(a::Array3D{T}, b::Array3D{T}) = Array3D(a.data .- b.data)
+(.-){T}(a::Array3D{T}, b::Real) = Array3D(a.data .- b)
+(.-){T}(a::Real, b::Array3D{T}) = Array3D(a .- b.data)
 
-(.*){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D{T, N}(a.data .* b.data)
-(.*){T, N}(a::Array3D{T, N}, b::Real) = Array3D{T, N}(a.data .* b)
-(.*){T, N}(a::Real, b::Array3D{T, N}) = Array3D{T, N}(a .* b.data)
+(.*){T}(a::Array3D{T}, b::Array3D{T}) = Array3D{T}(a.data .* b.data)
+(.*){T}(a::Array3D{T}, b::Real) = Array3D{T}(a.data .* b)
+(.*){T}(a::Real, b::Array3D{T}) = Array3D{T}(a .* b.data)
 
-(./){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data ./ b.data)
-(./){T<:FloatingPoint, N}(a::Array3D{T, N}, b::Real) = Array3D{T, N}(a.data ./ b)
+(./){T}(a::Array3D{T}, b::Array3D{T}) = Array3D(a.data ./ b.data)
+(./){T<:FloatingPoint}(a::Array3D{T}, b::Real) = Array3D{T}(a.data ./ b)
 
-(+){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data + b.data)
-(-){T, N}(a::Array3D{T, N}, b::Array3D{T, N}) = Array3D(a.data - b.data)
+(+){T}(a::Array3D{T}, b::Array3D{T}) = Array3D(a.data + b.data)
+(-){T}(a::Array3D{T}, b::Array3D{T}) = Array3D(a.data - b.data)
 
 end
