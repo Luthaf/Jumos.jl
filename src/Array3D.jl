@@ -13,7 +13,7 @@ module JumosArray
 importall Base
 
 export Array3D
-export cross, norm, unit!, substract!, resize
+export cross, norm, norm2, unit!, substract!, resize
 
 immutable SubVector{T, A<:Array} <: AbstractArray{T, 1}
     a::A
