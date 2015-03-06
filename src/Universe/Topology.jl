@@ -23,7 +23,7 @@ The `Connectivity` type hold a cache of the bonds, angles and dihedrals inside a
 topology. It is not the reliable source of information, the authority is inside
 the topology. All the UInt64 are references to the indexes in `Topology.atoms`.
 " ->
-immutable Connectivity
+type Connectivity
     hash::UInt64
     bonds::Vector{Bond}
     angles::Vector{Angle}
@@ -39,7 +39,7 @@ The `update!(connectivity, atoms)` function updates the connectivity by scaning
 all the liaisons of all the atoms in `atoms`, and building the bonds, angles and
 dihedral angles from these liaisons.
 " ->
-function update!(connectivity::Connectivity, liaisons::Vector{(Int64, Int64)})
+function update!(connectivity::Connectivity, liaisons::Vector{(UInt64, UInt64)})
     hash(liaisons) == connectivity.hash && return
     connectivity.hash = hash(liaisons)
 
@@ -100,19 +100,18 @@ Base.next(t::Topology, state) = (t[state], state + 1)
 This function updates the connectivity cache of a topology.
 " ->
 function update_cache!(topology::Topology)
-    update!(topology.connectivity, topology.liasons)
+    update!(topology.connectivity, topology.liaisons)
 end
 
 function Base.show(io::IO, topology::Topology)
     update_cache!(topology)
     natoms = size(topology)
-    nmolecules = size(topology.connectivity.molecules, 1)
 
     nbonds = size(topology.connectivity.bonds, 1)
     nangles = size(topology.connectivity.angles, 1)
     ndihedrals = size(topology.connectivity.dihedrals, 1)
-    show(io, "Topology with $n_atoms atoms, $n_molecules molecules, " *
-             "$n_bonds bonds, $n_angles angles, and $n_dihedrals dihedrals.")
+    show(io, "Topology with $natoms atoms, $nbonds bonds, $nangles angles," *
+             " and $ndihedrals dihedrals.")
 end
 
 Base.getindex(topology::Topology, i) = topology.templates[topology.atoms[i]]
