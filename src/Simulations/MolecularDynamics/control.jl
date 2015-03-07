@@ -56,7 +56,7 @@ end
 function Base.call(th::VelocityRescaleThermostat, univ::Universe)
     T = univ.data[:temperature]
     if abs(T - th.T) > th.tol # Let's rescale the velocities
-        for i=1:size(univ.frame), dim=1:3
+        for i=1:size(univ), dim=1:3
             @inbounds univ.frame.velocities[dim, i] *= sqrt(th.T/T)
         end
     end
@@ -83,7 +83,7 @@ BerendsenThermostat(T) = BerendsenThermostat(T, 100)
 function Base.call(th::BerendsenThermostat, univ::Universe)
     T = univ.data[:temperature]
     λ = sqrt(1 + 1/th.tau*(th.T/T - 1))
-    for i=1:size(sim.frame), dim=1:3
+    for i=1:size(univ), dim=1:3
         @inbounds univ.frame.velocities[dim, i] *= λ
     end
 end

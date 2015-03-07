@@ -74,7 +74,7 @@ Control a parameter in simulation like temperature or presure or volume, …
 " ->
 function control!(md::MolecularDynamics, universe::Universe)
     for callback in md.controls
-        callback(md, universe)
+        callback(universe)
     end
 end
 
@@ -84,7 +84,7 @@ constant, global velocity is zero, …
 " ->
 function check!(md::MolecularDynamics, universe::Universe)
     for callback in md.checks
-        callback(md, universe)
+        callback(universe, md)
     end
 end
 
@@ -96,20 +96,20 @@ end
 
 function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
     if !ispresent(sim, control)
-        push!(sim.controls, control)
+        push!(sim.propagator.controls, control)
     else
         warn("$control is aleady present in this simulation")
     end
-    return sim.controls
+    return sim.propagator.controls
 end
 
 function Base.push!(sim::Simulation{MolecularDynamics}, check::BaseCheck)
     if !ispresent(sim, check)
-        push!(sim.checks, check)
+        push!(sim.propagator.checks, check)
     else
         warn("$check is aleady present in this simulation")
     end
-    return sim.checks
+    return sim.propagator.checks
 end
 
 function ispresent(sim::Simulation{MolecularDynamics}, algo::Union(BaseCheck, BaseControl))
