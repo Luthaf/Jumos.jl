@@ -24,23 +24,17 @@ type Universe
     data::Dict{Symbol, Any}
 end
 
-Universe(cell::UnitCell, topology::Topology) = Universe(
-    cell,
-    topology,
-    Interactions(),
-    Frame(size(topology)),
-    Float64[],
-    Dict{Symbol, Any}()
-)
-
-Universe(natoms::Integer) = Universe(
-    UnitCell(),
-    Topology(),
-    Interactions(),
-    Frame(natoms),
-    Float64[],
-    Dict{Symbol, Any}()
-)
+function Universe(cell::UnitCell, topology::Topology)
+    univ = Universe(cell,
+                    topology,
+                    Interactions(),
+                    Frame(size(topology)),
+                    Float64[],
+                    Dict{Symbol, Any}()
+            )
+    univ.data[:universe] = univ
+    return univ
+end
 
 function Base.size(u::Universe)
     assert(size(u.frame) == size(u.topology))

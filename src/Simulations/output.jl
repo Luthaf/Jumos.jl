@@ -54,7 +54,7 @@ function TrajectoryOutput(filename::String, frequency=1)
 end
 
 function Base.write(out::TrajectoryOutput, context::Dict)
-    write(out.writer, context[:frame])
+    write(out.writer, context[:universe])
 end
 
 # ============================================================================ #

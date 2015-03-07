@@ -9,27 +9,30 @@
 # ============================================================================ #
 
 export MolecularDynamics
-export set_integrator!
+export set_integrator!, getforces!
+
+include("forces.jl")
 
 abstract BaseIntegrator
 abstract BaseControl
 abstract BaseCheck
 
-immutable MolecularDynamics <: Propagator
+type MolecularDynamics <: Propagator
     # MD algorithms
     integrator      :: BaseIntegrator
     controls        :: Vector{BaseControl}
     checks          :: Vector{BaseCheck}
+    compute_forces  :: BaseForcesComputer
     # MD data cache
     forces          :: Array3D{Float64}
 end
 
 # This define the default values for a simulation !
 function MolecularDynamics(integrator=VelocityVerlet(1.0))
-    controls = BaseControl[WrapParticles()]
-    checks = BaseCheck[AllPositionsAreDefined(), ]
+    controls = BaseControl[]
+    checks = BaseCheck[]
     forces = Array3D(Float64, 0)
-    return MolecularDynamics(integrator, controls, checks, forces)
+    return MolecularDynamics(integrator, controls, checks, NaiveForces(), forces)
 end
 
 # Convenient method.
@@ -42,41 +45,36 @@ include("MolecularDynamics/check.jl")
 
 include("MolecularDynamics/initial_velocities.jl")
 
-function setup(MD::MolecularDynamics, universe::Universe)
+function setup(sim::Simulation{MolecularDynamics}, universe::Universe)
     get_masses!(universe)
+    check_masses(universe)
 
-    check_settings(MD)
-    setup(MD.integrator, universe)
-    for control in MD.controls
-        setup(control, MD)
+    setup(sim.propagator.integrator, sim, universe)
+    for control in sim.propagator.controls
+        setup(control, sim)
     end
 end
 
-@doc "
-`propagate(sim::Simulation, frame::Frame)`
-
-Run a Molecular Dynamics simulation for nsteps steps.
-" ->
-function propagate(sim::Simulation, frame::Frame)
-    integrate(sim)
-    control(sim)
-    check(sim)
+function Base.call(md::MolecularDynamics, universe::Universe)
+    integrate!(md, universe)
+    control!(md, universe)
+    check!(md, universe)
     return nothing
 end
 
 @doc "
 Integrate the equations of motion
 " ->
-function integrate(sim::Simulation)
-    sim.integrator(sim)
+function integrate!(md::MolecularDynamics, universe::Universe)
+    md.integrator(md, universe)
 end
 
 @doc "
 Control a parameter in simulation like temperature or presure or volume, …
 " ->
-function control(sim::Simulation)
-    for callback in sim.controls
-        callback(sim)
+function control!(md::MolecularDynamics, universe::Universe)
+    for callback in md.controls
+        callback(md, universe)
     end
 end
 
@@ -84,17 +82,19 @@ end
 Check the physical consistency of the simulation : number of particles is
 constant, global velocity is zero, …
 " ->
-function check(sim::Simulation)
-    for callback in sim.checks
-        callback(sim)
+function check!(md::MolecularDynamics, universe::Universe)
+    for callback in md.checks
+        callback(md, universe)
     end
+end
+
+function getforces!(md::MolecularDynamics, universe::Universe)
+    md.compute_forces(universe, md.forces)
 end
 
 # ============================================================================ #
 
-function Base.push!(sim::Simulation, control::BaseControl)
-    assert(isa(sim.propagator, MolecularDynamics),
-           "We can only add controls to a MolecularDynamics Simulation.")
+function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
     if !ispresent(sim, control)
         push!(sim.controls, control)
     else
@@ -103,9 +103,7 @@ function Base.push!(sim::Simulation, control::BaseControl)
     return sim.controls
 end
 
-function Base.push!(sim::Simulation, check::BaseCheck)
-    assert(isa(sim.propagator, MolecularDynamics),
-           "We can only add checks to a MolecularDynamics Simulation.")
+function Base.push!(sim::Simulation{MolecularDynamics}, check::BaseCheck)
     if !ispresent(sim, check)
         push!(sim.checks, check)
     else
@@ -114,10 +112,10 @@ function Base.push!(sim::Simulation, check::BaseCheck)
     return sim.checks
 end
 
-function ispresent(sim::Simulation, algo::Union(BaseCheck, BaseControl))
+function ispresent(sim::Simulation{MolecularDynamics}, algo::Union(BaseCheck, BaseControl))
     algo_type = typeof(algo)
-    for field in [:outputs, :controls]
-        for elem in getfield(sim, field)
+    for field in [:checks, :controls]
+        for elem in getfield(sim.propagator, field)
             if isa(elem, algo_type)
                 return true
             end
@@ -126,51 +124,6 @@ function ispresent(sim::Simulation, algo::Union(BaseCheck, BaseControl))
     return false
 end
 
-function set_integrator!(sim::Simulation, integrator::BaseIntegrator)
-    assert(isa(sim.propagator, MolecularDynamics),
-           "We can only set integrator for MolecularDynamics Simulation.")
-    sim.integrator = integrator
-end
-
-# ============================================================================ #
-
-@doc "
-`check_settings(sim::Simulation)`
-
-Check that the simulation is consistent, and that every information has been
-set by the user.
-" ->
-function check_settings(sim::Simulation)
-    check_interactions(sim)
-    check_masses(sim)
-end
-
-function check_interactions(sim::Simulation)
-    # REDO
-    atomic_types = sim.topology.atom_types
-
-    atomic_pairs = Set{(Integer, Integer)}()
-    for (i, j) in keys(sim.interactions)
-        union!(atomic_pairs, [(i, j)])
-    end
-
-    all_atomic_pairs = Set{(Integer, Integer)}()
-    ntypes = size(atomic_types, 1)
-    for i=1:ntypes, j=1:ntypes
-        union!(all_atomic_pairs, [(i, j), (j, i)])
-    end
-    setdiff!(all_atomic_pairs, atomic_pairs)
-    if length(all_atomic_pairs) != 0
-        missings = ""
-        for (i, j) in all_atomic_pairs
-            missings *= (string(atomic_types[i].name) * " - " *
-                         string(atomic_types[j].name) * "\n")
-        end
-        throw(SimulationConfigurationError(
-            "The following atom pairs do not have any interaction:
-
-            $missings
-            "
-        ))
-    end
+function set_integrator!(sim::Simulation{MolecularDynamics}, integrator::BaseIntegrator)
+    sim.propagator.integrator = integrator
 end

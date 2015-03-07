@@ -1,31 +1,24 @@
-# Some handy functions
-function dummy_frame(n)
-    top = Topology(n)
-    for i=1:n
-        top[i] = Atom("He")
-    end
-
+# Create a dummy universe with n atoms.
+function testing_universe_from_size(n)
     side = round(n^(1/3)) # integer such as n <= side^3
 
-    frame = Frame(top)
+    frame = Frame(n)
     nplaced = 0
     for i=0:side-1, j=0:side-1, k=0:side-1
-        frame.positions[nplaced+1] = [2.0*i, 2.0*j, 2.0*k]
         nplaced += 1
+        frame.positions[nplaced] = [2.0*i, 2.0*j, 2.0*k]
         nplaced == n ? break : nothing
     end
 
-    cell = UnitCell(side*2.0)
-    frame.cell = cell
-    return frame
-end
+    top = Topology(n)
+    push!(top.templates, Atom("He"))
+    fill!(top.atoms, 1)
+    univ = Universe(UnitCell(side*2.0), top)
+    setframe!(univ, frame)
 
-function testing_simulation(n=4)
-    sim = MolecularDynamic(1.0)
-    set_frame(sim, dummy_frame(n))
-    add_interaction(sim, LennardJones(0.8, 2.0), "He")
-    create_velocities(sim, 300)
-    return sim
+    add_interaction!(univ, LennardJones(0.8, 2.0), "He", "He")
+    create_velocities!(univ, 300)
+    return univ
 end
 
 include("simulations/potentials.jl")

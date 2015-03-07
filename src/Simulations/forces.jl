@@ -42,44 +42,33 @@ function Base.call(::NaiveForces, univ::Universe, forces::Array3D)
 
     if length(forces) != natoms
         # Allocating new memory as needed
-        forces = resize(forces, natoms)
+        resize!(forces, natoms)
     end
+    fill!(forces, 0)
 
-    @inbounds for i=1:natoms
-        forces[i] = zeros(Float64, 3)
-    end
+    for i=1:(natoms-1)
+        itype = univ.topology.atoms[i]
+        for j=(i+1):natoms
 
-    for i=1:(natoms-1), j=(i+1):natoms
-        r = distance3d(univ, i, j)
-        dist = norm(r)
-        unit!(r)
+            jtype = univ.topology.atoms[j]
+            r = distance3d(univ, i, j)
+            dist = norm(r)
+            unit!(r)
 
-        for pot in pairs(interactions, i, j)
-            f = force(pot, dist)
-            @simd for dim=1:3
-                @inbounds r[dim] *= f
+            for pot in pairs(interactions, itype, jtype)
+                f = force(pot, dist)
+                @simd for dim=1:3
+                    @inbounds r[dim] *= f
+                end
+
+                @simd for dim=1:3
+                    @inbounds forces[dim, i] += -r[dim]
+                    @inbounds forces[dim, j] += r[dim]
+                end
             end
 
-            @simd for dim=1:3
-                @inbounds forces[dim, i] += -r[dim]
-                @inbounds forces[dim, j] += r[dim]
-            end
+            #TODO add bonds, angles and so on.
         end
-
-        # Add an if-bonded test here
-        for pot in bonds(interactions, i, j)
-            f = force(pot, dist)
-            @simd for dim=1:3
-                @inbounds r[dim] *= f
-            end
-
-            @simd for dim=1:3
-                @inbounds forces[dim, i] += -r[dim]
-                @inbounds forces[dim, j] += r[dim]
-            end
-        end
-
-        # add Angles and so on.
     end
     return force_array_to_internal!(forces)
 end

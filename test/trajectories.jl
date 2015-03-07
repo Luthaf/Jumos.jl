@@ -3,7 +3,7 @@ facts("Trajectory IO") do
 
     context("NetCDF") do
         traj = Reader("$TRAJ_DIR/water.nc")
-        topology = read_topology("$TRAJ_DIR/water.lmp")
+        topology = Topology("$TRAJ_DIR/water.lmp")
         uni = Universe(UnitCell(), topology)
         read_next_frame!(traj, uni)
 
@@ -21,7 +21,8 @@ facts("Trajectory IO") do
         tmp = tempname()
         outtraj = Writer("$tmp.xyz")
         traj = Reader("$TRAJ_DIR/water.xyz")
-        uni = Universe(traj.natoms)
+        topology = Topology("$TRAJ_DIR/water.xyz")
+        uni = Universe(UnitCell(), topology)
 
         context("Reading") do
             read_frame!(traj, 50, uni)

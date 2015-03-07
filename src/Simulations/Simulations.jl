@@ -15,9 +15,9 @@ abstract Propagator
 abstract BaseCompute
 abstract BaseOutput
 
-type Simulation
+immutable Simulation{T<:Propagator}
     # Algorithms
-    propagator      :: Propagator
+    propagator      :: T
     computes        :: Vector{BaseCompute}
     outputs         :: Vector{BaseOutput}
 end
@@ -33,7 +33,6 @@ function Simulation(propagator::Symbol, args...)
     return Simulation(p)
 end
 
-include("forces.jl")
 include("compute.jl")
 include("output.jl")
 
@@ -47,8 +46,6 @@ function Base.show(io::IO, e::SimulationConfigurationError)
     print(io, e.msg)
 end
 
-# TODO: check initial consistency of a simulation.
-
 @doc "
 `propagate!(simulation, universe, nsteps)`
 
@@ -59,8 +56,7 @@ function propagate!(sim::Simulation, universe::Universe, nsteps::Integer)
     for output in sim.outputs
         setup(output, sim)
     end
-
-    setup(sim.propagator, universe)
+    setup(sim, universe)
 
     for i=1:nsteps
         sim.propagator(universe)
@@ -115,7 +111,7 @@ end
 
 function ispresent(sim::Simulation, algo::Union(BaseCompute, BaseOutput))
     algo_type = typeof(algo)
-    for field in [:outputs, :controls]
+    for field in [:outputs, :computes]
         for elem in getfield(sim, field)
             if isa(elem, algo_type)
                 return true

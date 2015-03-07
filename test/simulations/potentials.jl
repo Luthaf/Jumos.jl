@@ -98,3 +98,15 @@ facts("Potentials computation") do
         end
     end
 end
+
+facts("Force computation") do
+    context("Get forces & total force is null") do
+        universe = testing_universe_from_size(4)
+        getforces = NaiveForces()
+        forces = Jumos.Array3D(Float64, 4)
+        getforces(universe, forces)
+        tot_force = forces[1] + forces[2] + forces[3] + forces[4]
+
+        @fact tot_force => roughly([0.0, 0.0, 0.0])
+    end
+end

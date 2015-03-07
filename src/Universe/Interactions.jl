@@ -82,6 +82,8 @@ function Base.push!{T<:DihedralPotential}(int::Interactions, com::PotentialCompu
     end
 end
 
+const EMPTY_INTERACTION = PotentialComputation[]
+
 @doc "
 `pairs(interactions, i, j)`
 
@@ -90,7 +92,11 @@ Get a vector of applicable non-bonded interactions between the atoms with indexe
 " ->
 function pairs(int::Interactions, i::Int, j::Int)
     i, j = minmax(i, j)
-    return int.pairs[(i, j)]
+    if haskey(int.pairs, (i, j))
+        return int.pairs[(i, j)]
+    else
+        return EMPTY_INTERACTION
+    end
 end
 
 @doc "
@@ -101,7 +107,11 @@ Get a vector of applicable bonded interactions between the atoms with indexes
 " ->
 function bonds(int::Interactions, i::Int, j::Int)
     i, j = minmax(i, j)
-    return int.bonds[(i, j)]
+    if haskey(int.bonds, (i, j))
+        return int.bonds[(i, j)]
+    else
+        return EMPTY_INTERACTION
+    end
 end
 
 @doc "
@@ -112,7 +122,11 @@ Get a vector of applicable angle interactions between the atoms with indexes
 " ->
 function angles(int::Interactions, i::Int, j::Int, k::Int)
     i, k = minmax(i, k)
-    return int.angles[(i, j, k)]
+    if haskey(int.angles, (i, j, k))
+        return int.angles[(i, j, k)]
+    else
+        return EMPTY_INTERACTION
+    end
 end
 
 @doc "
@@ -123,9 +137,17 @@ Get a vector of applicable dihedral interactions between the atoms with indexes
 " ->
 function dihedrals(int::Interactions, i::Int, j::Int, k::Int, m::Int)
     if max(i, j) <= max(k, m)
-        return int.dihedrals[(i, j, k, l)]
+        if haskey(int.dihedrals, (i, j, k, m))
+            return int.dihedrals[(i, j, k, m)]
+        else
+            return EMPTY_INTERACTION
+        end
     else
-        return int.dihedrals[(l, k, j, i)]
+        if haskey(int.dihedrals, (m, k, j, i))
+            return int.dihedrals[(m, k, j, i)]
+        else
+            return EMPTY_INTERACTION
+        end
     end
 end
 

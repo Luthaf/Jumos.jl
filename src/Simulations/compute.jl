@@ -81,21 +81,23 @@ end
 
 function kinetic_energy(univ::Universe)
     K = 0.0
-	natoms = size(univ.frame)
-	@simd for i=1:natoms
-		@inbounds K += 0.5 * univ.masses[i] * norm2(univ.frame.velocities[i])
+	const natoms = size(univ)
+	@inbounds for i=1:natoms
+		K += 0.5 * univ.masses[i] * norm2(univ.frame.velocities[i])
 	end
     return K*1e4  # TODO: better handling of energy conversions
 end
 
 function potential_energy(univ::Universe)
     E = 0.0
-	natoms = size(univ.frame)
+	const natoms = size(univ)
 	@inbounds for i=1:natoms, j=(i+1):natoms
         atom_i = univ.topology.atoms[i]
         atom_j = univ.topology.atoms[j]
-        potential = interaction(univ, (atom_i, atom_j))
-		E += potential(distance(univ.frame, i, j))
+		for potential in pairs(univ.interactions, atom_i, atom_j)
+			E += potential(distance(univ, i, j))
+		end
+		# TODO: bonds, angles, ...
 	end
     return E
 end
