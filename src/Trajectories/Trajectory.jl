@@ -146,7 +146,7 @@ export positions_from_file!
 function positions_from_file!(univ::Universe, filename::AbstractString)
     reader = opentraj(filename)
     read_next_frame!(reader, univ)
-    reader.close()
+    close(reader)
 end
 
 # Todo:

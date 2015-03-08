@@ -2,15 +2,14 @@ using Jumos
 
 function run_jumos()
     tic()
-    sim = MolecularDynamic(1.0)
-    set_cell(sim, (10.0,))
-    read_topology(sim, "He-LJ.xyz")
-    read_positions(sim, "He-LJ.xyz")
-    create_velocities(sim, 300)  # Initialize at 300K
+    sim = Simulation(:MD, 1.0)
+    universe = Universe(UnitCell(10.0), Topology("He-LJ.xyz"))
+    positions_from_file!(universe, "He-LJ.xyz")
+    create_velocities!(universe, 300)  # Initialize at 300K
 
-    add_interaction(sim, LennardJones(0.3, 2.0), "He")
+    add_interaction!(universe, LennardJones(0.3, 2.0), "He", "He")
 
-    run!(sim, 5000)
+    propagate!(sim, universe, 5000)
     return toq()
 end
 
