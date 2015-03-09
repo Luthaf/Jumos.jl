@@ -111,8 +111,8 @@ function setcell!(univ::Universe, params)
     return setcell!(sim, UnitCell(params...))
 end
 
-function setcell!{T<:Type{AbstractCellType}}(univ::Universe, celltype::T, params = (0.0,))
-    return setcell!(sim, UnitCell(celltype(), params...))
+function setcell!{T<:Type{AbstractCellType}}(univ::Universe, celltype::T, params = tuple())
+    return setcell!(sim, UnitCell(celltype, params...))
 end
 
 # Todo: Way to add a catchall interaction
