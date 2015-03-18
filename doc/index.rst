@@ -1,16 +1,18 @@
-Welcome to Jumos's documentation!
-=================================
+Jumos: flexible molecular simulation framework for Julia
+========================================================
 
-`Jumos` is a package for molecular simulations using the
-`Julia <http://julialang.org/>`_ language. It aims at being as flexible as
-possible, and allowing the easy use and development of novel algorithm for
-each part of a simulation. Every algorithm, from potential computation, long
-range interactions, pair lists computing, outputs, `etc.` can be customised.
+`Jumos` is a package for molecular simulations using the `Julia`_ language.
+It aims at being as flexible as possible, and allowing the easy use and
+development of novel algorithm for each part of a simulation. Every algorithm,
+from potential computation, long range interactions, pair lists computing,
+outputs, *etc.* can be customised.
 
 Jumos also includes code for trajectory analysis, either during the simulation
 run or by reading frames in a file.
 
-.. warning::
+.. _Julia : http://julialang.org/
+
+.. note::
     This package is in a very alpha stage, and still in heavy developement.
     Breaking changes can occurs in the API without any notice at any time.
 
@@ -36,6 +38,7 @@ User manual
 .. toctree::
     :maxdepth: 2
 
+    overview/index
     simulations/index
     trajectories
     analysis/index

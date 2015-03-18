@@ -16,8 +16,6 @@ and how you can easily use another potential.
 .. toctree::
     :maxdepth: 2
 
-    usage-example
-    steps
     molecular-dynamic
     potentials
     output
