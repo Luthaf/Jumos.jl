@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Jumos'
-copyright = u'2014, Guillaume Fraux'
+copyright = u'2014-2015, Guillaume Fraux -- CC-BY-SA licence'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

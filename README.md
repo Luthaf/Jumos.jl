@@ -52,6 +52,8 @@ Their is a *first run* example in the
 [documentation](http://jumos.readthedocs.org/en/latest/simulations/usage-example.html),
 and some other example scripts in the `example` folder.
 
-## Licence
+## License
 
-All this code brought to you under the termes of the Mozilla Public Licence v2.0.
+All this code brought to you under the termes of the Mozilla Public License v2.0.
+The documentation is subject to CC-BY-SA license. By contributing to Jumos, you
+agree that your contributions are released under these licenses.
