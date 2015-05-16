@@ -27,11 +27,11 @@ function XYZReader(filename::String; kwargs...)
 end
 
 function get_traj_infos(r::XYZReader)
-    natoms = int(readline(r.file))
+    natoms = parse(Int, readline(r.file))
     seekstart(r.file)
     nlines = countlines(r.file)
     seekstart(r.file)
-    nsteps = int(nlines/(natoms + 2))
+    nsteps = round(Int, nlines/(natoms + 2))
     if !(nlines%(natoms + 2) == 0)
         filename = split(r.file.name)[2][1:end-1]
         error("Wrong number of lines in file $filename")
@@ -58,7 +58,7 @@ Assumes that the cursor is already at the good place.
 Return True if there is still some step to read, false otherwhile
 " ->
 function read_next_frame!(traj::Reader{XYZReader}, universe::Universe)
-    traj.natoms = int(readline(traj.reader.file))
+    traj.natoms = parse(Int, readline(traj.reader.file))
 
     if traj.natoms != size(universe.topology)
         pos = position(traj.reader.file)
@@ -88,7 +88,7 @@ end
 "Read the atomic informations from a line of a XYZ file"
 function read_atom_from_line(line::String)
     sp = split(line)
-    return [float32(sp[2]), float32(sp[3]), float32(sp[4])]
+    return [parse(Float32, sp[2]), parse(Float32, sp[3]), parse(Float32, sp[4])]
 end
 
 "Move file cursor to the first line of the step."
@@ -96,7 +96,7 @@ function go_to_step!(traj::XYZReader, step::Integer)
     seekstart(traj.file)
     current = 1
     while current < step
-        natoms = int(readline(traj.file))
+        natoms = parse(Int, readline(traj.file))
         for i=1:(natoms + 1)
             readline(traj.file)
         end

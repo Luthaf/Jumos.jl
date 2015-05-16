@@ -10,7 +10,7 @@ Read the first frame of an XYZ file and extract the atomic names.
 function read_xyz_topology(filename::String)
     fd = open(filename)
 
-    natoms = int(readline(fd))
+    natoms = parse(Int, readline(fd))
     topology = Topology(natoms)
 
     readline(fd)  # Comment line
