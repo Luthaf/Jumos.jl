@@ -43,8 +43,8 @@ Writer(IOWriter::FormatWriter) = Writer(0, IOWriter)
 
 # These dicts stores associations between extensions and file types.
 # The key is the default extension, the values are tuples (file_type, Reader|Writer).
-TRAJECTORIES_READERS = Dict{String, (String, DataType)}()
-TRAJECTORIES_WRITERS = Dict{String, (String, DataType)}()
+TRAJECTORIES_READERS = Dict{String, Tuple{String, DataType}}()
+TRAJECTORIES_WRITERS = Dict{String, Tuple{String, DataType}}()
 
 function register_reader(;extension="", filetype="", reader=Any)
     extension == "" && error("Default extention can not be empty")
@@ -77,7 +77,7 @@ end
 function get_in_kwargs(kwargs, key::Symbol, default)
     value = default
     try
-        KW = Dict(convert(Array{(Symbol,Any), 1}, kwargs))
+        KW = Dict(convert(Array{Tuple{Symbol, Any}, 1}, kwargs))
         value = KW[key]
     end
     return value

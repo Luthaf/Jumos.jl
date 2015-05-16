@@ -12,9 +12,9 @@ export Topology, Bond, Angle, Dihedral
 export atomic_masses, get_id_from_name, dummy_topology
 export add_atom!, add_liaison!, remove_atom! , remove_liaison!
 
-typealias Bond (UInt64, UInt64)
-typealias Angle (UInt64, UInt64, UInt64)
-typealias Dihedral (UInt64, UInt64, UInt64, UInt64)
+typealias Bond Tuple{UInt64, UInt64}
+typealias Angle Tuple{UInt64, UInt64, UInt64}
+typealias Dihedral Tuple{UInt64, UInt64, UInt64, UInt64}
 
 include("Atom.jl")
 
@@ -39,7 +39,7 @@ The `update!(connectivity, atoms)` function updates the connectivity by scaning
 all the liaisons of all the atoms in `atoms`, and building the bonds, angles and
 dihedral angles from these liaisons.
 " ->
-function update!(connectivity::Connectivity, liaisons::Vector{(UInt64, UInt64)})
+function update!(connectivity::Connectivity, liaisons::Vector{Bond})
     hash(liaisons) == connectivity.hash && return
     connectivity.hash = hash(liaisons)
 

@@ -25,17 +25,17 @@ The dihedral interactions corresponding to (i, j, k, m) atoms are stored in
 `Interactions.dihedral` at index `(min(i, m), min(j, k), max(j, k), max(i, m))`.
 "
 immutable Interactions
-    pairs::Dict{(Int, Int),Vector{PotentialComputation}}
-    bonds::Dict{(Int, Int),Vector{PotentialComputation}}
-    angles::Dict{(Int, Int, Int), Vector{PotentialComputation}}
-    dihedrals::Dict{(Int, Int, Int, Int), Vector{PotentialComputation}}
+    pairs::Dict{Bond, Vector{PotentialComputation}}
+    bonds::Dict{Bond, Vector{PotentialComputation}}
+    angles::Dict{Angle, Vector{PotentialComputation}}
+    dihedrals::Dict{Dihedral, Vector{PotentialComputation}}
 end
 
 function Interactions()
-    pairs = Dict{(Int, Int),Vector{PotentialComputation}}()
-    bonds = Dict{(Int, Int),Vector{PotentialComputation}}()
-    angles = Dict{(Int, Int, Int), Vector{PotentialComputation}}()
-    dihedrals = Dict{(Int, Int, Int, Int), Vector{PotentialComputation}}()
+    pairs = Dict{Bond, Vector{PotentialComputation}}()
+    bonds = Dict{Bond, Vector{PotentialComputation}}()
+    angles = Dict{Angle, Vector{PotentialComputation}}()
+    dihedrals = Dict{Dihedral, Vector{PotentialComputation}}()
     return Interactions(pairs, bonds, angles, dihedrals)
 end
 
