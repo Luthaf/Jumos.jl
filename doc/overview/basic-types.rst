@@ -1,4 +1,17 @@
 Basic Types in Jumos
 ====================
 
-Data & algorithms
+.. _type-universe:
+
+Universe
+--------
+
+.. _type-interactions:
+
+Interactions
+------------
+
+.. _type-propagator:
+
+Propagator
+----------
