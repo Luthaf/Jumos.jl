@@ -7,6 +7,6 @@ contains explanations about the how to define and run a basic simulation.
 .. toctree::
     :maxdepth: 2
 
-    steps
+    flow
     usage-example
     basic-types

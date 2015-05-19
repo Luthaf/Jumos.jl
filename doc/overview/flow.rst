@@ -1,7 +1,7 @@
 .. _simulation-steps:
 
-Usual simulation steps
-======================
+Simulation flow
+===============
 
 In every molecular simulation, the main steps are roughly the same. We start by
 setting the simulated system: positions of the particles, maybe velocities, atomic
@@ -14,15 +14,15 @@ propagator for MonteCarlo simulation, a Gradient descent for energy minimization
 *etc.* Other algorithms can be added to the simulation, in order to perform live
 analysis of the simulation or to output data.
 
-All this is summarised in the figure :ref:`fig-MD_steps`.
+All this is summarised in the figure :ref:`fig-sim-flow`.
 
-.. _fig-MD_steps:
+.. _fig-sim-flow:
 
-.. figure:: /static/img/Simulation-steps.*
+.. figure:: /static/img/simulation-flow.*
     :alt: Usual steps in a molecular dynamic simulation
     :align: center
 
-    Usual steps in a molecular dynamic simulation
+    Simulation flow in |Jumos|
 
 All the steps in the process of running a simulation are described below.
 
