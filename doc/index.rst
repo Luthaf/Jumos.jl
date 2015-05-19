@@ -41,7 +41,6 @@ User manual
     overview/index
     simulations/index
     trajectories
-    analysis/index
     units
 
 Developer documentation
