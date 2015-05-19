@@ -37,7 +37,7 @@ thermostat, they provide a NVE integration.
     example in this `webpages <http://www.fisica.uniud.it/~ercolessi/md/md/node21.html>`_.
     The main constructor for this integrator is ``VelocityVerlet(timestep)``, where
     ``timestep`` is the integration timestep in femtosecond. This is the default
-    integration algorithm in `Jumos`.
+    integration algorithm in |Jumos|.
 
 
 
@@ -50,7 +50,7 @@ Molecular dynamic is usually a `garbage in, garbage out` set of algorithms. The
 numeric and physical issues are not caught by the algorithm themselves, and the
 physical (and chemical) consistency of the simulation should be checked often.
 
-In `Jumos`, this is achieved by the ``Check`` algorithms, which are presented in
+In |Jumos|, this is achieved by the ``Check`` algorithms, which are presented in
 this section. Checking algorithms can be added to a simulation by using the
 :func:`add_check` function.
 

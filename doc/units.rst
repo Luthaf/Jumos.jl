@@ -3,7 +3,7 @@
 Internal units
 ==============
 
-*Jumos* uses a set of internal units, converting back and forth to these units
+|Jumos| uses a set of internal units, converting back and forth to these units
 when needed. Conversion from SI units is always supported. Parenthesis indicate
 planned conversion that is not implemented yet.
 

@@ -1,7 +1,7 @@
 Interaction with others units systems
 =====================================
 
-`Jumos` uses it's own unit system, and do not track the units in the code. All
+|Jumos| uses it's own unit system, and do not track the units in the code. All
 the interaction with units is based on the `SIUnits <https://github.com/Keno/SIUnits.jl>`_
 package. We can convert from and to internal representation using the following functions :
 

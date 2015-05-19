@@ -9,7 +9,7 @@ are needed : a potential energy function, and a computation algorithm. The poten
 function is a description of the variations of the potential with the particles
 positions, and a potential computation is a way to compute the values of this
 potential function. The following image shows the all the potentials functions
-currently implemented in `Jumos`.
+currently implemented in |Jumos|.
 
 .. image:: ../static/img/potentials.*
     :alt: Potential functions type hierarchy

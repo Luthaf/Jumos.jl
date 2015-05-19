@@ -7,7 +7,7 @@ While running a simulation, some basic analysis can be performed and writen to
 a data file. Further analysis can be differed by writing the trajectory to a
 file, and running existing tools on these trajectories.
 
-In `Jumos`, outputs are subtypes of the ``BaseOutput`` type, and can be added to
+In |Jumos|, outputs are subtypes of the ``BaseOutput`` type, and can be added to
 a simulation by using the :func:`add_output` function.
 
 .. function:: add_output(sim, output)
@@ -63,7 +63,7 @@ file.
     This construct a ``TrajectoryOutput`` which can be used to write a trajectory
     to a file. The trajectory format is guessed from the ``filename`` extension.
     This format must have write capacities, see :ref:`the list <trajectory-formats>`
-    of supported formats in `Jumos`.
+    of supported formats in |Jumos|.
 
 .. _energy-output:
 

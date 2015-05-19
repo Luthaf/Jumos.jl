@@ -30,7 +30,7 @@ Naive force computation
 
 The ``NaiveForceComputer`` algorithm computes the forces by iterating over all the
 pairs of atoms, and calling the appropriate interaction potential. This algorithm
-is the default in `Jumos`.
+is the default in |Jumos|.
 
 New algorithm for forces computations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

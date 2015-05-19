@@ -1,7 +1,7 @@
 Jumos: flexible molecular simulation framework for Julia
 ========================================================
 
-`Jumos` is a package for molecular simulations using the `Julia`_ language.
+|Jumos| is a package for molecular simulations using the `Julia`_ language.
 It aims at being as flexible as possible, and allowing the easy use and
 development of novel algorithm for each part of a simulation. Every algorithm,
 from potential computation, long range interactions, pair lists computing,
@@ -18,18 +18,18 @@ run or by reading frames in a file.
 
 This documentation is divided in two parts: first come the user manual, starting
 by some explanation about usal :ref:`algorithms in simulations <simulation-steps>`
-and an :ref:`example <simulation-usage>` of how we can use `Jumos` to run a
+and an :ref:`example <simulation-usage>` of how we can use |Jumos| to run a
 molecular dynamic simulation. The second part is the developer documentation,
-exposing the internal of `Jumos`, and how we can use them to programm new
+exposing the internal of |Jumos|, and how we can use them to programm new
 algorithms.
 
 Installation
 ------------
 
-To install `Jumos`, simply run ``Pkg.add("Jumos")`` at julia prompt. You may
+To install |Jumos|, simply run ``Pkg.add("Jumos")`` at julia prompt. You may
 also want to run ``Pkg.test("Jumos")`` to run the tests.
 
-Only julia 0.4 prerelease version is supported, because `Jumos` makes use of
+Only julia 0.4 prerelease version is supported, because |Jumos| makes use of
 a lot of features from the 0.4 version.
 
 User manual

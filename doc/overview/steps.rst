@@ -30,7 +30,7 @@ System setup
 ------------
 
 The system will contain all the physical informations about what we are simulating.
-In *Jumos*, a system is represented by the :ref:`Universe <type-universe>` type. It
+In |Jumos|, a system is represented by the :ref:`Universe <type-universe>` type. It
 should at least contain data about the :ref:`simulation cell <type-unitcell>`, the
 system :ref:`topology <type-topology>`, the initial particles coordinates and the
 :ref:`interactions <type-interactions>` between the particles.

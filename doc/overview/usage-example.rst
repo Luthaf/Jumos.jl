@@ -3,7 +3,7 @@
 Usage example
 =============
 
-In `Jumos`, one run simulations by writting specials Julia scripts. A primer
+In |Jumos|, one run simulations by writting specials Julia scripts. A primer
 intoduction to the Julia language can be found `here <http://learnxinyminutes.com/docs/julia/>`_,
 if needed.
 

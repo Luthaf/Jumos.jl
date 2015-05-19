@@ -17,7 +17,7 @@ computations. Some file formats already contain this kind of informations so the
 is no need to provide it.
 
 Trajectories can exist in differents formats: text formats like the `XYZ`_ format,
-or binary formats. In `Jumos`, the format of a trajectory file is automatically
+or binary formats. In |Jumos|, the format of a trajectory file is automatically
 determined based on the file extension.
 
 Base types
@@ -127,8 +127,8 @@ read a :ref:`Topology <type-Topology>` from a file.
 Supported formats
 ^^^^^^^^^^^^^^^^^
 
-The following table summarizes the formats supported by `Jumos`, giving the reading
-and writing capacities of `Jumos`, as well as the presence or absence of the unit cell
+The following table summarizes the formats supported by |Jumos|, giving the reading
+and writing capacities of |Jumos|, as well as the presence or absence of the unit cell
 and the topology information in the files. The last column indicates the accepted keywords.
 
 +------------------+--------------+--------+---------+---------+------------+-------------+

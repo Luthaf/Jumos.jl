@@ -37,6 +37,11 @@ templates_path = ['templates']
 # The suffix of source filenames.
 source_suffix = '.rst'
 
+# This will be included at the end of all the files.
+rst_epilog = """
+.. |Jumos| replace:: *Jumos*
+"""
+
 # The master toctree document.
 master_doc = 'index'
 

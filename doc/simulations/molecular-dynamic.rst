@@ -8,7 +8,7 @@ Creating simulations
 The Simulation type
 -------------------
 
-In `Jumos`, simulations are first-class citizen, `i.e.` objects bound to variables.
+In |Jumos|, simulations are first-class citizen, `i.e.` objects bound to variables.
 The main type for simulations is ``MolecularDynamic``, which can be constructed in
 two ways:
 
