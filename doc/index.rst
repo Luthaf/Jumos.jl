@@ -50,4 +50,4 @@ Developer documentation
 .. toctree::
     :maxdepth: 2
 
-    dev/index
+    developer/index
