@@ -9,7 +9,7 @@
 # ============================================================================ #
 
 # TODO: remove this and use FixedSize Array when they are disponibles
-module JumosArray
+module Arrays
 importall Base
 
 export Array3D
