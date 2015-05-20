@@ -31,7 +31,7 @@ module Jumos
 
     " The `Systems` module defines all the usefull types for storage of a molecular
     system definition. "
-    @reexport module Systems
+    @reexport module Universes
         using Jumos, Jumos.Arrays
         include("Universe/Universe.jl")
     end

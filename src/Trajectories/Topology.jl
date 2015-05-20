@@ -23,7 +23,7 @@ end
 
 Read the topology from the file `filename` and return it.
 "
-function Systems.Topology(filename)
+function Universes.Topology(filename)
     extension = split(strip(filename), ".")[end]
     if extension == "xyz"
         info("Reading topology in XYZ format")
