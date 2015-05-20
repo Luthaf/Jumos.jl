@@ -39,7 +39,7 @@ User manual
     :maxdepth: 2
 
     overview/index
-    simulations/index
+    md/index
     trajectories
     units
 

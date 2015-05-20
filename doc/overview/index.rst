@@ -8,5 +8,5 @@ contains explanations about the how to define and run a basic simulation.
     :maxdepth: 2
 
     flow
-    usage-example
-    basic-types
+    example
+    types
