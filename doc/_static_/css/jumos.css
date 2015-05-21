@@ -7,6 +7,10 @@
     background: #fff;
 }
 
+.wy-nav-content {
+    max-width: 1000px;
+}
+
 body,
 .wy-body-for-nav,
 .wy-nav-side,
@@ -74,4 +78,16 @@ h4 {
     display: block;
     margin: 1px 0;
     background-color: #f5f5f5;
+}
+
+.descname {
+    color: black;
+    background: none;
+    border: none;
+    font-size: 1em;
+}
+
+code {
+    color: #AB1F10;
+    font-size: 80%;
 }
