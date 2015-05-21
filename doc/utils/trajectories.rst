@@ -142,12 +142,12 @@ and the topology information in the files. The last column indicates the accepte
 .. _XYZ: http://openbabel.org/wiki/XYZ
 .. _Amber NetCDF: http://ambermd.org/netcdf/nctraj.xhtml
 
-.. |yes| image:: static/img/yes.png
+.. |yes| image:: /_static_/img/yes.png
           :alt: Yes
           :width: 16px
           :height: 16px
 
-.. |no| image:: static/img/no.png
+.. |no| image:: /_static_/img/no.png
           :alt: No
           :width: 16px
           :height: 16px

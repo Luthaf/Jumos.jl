@@ -5,8 +5,6 @@ Main types
 system we are simulating; and the ``Simulation`` type hold data about the algorithms
 we should use for the simulation.
 
-.. _type-universe:
-
 Universe
 --------
 
@@ -20,8 +18,6 @@ The ``Universe`` type contains data. It is built around four other basic types:
   :ref:`potentials <type-potential>` to use for the atoms in the system;
 * The :ref:`Frame <type-Frame>` type contains raw data about the positions and maybe
   velocities of the particles in the system;
-
-.. _type-simulation:
 
 Simulation
 ----------

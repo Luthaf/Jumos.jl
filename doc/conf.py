@@ -17,7 +17,7 @@ import os
 import sphinx_rtd_theme
 
 DOC_DIR = os.path.dirname(__file__)
-sys.path.append(os.path.join(DOC_DIR, "ext"))
+sys.path.append(os.path.join(DOC_DIR, "_ext_"))
 import juliadoc
 
 # -- General configuration ------------------------------------------------
@@ -32,7 +32,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['templates']
+templates_path = ['_templates_']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -82,16 +82,16 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['static']
+html_static_path = ['_static_']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-html_extra_path = ["static/img/logo.png"]
+html_extra_path = ["_static_/img/logo.png"]
 
 # -- Options for LaTeX output ---------------------------------------------
 
-with open(os.path.join("templates", "preamble.tex")) as f:
+with open(os.path.join("_templates_", "preamble.tex")) as f:
     preamble = f.read()
 
 latex_elements = {
@@ -115,7 +115,7 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-latex_logo = os.path.join('static', 'img', 'logo.pdf')
+latex_logo = os.path.join('_static_', 'img', 'logo.pdf')
 
 # If true, show page references after internal links.
 latex_show_pagerefs = True

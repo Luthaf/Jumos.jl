@@ -1,0 +1,4 @@
+.. _type-propagator:
+
+Propagator
+==========

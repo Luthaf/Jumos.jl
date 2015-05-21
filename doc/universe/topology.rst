@@ -1,5 +1,5 @@
-Atoms
-=====
+Topology
+========
 
 This module creates the link between human-readable and computer-readable
 information about the studied system. Humans prefer to use string labels for

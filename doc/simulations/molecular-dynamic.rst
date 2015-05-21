@@ -3,7 +3,6 @@
 Creating simulations
 ====================
 
-.. _type-Simulation:
 
 The Simulation type
 -------------------

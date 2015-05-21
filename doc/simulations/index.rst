@@ -16,8 +16,13 @@ and how you can easily use another potential.
 .. toctree::
     :maxdepth: 2
 
+    propagator
     molecular-dynamic
-    potentials
-    output
     compute
+    output
     algorithms
+
+.. _type-simulation:
+
+``Simulation`` type
+-------------------

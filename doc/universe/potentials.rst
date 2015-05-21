@@ -11,7 +11,7 @@ positions, and a potential computation is a way to compute the values of this
 potential function. The following image shows the all the potentials functions
 currently implemented in |Jumos|.
 
-.. image:: ../static/img/potentials.*
+.. image:: ../_static_/img/potentials.*
     :alt: Potential functions type hierarchy
 
 We can see these potentials are classified as four main categories: pair potentials,
@@ -233,7 +233,7 @@ As stated at the begiging of this potentials section, we need two informations t
 compute interactions between particles: a potential function, and a potential
 computation. The potential compuatation algorithms come in four flavors:
 
-.. image:: ../static/img/computations.*
+.. image:: ../_static_/img/computations.*
     :alt: Potential computation algorithm hierarchy
 
 * The ``DirectComputation`` is only a small wrapper on the top of the potential
@@ -273,12 +273,12 @@ associations are in the table below.
 | DihedralPotential    |  |yes|            |  |no|             |  |yes|           |
 +----------------------+-------------------+-------------------+------------------+
 
-.. |yes| image:: ../static/img/yes.png
+.. |yes| image:: ../_static_/img/yes.png
     :alt: Yes
     :width: 16px
     :height: 16px
 
-.. |no| image:: ../static/img/no.png
+.. |no| image:: ../_static_/img/no.png
     :alt: No
     :width: 16px
     :height: 16px

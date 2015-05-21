@@ -39,14 +39,14 @@ User manual
     :maxdepth: 2
 
     overview/index
-    md/index
-    trajectories
-    units
+    universe/index
+    simulations/index
+    utils/index
 
-Developer documentation
------------------------
+Extending |Jumos|
+-----------------
 
 .. toctree::
     :maxdepth: 2
 
-    developer/index
+    extending/index
