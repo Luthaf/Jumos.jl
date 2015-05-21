@@ -167,3 +167,9 @@ Reading and writing frames from files
 
 The main goal of the ``Trajectories`` module is to read or write frames from or to
 files. See this module :ref:`documentation <trajectories>` for more information.
+
+
+.. _type-interactions:
+
+Interactions
+------------

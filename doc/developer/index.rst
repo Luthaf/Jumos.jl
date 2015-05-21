@@ -12,3 +12,4 @@ extend them to add more fucntionalities to your simulations.
     distances
     units
     algorithms
+    simulations
