@@ -1,25 +1,59 @@
 Topology
 ========
 
-This module creates the link between human-readable and computer-readable
-information about the studied system. Humans prefer to use string labels for
-molecules and atoms, whereas a computer only uses integers.
+The ``Topology`` type creates the link between human-readable and computer-readable
+information about the system. Humans prefer to use string labels for molecules and
+atoms, whereas a computer will only uses integers.
+
+.. _type-atom:
 
 Atom type
 ---------
 
-An ``Atom`` instance is a representation of atomic information. Think of an
-``Atom`` as a cell in an augmented periodic table. You can access the following
-fields :
+An ``Atom`` instance is a representation of a type of particle in the system.
+It is paramerized by an ``AtomType``, which can be one of:
 
-- ``name`` : the atom name;
-- ``symbol`` : the atom chemical type;
+* ``Element`` : an element in the perdiodic classification;
+* ``DummyAtom`` : a dummy atom, for particles without interactions;
+* ``CorseGrain`` : corse-grain particle, for corse-grain simulations;
+* ``UnknownAtom`` : All the other kind of particles.
+
+You can access the following fields for all atoms:
+
+- ``label::Symbol`` : the atom name;
 - ``mass`` : the atom mass;
-- ``special::Dict{String, Any}`` : all the other values: charge, dipolar moment …;
+- ``charge`` : the atom charge;
+- ``properties::Dict{String, Any}`` : any other property: dipolar moment, *etc.*;
 
-The atom name and symbol may not be the same: if there are two kinds of hydrogen
-atoms in a simulation, they may have the names **H1** and **H2** ; and share the
-same symbol **H**.
+.. function:: Atom([label, type])
+
+    Creates an atom with the ``label`` label. If ``type`` is provided, it is used as
+    the Atom type. Else, a type is guessed according to the following procedure: if
+    the ``label`` is in the periodic classification, the the atom is an ``Element``.
+    Else, it is a ``CorseGrain`` atom.
+
+    .. code-block:: jlcon
+
+        julia> Atom()
+        "Atom{UnknownAtom}"
+
+        julia> Atom("He")
+        "Atom{Element} He"
+
+        julia> Atom("CH4")
+        "Atom{CorseGrain} CH4"
+
+        julia> Atom("Zn", DummyAtom)
+        "Atom{DummyAtom} Zn"
+
+.. function:: mass(label::Symbol)
+
+    Try to guess the mass associated with an element, from the periodic table data.
+    If no value could be found, the ``0.0`` value is returned.
+
+.. function:: mass(atom::Atom)
+
+    Return the atomic mass if it was set, or call the function ``mass(atom.label)``.
 
 .. _type-Topology:
 
