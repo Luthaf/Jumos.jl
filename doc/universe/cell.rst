@@ -4,20 +4,20 @@ UnitCell
 ========
 
 A simulation cell (``UnitCell`` type) is the virtual container in which all the
-particles of a simulation move. There are three different types of simulation
-cells :
+particles of a simulation move. The UnitCell type is parametrized by the
+``celltype``. There are three different types of simulation cells:
 
-- Infinite cells (``InfiniteCell``) do not have any boundaries. Any move
+* Infinite cells (``InfiniteCell``) do not have any boundaries. Any move
   is allowed inside these cells;
-- Orthorombic cells (``OrthorombicCell``) have up to three independent lenghts;
+* Orthorombic cells (``OrthorombicCell``) have up to three independent lenghts;
   all the angles of the cell are set to 90° (:math:`\pi/2` radians)
-- Triclinic cells (``TriclinicCell``) have 6 independent parameters: 3 lenghts and
+* Triclinic cells (``TriclinicCell``) have 6 independent parameters: 3 lenghts and
   3 angles.
 
 Creating simulation cell
 ------------------------
 
-.. function:: UnitCell(Lx, [Ly, Lz, alpha, beta, gamma, celltype])
+.. function:: UnitCell(A, [B, C, alpha, beta, gamma, celltype])
 
     Creates an unit cell. If no ``celltype`` parameter is given, this function tries
     to guess the cell type using the following behavior: if all the angles are
@@ -25,9 +25,9 @@ Creating simulation cell
     is a ``TriclinicCell``.
 
     If no value is given for ``alpha, beta, gamma``, they are set to :math:`\pi/2`.
-    If no value is given for ``Ly, Lz``, they are set to be equal to ``Lx``.
-    This creates a cubic cell. If no value is given for ``Lx``, a cell with lenghts
-    of :math:`0 A` and :math:`\pi/2` angles is constructed.
+    If no value is given for ``B, C``, they are set to be equal to ``A``.
+    This creates a cubic cell. If no value is given for ``A``, a cell with lenghts
+    of 0 Angström and :math:`\pi/2` angles is constructed.
 
     .. code-block:: jlcon
 
@@ -86,7 +86,7 @@ You can access the cell size and angles either directly, or by integer indexing.
 
     In case of intense use of such indexing, direct field access should be
     more efficient. The internal fields of a cell are : the three lenghts
-    ``x, y, z``, and the three angles ``alpha, beta, gamma``.
+    ``a, b, c``, and the three angles ``alpha, beta, gamma``.
 
 Boundary conditions and cells
 -----------------------------
