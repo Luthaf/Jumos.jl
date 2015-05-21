@@ -63,7 +63,12 @@ Topology
 A ``Topology`` instance stores all the information about the system : atomic types,
 atomic composition of the system, bonds, angles, dihedral agnles and molecules.
 
-Atoms of the system can be accesed using integer indexing. The following example
+
+.. function:: Topology([natoms = 0])
+
+    Create an empty topology with space for ``natoms`` atoms.
+
+Atoms in the system can be accesed using integer indexing. The following example
 shows a few operations available on atoms:
 
 .. code-block:: julia
@@ -71,29 +76,50 @@ shows a few operations available on atoms:
     # topology is a Topology with 10 atoms
 
     atom = topology[3]  # Get a specific atom
-    println(atom.name)  # Get the atom name
+    println(atom.label) # Get the atom label
 
-    atom.name = "H2"    # Set the atom name
+    atom.mass = 42.9    # Set the atom mass
     topology[5] = atom  # Set the 5th atom of the topology
 
 Topology functions
 ^^^^^^^^^^^^^^^^^^
 
-.. function:: size(::Topology)
+.. function:: size(topology)
 
    This function returns the number of atoms in the topology.
 
-.. function:: atomic_masses(::Topology)
+.. function:: atomic_masses(topology)
 
    This function returns a ``Vector{Float64}`` containing the masses of all the
    atoms in the system. If no mass was provided, it uses the ``ATOMIC_MASSES``
    dictionnary to guess the values. If no value is found, the mass is set to
    :math:`0.0`. All the values are in :ref:`internal units <intenal_units>`.
 
+.. function:: add_atom!(topology, atom)
+
+    Add the ``atom`` Atom to the end of ``topology``.
+
+.. function:: remove_atom!(topology, i)
+
+    Remove the atom at index ``i`` in ``topology``.
+
+.. function:: add_liaison!(topology, i, j)
+
+    Add a liaison between the atoms ``i`` and ``j``.
+
+.. function:: remove_liaison!(topology, i, j)
+
+    Remove any existing liaison between the atoms ``i`` and ``j``.
+
+.. function:: dummy_topology(natoms)
+
+    Create a topology with ``natoms`` of type ``DummyAtom``. This function exist
+    mainly for testing purposes.
+
 Periodic table information
 ---------------------------
 
-The ``Atoms`` module also defines two dictonaries that store information about
+The ``Universes`` module also exports two dictonaries that store information about
 atoms:
 
 * ``ATOMIC_MASSES`` is a ``Dict{String, Float64}`` associating atoms symbols
