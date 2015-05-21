@@ -8,7 +8,7 @@
 #                       Atom type in topologies
 # ============================================================================ #
 
-export Atom, mass
+export Atom, mass, DummyAtom, Element, CorseGrain, UnknownAtom
 
 include("PeriodicTable.jl")
 
