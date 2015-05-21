@@ -43,12 +43,22 @@ function (==)(this::Atom, other::Atom)
            this.charge == other.charge && this.properties == other.properties
 end
 
-function Base.show(io::IO, atom::Atom)
-    show(io, "Atom $(atom.label)")
+function Base.show{T<:AtomType}(io::IO, atom::Atom{T})
+    atom_type = split("$T", ".")[3]
+    if atom.label != Symbol("")
+        label = " $(atom.label)"
+    else
+        label = ""
+    end
+    show(io, "Atom{$atom_type}$label")
 end
 
 function mass(atom::Atom)
-    return mass(atom.label)
+    if atom.mass == 0
+        return mass(atom.label)
+    else
+        return atom.mass
+    end
 end
 
 function mass(name::Symbol)
