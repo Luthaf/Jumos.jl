@@ -86,9 +86,6 @@ end
 include("XYZ/Reader.jl")
 include("XYZ/Writer.jl")
 
-include("NetCDF/Reader.jl")
-include("NetCDF/Writer.jl")
-
 """
 `opentraj(filename; mode="r", kwargs...)`
 

@@ -41,4 +41,3 @@ function topology_from_file!(univ::Universe, filename::AbstractString)
 end
 
 include("Topologies/XYZ.jl")
-include("Topologies/LAMMPS.jl")

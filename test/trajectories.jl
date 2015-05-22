@@ -1,23 +1,6 @@
 facts("Trajectory IO") do
     TRAJ_DIR = joinpath(dirname(@__FILE__), "trjs")
 
-    # disabling the NetCDF test for now, the dependency is erroring
-    # context("NetCDF") do
-    #     traj = Reader("$TRAJ_DIR/water.nc")
-    #     topology = Topology("$TRAJ_DIR/water.lmp")
-    #     uni = Universe(UnitCell(), topology)
-    #     read_next_frame!(traj, uni)
-    #
-    #     @fact length(uni.frame.positions) => traj.natoms
-    #
-    #     @fact uni.topology[1].label => :O
-    #     @fact uni.topology[2].label => :H
-    #     @fact uni.topology[1].mass => 15.999
-    #     @fact size(uni.topology.templates, 1) => 2
-    #
-    #     close(traj)
-    # end
-
     context("XYZ") do
         tmp = tempname()
         outtraj = Writer("$tmp.xyz")
