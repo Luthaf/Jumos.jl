@@ -167,7 +167,9 @@ function get_computation(potential::ShortRangePotential; kwargs...)
             computation = CutoffComputation(potential, cutoff=kwargs[:cutoff])
         end
     else
-        computation = COMPUTATIONS[kwargs[:computation]](potential; kwargs...)
+        computation_type = COMPUTATIONS[kwargs[:computation]]
+        pop!(kwargs, :computation)
+        computation = computation_type(potential; kwargs...)
     end
     return computation
 end
@@ -177,7 +179,9 @@ function get_computation(potential::BondedPotential; kwargs...)
     if kwargs[:computation] == :auto
         computation = DirectComputation(potential)
     else
-        computation = COMPUTATIONS[kwargs[:computation]](potential; kwargs...)
+        computation_type = COMPUTATIONS[kwargs[:computation]]
+        pop!(kwargs, :computation)
+        computation = computation_type(potential; kwargs...)
     end
     return computation
 end
