@@ -1,10 +1,11 @@
-Defining your own algorithms
-============================
+Extending |Jumos|
+=================
 
-In this section, you will find a quick overview of |Jumos| base types, and how to
-extend them to add more fucntionalities to your simulations.
+In this section, you will find and how to extend |Jumos| base types to add more
+fucntionalities to your simulations.
 
 .. toctree::
     :maxdepth: 2
 
+    potentials
     algorithms
