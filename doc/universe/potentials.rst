@@ -24,6 +24,8 @@ and long-range pair potentials go to zero at the same speed or more slowly than
 :math:`1/r^3`. A typical example of long-range pair potential is the Coulomb
 potential between charged particles.
 
+.. _type-PotentialFunction:
+
 Potential functions
 ===================
 
@@ -282,40 +284,3 @@ associations are in the table below.
     :alt: No
     :width: 16px
     :height: 16px
-
-Using non-default computation
------------------------------
-
-By default, the computation algorithm is automatically determined by the potential
-function type. ``ShortRangePotential`` are computed with ``CutoffComputation``,
-and all other potentials are computed by ``DirectComputation``. If we want to use
-another computation algorithm, this can be done by providing a ``computation``
-keyword to the ``add_interaction`` function. The following values are allowed:
-
-* ``:direct`` to use a ``DirectComputation``;
-* ``:cutoff``  to use a ``CutoffComputation``. The cutoff can be specified with
-  the ``cutoff`` keyword argument;
-* ``:table``` to use a ``TableComputation``. The table size can be specified with
-  the ``numpoints`` keyword argument, and the maximum distance with the ``rmax``
-  keyword argument.
-
-Here is an example of how we can use these keywords.
-
-.. code-block:: julia
-
-    sim = MolecularDynamic(1.0) # Creating a simulation
-
-    # ...
-
-    # Use default computation, i.e. CutoffComputation with 12A cutoff.
-    add_interaction(sim, LennardJones(0.4, 3.3))
-
-    # Use another cutoff distance
-    add_interaction(sim, LennardJones(0.4, 3.3), cutoff=7.5)
-
-    # Use direct computation
-    add_interaction(sim, LennardJones(0.4, 3.3), computation=:direct)
-
-    # Use table computation with 3000 points, and a maximum distance of 10A
-    add_interaction(sim, LennardJones(0.4, 3.3),
-                    computation=:table, numpoints=3000, rmax=10.0)

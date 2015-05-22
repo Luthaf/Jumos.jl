@@ -15,7 +15,7 @@ The ``Universe`` type contains data. It is built around four other basic types:
 * The :ref:`UnitCell <type-UnitCell>` contains data about the bounding box of the
   simulation;
 * The :ref:`Interactions <type-Interactions>` type contains data about the
-  :ref:`potentials <type-potential>` to use for the atoms in the system;
+  :ref:`potentials <potentials>` to use for the atoms in the system;
 * The :ref:`Frame <type-Frame>` type contains raw data about the positions and maybe
   velocities of the particles in the system;
 
