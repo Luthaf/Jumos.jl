@@ -96,18 +96,22 @@ Topology functions
    :math:`0.0`. All the values are in :ref:`internal units <intenal_units>`.
 
 .. function:: add_atom!(topology, atom)
+    :noindex:
 
     Add the ``atom`` Atom to the end of ``topology``.
 
 .. function:: remove_atom!(topology, i)
+    :noindex:
 
     Remove the atom at index ``i`` in ``topology``.
 
 .. function:: add_liaison!(topology, i, j)
+    :noindex:
 
     Add a liaison between the atoms ``i`` and ``j``.
 
 .. function:: remove_liaison!(topology, i, j)
+    :noindex:
 
     Remove any existing liaison between the atoms ``i`` and ``j``.
 
