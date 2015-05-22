@@ -18,7 +18,7 @@ All this is summarised in the figure :ref:`fig-sim-flow`.
 
 .. _fig-sim-flow:
 
-.. figure:: /static/img/simulation-flow.*
+.. figure:: /_static_/img/simulation-flow.*
     :alt: Usual steps in a molecular dynamic simulation
     :align: center
 
