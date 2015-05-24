@@ -1,28 +1,23 @@
 Simulations
 ===========
 
-The simulation module contains code for molecular dynamic simulation. It
-extensively uses custom types, which are presented in this section.
-
-The first section (:ref:`simulation-steps`) describes how the code is organised, and is
-worth reading to understand the design of this module. Then :ref:`an example
-<simulation-usage>` shows how to use |Jumos| to run simple simulations, and
-provides an example of the API usage. The :ref:`simulation <simulations>` part
-presents most of the API in a more formal maner.
-
-The :ref:`potentials` section lists the available potentials for use in |Jumos|,
-and how you can easily use another potential.
+The simulation module contains types representing algorithms. The main type is the
+:ref:`Simulation <type-simulation>` type, which is parametrized by a
+:ref:`Propagator <type-propagator>`. This propagator will determine which kind of
+simulation we are running: :ref:`Molecular Dynamics <type-MolecularDynamics>`;
+Monte-Carlo; energy minimization; *etc.*
 
 .. toctree::
     :maxdepth: 2
 
     propagator
-    molecular-dynamic
+    molecular-dynamics
     compute
     output
-    algorithms
 
 .. _type-simulation:
 
 ``Simulation`` type
 -------------------
+
+In |Jumos|, simulations are first-class citizen, `i.e.` objects bound to variables.

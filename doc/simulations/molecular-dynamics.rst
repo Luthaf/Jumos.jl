@@ -1,12 +1,28 @@
-Selecting the algorithms
-========================
+.. _type-MolecularDynamics:
 
-.. TODO:: Introduction
+Molecular Dynamics
+==================
 
-.. _simulation-integrator:
+.. figure:: /_static_/img/MolecularDynamics.*
+    :alt: Flow of algorithms in MolecularDynamics propagator
+    :align: center
 
-Integrator: running the simulation
-----------------------------------
+    Flow of algorithms in MolecularDynamics propagator
+
+.. function:: MolecularDynamics(timestep)
+
+    Creates an empty molecular dynamic simulation using a Velocity-Verlet
+    integrator with the specified timestep.
+
+    Without any :ref:`thermostat <thermostat>` or :ref:`barostat <barostat>`, this
+    performs a NVE integration of the system.
+
+.. function:: MolecularDynamics(::Integrator)
+
+    Creates an empty simulation with the specified :ref:`integrator <simulation-integrator>`.
+
+Time integration
+----------------
 
 An integrator is an algorithm responsible for updating the positions and the
 velocities of the current :ref:`frame <type-Frame>` of the :ref:`simulation
@@ -17,10 +33,10 @@ velocities of the current :ref:`frame <type-Frame>` of the :ref:`simulation
 Verlet integrators
 ^^^^^^^^^^^^^^^^^^
 
-Verlet integrators are based on Taylor expensions of Newton's second law.
-They provide a simple way to integrate the movement, and conserve the energy
-if a sufficently small timestep is used. Assuming the absence of barostat and
-thermostat, they provide a NVE integration.
+Verlet integrators are based on Taylor expensions of Newton's second law. They
+provide a simple way to integrate the movement, and conserve the energy if a
+sufficently small timestep is used. Assuming the absence of barostat and thermostat,
+they provide a NVE integration.
 
 .. jl:type:: Verlet
 
@@ -40,45 +56,8 @@ thermostat, they provide a NVE integration.
     integration algorithm in |Jumos|.
 
 
-
-.. _simulation-checks:
-
-Checking the simulation consistency
------------------------------------
-
-Molecular dynamic is usually a `garbage in, garbage out` set of algorithms. The
-numeric and physical issues are not caught by the algorithm themselves, and the
-physical (and chemical) consistency of the simulation should be checked often.
-
-In |Jumos|, this is achieved by the ``Check`` algorithms, which are presented in
-this section. Checking algorithms can be added to a simulation by using the
-:func:`add_check` function.
-
-Existing checks
-^^^^^^^^^^^^^^^
-
-.. jl:type:: GlobalVelocityIsNull
-
-    This algorithm checks if the global velocity (the total moment of inertia) is
-    null for the current simulation. The absolute tolerance is :math:`10^{-5}\ A/fs`.
-
-.. jl:type:: TotalForceIsNull
-
-    This algorithm checks if the sum of the forces is null for the current
-    simulation. The absolute tolerance is :math:`10^{-5}\ uma \cdot A/fs^2`.
-
-.. _type-AllPositionsAreDefined:
-
-.. jl:type:: AllPositionsAreDefined
-
-    This algorithm checks is all the positions and all the velocities are defined
-    numbers, *i.e.* if all the values are not infinity or the ``NaN`` (not a number)
-    values.
-
-    This algorithm is used by default by all the molecular dynamic simulation.
-
-
-.. _simulation-controls:
+Force computation
+-----------------
 
 Controlling the simulation
 --------------------------
@@ -168,8 +147,60 @@ Other controls
     This control is present by default in the molecular dynamic simulations.
 
 
+Checking the simulation consistency
+-----------------------------------
+
+Molecular dynamic is usually a `garbage in, garbage out` set of algorithms. The
+numeric and physical issues are not caught by the algorithm themselves, and the
+physical (and chemical) consistency of the simulation should be checked often.
+
+In |Jumos|, this is achieved by the ``Check`` algorithms, which are presented in
+this section. Checking algorithms can be added to a simulation by using the
+:func:`add_check` function.
+
+Existing checks
+^^^^^^^^^^^^^^^
+
+.. jl:type:: GlobalVelocityIsNull
+
+    This algorithm checks if the global velocity (the total moment of inertia) is
+    null for the current simulation. The absolute tolerance is :math:`10^{-5}\ A/fs`.
+
+.. jl:type:: TotalForceIsNull
+
+    This algorithm checks if the sum of the forces is null for the current
+    simulation. The absolute tolerance is :math:`10^{-5}\ uma \cdot A/fs^2`.
+
+.. _type-AllPositionsAreDefined:
+
+.. jl:type:: AllPositionsAreDefined
+
+    This algorithm checks is all the positions and all the velocities are defined
+    numbers, *i.e.* if all the values are not infinity or the ``NaN`` (not a number)
+    values.
+
+    This algorithm is used by default by all the molecular dynamic simulation.
+
+Default algorithms
+------------------
+
+Default algorithms for molecular dynamic are presented in the following table:
+
++---------------------+----------------------------------------------------------------------+
+|  Simulation step    |                 Default algorithms                                   |
++=====================+======================================================================+
+| Integration         | :ref:`Velocity-Verlet <type-VelocityVerlet>`                         |
++---------------------+----------------------------------------------------------------------+
+| Forces computation  | :ref:`Naive computation <type-NaiveForceComputer>`                   |
++---------------------+----------------------------------------------------------------------+
+| Control             | :ref:`Wrap particles in the box <type-WrapParticles>`                |
++---------------------+----------------------------------------------------------------------+
+| Check               | :ref:`All positions are defined <type-AllPositionsAreDefined>`       |
++---------------------+----------------------------------------------------------------------+
+
+
 Functions for algorithms selection
-==================================
+----------------------------------
 
 The six following functions are used to to select specific algorithms for the
 simulation. They allow to add and change all the algorithms, even in the middle
