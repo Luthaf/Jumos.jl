@@ -91,10 +91,10 @@ Custom output
 ^^^^^^^^^^^^^
 
 The ``CustomOutput`` type provide a way to build specific output. The data to be
-writen should be :ref:`computed <simulation-computes>` before the output by adding
+writen should be :ref:`computed <type-compute>` before the output by adding
 the specific algorithms to the current simulation. These computation algorithm
 set a value in the ``MolecularDynamic.data`` dictionairy, which can be accessed
-during the output step. See the :ref:`computation algorithms <simulation-computes>`
+during the output step. See the :ref:`computation algorithms <type-compute>`
 page for a list of keys.
 
 .. function:: CustomOutput(filename, values, [frequency; header="# header string"])

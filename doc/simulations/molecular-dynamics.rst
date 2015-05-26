@@ -19,7 +19,9 @@ Molecular Dynamics
 
 .. function:: MolecularDynamics(::Integrator)
 
-    Creates an empty simulation with the specified :ref:`integrator <simulation-integrator>`.
+    Creates an empty simulation with the specified :ref:`integrator <type-Integrator>`.
+
+.. _type-Integrator:
 
 Time integration
 ----------------
@@ -55,9 +57,14 @@ they provide a NVE integration.
     ``timestep`` is the integration timestep in femtosecond. This is the default
     integration algorithm in |Jumos|.
 
+.. _type-ForceComputer:
 
 Force computation
 -----------------
+
+.. TODO:: Document this
+
+.. _type-Control:
 
 Controlling the simulation
 --------------------------
@@ -146,6 +153,7 @@ Other controls
 
     This control is present by default in the molecular dynamic simulations.
 
+.. _type-Check:
 
 Checking the simulation consistency
 -----------------------------------
@@ -230,7 +238,7 @@ of a run.
 
 .. function:: add_check(sim, check)
 
-    Adds a :ref:`check <simulation-checks>` to the simulation check list and
+    Adds a :ref:`check <type-Check>` to the simulation check list and
     issues a warning if the check is already present.
 
     Usage example:
@@ -242,7 +250,7 @@ of a run.
 
 .. function:: add_control(sim, control)
 
-    Adds a :ref:`control <simulation-controls>` algorithm to the simulation
+    Adds a :ref:`control <type-Control>` algorithm to the simulation
     list. If the control algorithm is already present, a warning is issued.
 
     Usage example:
@@ -250,26 +258,3 @@ of a run.
     .. code-block:: julia
 
         add_control(sim, RescaleVelocities(300, 100))
-
-.. function:: add_compute(sim, compute)
-
-    Adds a :ref:`compute <simulation-computes>` algorithm to the simulation
-    list. If the algorithm is already present, a warning is issued.
-
-    Usage example:
-
-    .. code-block:: julia
-
-        # Note the parentheses, needed to instanciate the new compute algorithm.
-        add_compute(sim, EnergyCompute())
-
-.. function:: add_output(sim, output)
-
-    Adds an :ref:`output <simulation-outputs>` algorithm to the simulation
-    list. If the algorithm is already present, a warning is issued.
-
-    Usage example:
-
-    .. code-block:: julia
-
-        add_output(sim, TrajectoryOutput("mytraj.xyz"))

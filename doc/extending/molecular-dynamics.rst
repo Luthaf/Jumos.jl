@@ -1,7 +1,7 @@
 Algorithms for molecular dynamics
 =================================
 
-Writing a new :ref:`integrator <simulation-integrator>`
+Writing a new :ref:`integrator <type-Integrator>`
 -------------------------------------------------------
 
 To create a new integrator, you have to subtype the ``BaseIntegrator`` type, and
@@ -53,8 +53,8 @@ used with the newton equations.  The conversion can be handled by the unexported
 ``Simulations.force_array_to_internal!`` function, converting the values of an
 Array3D from :math:`kJ/(mol \cdot A)` to :math:`uma \cdot A / fs^2`.
 
-Adding a new :ref:`check <simulation-checks>`
----------------------------------------------
+Adding a new :ref:`check <type-check>`
+--------------------------------------
 
 Adding a new check algorithm is as simple as subtyping ``BaseCheck`` and extending
 the ``call(::BaseCheck, ::MolecularDynamic)`` method. This method should throw an
@@ -71,12 +71,12 @@ exception of type ``CheckError`` if the checked condition is not fullfiled.
         This is a message
         in __text at no file (repeats 3 times)
 
-Adding new :ref:`controls <simulation-controls>`
-------------------------------------------------
+Adding new :ref:`controls <type-control>`
+-----------------------------------------
 
 To add a new type of control to a simulation, the main way is to subtype
 ``BaseControl``, and provide two specialised methods: ``call(::BaseControl,
 ::MolecularDynamic)`` and the optional ``setup(::BaseControl, ::MolecularDynamic)``.
 The ``call`` method should contain the algorithm inplementation, and the ``setup``
 method is called once at each simulation start. It should be used to add add some
-:ref:`computation algorithm <simulation-computes>` to the simulation.
+:ref:`computation algorithm <type-compute>` to the simulation.

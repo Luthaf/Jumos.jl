@@ -1,4 +1,4 @@
-.. _simulation-computes:
+.. _type-Compute:
 
 Computing values of interest
 ============================
@@ -7,10 +7,10 @@ To compute physical values from a simulation, we can use algorithms represented
 by subtypes of ``Basecompute`` and associate these algorithms to a simulation.
 
 Users don't usualy need to use these compute algorithms directly, as the output
-algorithms (see :ref:`simulation-outputs`) set the needed computations by themself.
+algorithms (see :ref:`type-output`) set the needed computations by themself.
 
-Computed values can have various usages: they may be used in :ref:`outputs <simulation-outputs>`,
-or in :ref:`controls <simulation-controls>`. The data is shared between algorithms
+Computed values can have various usages: they may be used in :ref:`outputs <type-output>`,
+or in :ref:`controls <type-control>`. The data is shared between algorithms
 using the ``MolecularDynamic.data`` field. This field is a dictionnary associating
 symbols and any kind of value.
 

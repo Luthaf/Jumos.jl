@@ -19,7 +19,7 @@ To add a new compute algorithm (we will call it ``MyCompute``), we have to subty
     the computed value. This value can be anything, but basic types (scalars, arrays,
     *etc.*) are to be prefered.
 
-.. _type-Output:
+.. _new-output:
 
 Outputing values
 ----------------
