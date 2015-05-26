@@ -8,17 +8,17 @@
 #                   Time integration takes place here
 # ============================================================================ #
 
-export BaseIntegrator
+export Integrator
 
 export VelocityVerlet, Verlet
-# abstract BaseIntegrator -> Defined in MolecularDynamics.jl
+# abstract Integrator -> Defined in MolecularDynamics.jl
 
-function setup(::BaseIntegrator, ::Simulation, ::Universe) end
+function setup(::Integrator, ::Simulation, ::Universe) end
 
 @doc "
 Velocity Verlet integrator
 " ->
-type VelocityVerlet <: BaseIntegrator
+type VelocityVerlet <: Integrator
     timestep::Float64
     accelerations::Array3D
 end
@@ -74,7 +74,7 @@ end
 @doc "
 Basic Verlet integrator. Velocities are updated at t + 1/2 ∆t
 " ->
-type Verlet <: BaseIntegrator
+type Verlet <: Integrator
     timestep::Float64
     tmp::Array3D     # Temporary array for computations
     prevpos::Array3D # Previous positions

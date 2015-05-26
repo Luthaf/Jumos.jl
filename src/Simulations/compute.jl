@@ -10,12 +10,12 @@
 
 using Jumos.Constants #kB
 
-# abstract BaseCompute -> Defined in Simulations.jl
-export BaseCompute
+# abstract Compute -> Defined in Simulations.jl
+export Compute
 export TemperatureCompute, VolumeCompute, EnergyCompute
 #export PressureCompute
 
-function have_compute{T<:BaseCompute}(sim::Simulation, compute_type::Type{T})
+function have_compute{T<:Compute}(sim::Simulation, compute_type::Type{T})
 	for compute in sim.computes
 		if isa(compute, compute_type)
 			return true
@@ -30,7 +30,7 @@ end
 Compute the temperature of a simulation frame using the relation
 	T = 1/kB * 2K/(3N) with K the kinetic energy
 " ->
-immutable TemperatureCompute <: BaseCompute end
+immutable TemperatureCompute <: Compute end
 
 function Base.call(::TemperatureCompute, univ::Universe)
 	T = 0.0
@@ -46,14 +46,14 @@ end
 #@doc "
 #Compute the pressure of the system.
 #" ->
-#immutable PressureCompute <: BaseCompute end
+#immutable PressureCompute <: Compute end
 
 # ============================================================================ #
 
 @doc "
 Compute the volume of the current simulation cell
 " ->
-immutable VolumeCompute <: BaseCompute end
+immutable VolumeCompute <: Compute end
 
 function Base.call(::VolumeCompute, univ::Universe)
     V = volume(univ.cell)
@@ -68,7 +68,7 @@ Compute the energy of a simulation.
     EnergyCompute()(simulation::MolecularDynamic) returns a tuple
     (Kinetic_energy, Potential_energy, Total_energy)
 " ->
-immutable EnergyCompute <: BaseCompute end
+immutable EnergyCompute <: Compute end
 
 function Base.call(::EnergyCompute, univ::Universe)
     K = kinetic_energy(univ)

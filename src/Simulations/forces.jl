@@ -8,9 +8,9 @@
 #                Forces evaluations against all particles.
 # ============================================================================ #
 
-export BaseForcesComputer, NaiveForces
+export ForcesComputer, NaiveForces
 
-abstract BaseForcesComputer
+abstract ForcesComputer
 
 # TODO: More thought about this
 function force_array_to_internal!(a::Array3D)
@@ -28,7 +28,7 @@ end
 Naive forces computation : just get the vector between two particles, and
 call the force function for these particles.
 "->
-immutable NaiveForces <: BaseForcesComputer end
+immutable NaiveForces <: ForcesComputer end
 
 function Base.call(::NaiveForces, univ::Universe, forces::Array3D)
     interactions = univ.interactions

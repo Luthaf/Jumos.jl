@@ -8,9 +8,9 @@
 #                    Checking the simulation consistency
 # ============================================================================ #
 
-export BaseCheck
+export Check
 export GlobalVelocityIsNull, TotalForceIsNull, AllPositionsAreDefined
-# abstract BaseCheck -> Defined in MolecularDynamics.jl
+# abstract Check -> Defined in MolecularDynamics.jl
 
 type CheckError <: Exception
     msg :: String
@@ -26,7 +26,7 @@ end
 @doc "
 Check if all the positions and all the velocities are number : not NaN neither Inf.
 " ->
-immutable AllPositionsAreDefined <: BaseCheck end
+immutable AllPositionsAreDefined <: Check end
 
 function Base.call(::AllPositionsAreDefined, univ::Universe, ::MolecularDynamics)
     const natoms = size(univ.frame)
@@ -48,7 +48,7 @@ end
 @doc "
 Check if the overall velocity is null, with a 1e-5 tolerance.
 " ->
-immutable GlobalVelocityIsNull <: BaseCheck end
+immutable GlobalVelocityIsNull <: Check end
 
 function Base.call(::GlobalVelocityIsNull, univ::Universe, ::MolecularDynamics)
     const natoms = size(univ.frame)
@@ -65,7 +65,7 @@ end
 @doc "
 Check if the sum of the forces is effectively null, with a 1e-5 tolerance.
 " ->
-immutable TotalForceIsNull <: BaseCheck end
+immutable TotalForceIsNull <: Check end
 
 function Base.call(::TotalForceIsNull, univ::Universe, propag::MolecularDynamics)
     const natoms = size(univ.frame)

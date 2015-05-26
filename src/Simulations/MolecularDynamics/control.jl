@@ -8,13 +8,13 @@
 #           Enforcing various values : temperature, pressure, ...
 # ============================================================================ #
 
-# abstract BaseControl -> Defined in Simulation.jl
-export BaseControl
+# abstract Control -> Defined in Simulation.jl
+export Control
 export WrapParticles
 export BerendsenThermostat, VelocityRescaleThermostat
 # export BerendsenBarostat
 
-function setup(::BaseControl, ::Simulation)
+function setup(::Control, ::Simulation)
     return nothing
 end
 
@@ -23,7 +23,7 @@ end
 @doc "
 Wrap all the particles in the simulation cell to prevent them from going out.
 " ->
-immutable WrapParticles <: BaseControl end
+immutable WrapParticles <: Control end
 
 function Base.call(::WrapParticles, univ::Universe)
     for i=1:size(univ.frame)
@@ -33,7 +33,7 @@ end
 
 # ============================================================================ #
 
-abstract Thermostat <: BaseControl
+abstract Thermostat <: Control
 
 function setup(::Thermostat, sim::Simulation)
     if !have_compute(sim, TemperatureCompute)
@@ -90,6 +90,6 @@ end
 
 # ============================================================================ #
 
-#immutable BerendsenBarostat <: BaseControl
+#immutable BerendsenBarostat <: Control
 #    tau::Float64
 #end

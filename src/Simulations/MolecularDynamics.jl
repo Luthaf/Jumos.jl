@@ -13,24 +13,24 @@ export set_integrator!, getforces!
 
 include("forces.jl")
 
-abstract BaseIntegrator
-abstract BaseControl
-abstract BaseCheck
+abstract Integrator
+abstract Control
+abstract Check
 
 type MolecularDynamics <: Propagator
     # MD algorithms
-    integrator      :: BaseIntegrator
-    controls        :: Vector{BaseControl}
-    checks          :: Vector{BaseCheck}
-    compute_forces  :: BaseForcesComputer
+    integrator      :: Integrator
+    controls        :: Vector{Control}
+    checks          :: Vector{Check}
+    compute_forces  :: ForcesComputer
     # MD data cache
     forces          :: Array3D{Float64}
 end
 
 # This define the default values for a simulation !
 function MolecularDynamics(integrator=VelocityVerlet(1.0))
-    controls = BaseControl[]
-    checks = BaseCheck[]
+    controls = Control[]
+    checks = Check[]
     forces = Array3D(Float64, 0)
     return MolecularDynamics(integrator, controls, checks, NaiveForces(), forces)
 end
@@ -94,7 +94,7 @@ end
 
 # ============================================================================ #
 
-function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
+function Base.push!(sim::Simulation{MolecularDynamics}, control::Control)
     if !ispresent(sim, control)
         push!(sim.propagator.controls, control)
     else
@@ -103,7 +103,7 @@ function Base.push!(sim::Simulation{MolecularDynamics}, control::BaseControl)
     return sim.propagator.controls
 end
 
-function Base.push!(sim::Simulation{MolecularDynamics}, check::BaseCheck)
+function Base.push!(sim::Simulation{MolecularDynamics}, check::Check)
     if !ispresent(sim, check)
         push!(sim.propagator.checks, check)
     else
@@ -112,7 +112,7 @@ function Base.push!(sim::Simulation{MolecularDynamics}, check::BaseCheck)
     return sim.propagator.checks
 end
 
-function ispresent(sim::Simulation{MolecularDynamics}, algo::Union(BaseCheck, BaseControl))
+function ispresent(sim::Simulation{MolecularDynamics}, algo::Union(Check, Control))
     algo_type = typeof(algo)
     for field in [:checks, :controls]
         for elem in getfield(sim.propagator, field)
@@ -124,6 +124,6 @@ function ispresent(sim::Simulation{MolecularDynamics}, algo::Union(BaseCheck, Ba
     return false
 end
 
-function set_integrator!(sim::Simulation{MolecularDynamics}, integrator::BaseIntegrator)
+function set_integrator!(sim::Simulation{MolecularDynamics}, integrator::Integrator)
     sim.propagator.integrator = integrator
 end

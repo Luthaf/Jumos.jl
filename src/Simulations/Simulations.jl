@@ -12,17 +12,17 @@ export propagate!
 export Simulation, Propagator
 
 abstract Propagator
-abstract BaseCompute
-abstract BaseOutput
+abstract Compute
+abstract Output
 
 immutable Simulation{T<:Propagator}
     # Algorithms
     propagator      :: T
-    computes        :: Vector{BaseCompute}
-    outputs         :: Vector{BaseOutput}
+    computes        :: Vector{Compute}
+    outputs         :: Vector{Output}
 end
 
-Simulation(p::Propagator) = Simulation(p, BaseCompute[], BaseOutput[])
+Simulation(p::Propagator) = Simulation(p, Compute[], Output[])
 
 function Simulation(propagator::Symbol, args...)
     if propagator == :MD || propagator == :md || propagator == :moleculardynamics
@@ -91,7 +91,7 @@ function output(sim::Simulation, universe::Universe)
     end
 end
 
-function Base.push!(sim::Simulation, output::BaseOutput)
+function Base.push!(sim::Simulation, output::Output)
     if !ispresent(sim, output)
         push!(sim.outputs, output)
     else
@@ -100,7 +100,7 @@ function Base.push!(sim::Simulation, output::BaseOutput)
     return sim.outputs
 end
 
-function Base.push!(sim::Simulation, compute::BaseCompute)
+function Base.push!(sim::Simulation, compute::Compute)
     if !ispresent(sim, compute)
         push!(sim.computes, compute)
     else
@@ -109,7 +109,7 @@ function Base.push!(sim::Simulation, compute::BaseCompute)
     return sim.computes
 end
 
-function ispresent(sim::Simulation, algo::Union(BaseCompute, BaseOutput))
+function ispresent(sim::Simulation, algo::Union(Compute, Output))
     algo_type = typeof(algo)
     for field in [:outputs, :computes]
         for elem in getfield(sim, field)

@@ -8,12 +8,12 @@
 #                       Compute interesting values
 # ============================================================================ #
 
-export BaseOutput
+export Output
 export TrajectoryOutput, CustomOutput, EnergyOutput
 
-# abstract BaseOutput -> Defined in MolecularDynamics.jl
+# abstract Output -> Defined in MolecularDynamics.jl
 
-function setup(::BaseOutput, ::Simulation)
+function setup(::Output, ::Simulation)
     return nothing
 end
 
@@ -27,10 +27,10 @@ end
 
 OutputFrequency(freq::Int) = OutputFrequency(freq, 0)
 OutputFrequency() = OutputFrequency(1)
-function Base.step(out::BaseOutput)
+function Base.step(out::Output)
     out.frequency.current += 1
 end
-function Base.done(out::BaseOutput)
+function Base.done(out::Output)
     if out.frequency.current == out.frequency.frequency
         out.frequency.current = 0
         return true
@@ -43,7 +43,7 @@ end
 @doc "
 Write the trajectory to a file. The trajectory format is guessed from the extension.
 " ->
-type TrajectoryOutput <: BaseOutput
+type TrajectoryOutput <: Output
     writer::Writer
     frequency::OutputFrequency
 end
@@ -68,7 +68,7 @@ interpolation of the `values` vector of symbol.
     The `header` is written on the top of the file, and contains by default
     the names from `values`
 " ->
-type CustomOutput <: BaseOutput
+type CustomOutput <: Output
     file::IOStream
     values::Vector{Symbol}
     frequency::OutputFrequency
@@ -103,7 +103,7 @@ end
 @doc "
 Output the energy of a simulation to a file.
 " ->
-type EnergyOutput <: BaseOutput
+type EnergyOutput <: Output
     file::IOStream
     frequency::OutputFrequency
 end
