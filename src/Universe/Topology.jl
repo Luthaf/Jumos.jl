@@ -116,10 +116,10 @@ end
 
 Base.getindex(topology::Topology, i) = topology.templates[topology.atoms[i]]
 
-@doc "
-`firstin(a, i)`
+"
+ `firstin(a, i)`
 
-Get the first element equals to `i` in `a`" ->
+Get the first element equals to `i` in `a`"
 @inline function firstin(a, i)
     for (idx, val) in enumerate(a)
         if i == val
