@@ -8,7 +8,7 @@
 #                       Compute interesting values
 # ============================================================================ #
 
-export Output
+export Output, OutputFrequency
 export TrajectoryOutput, CustomOutput, EnergyOutput
 
 # abstract Output -> Defined in MolecularDynamics.jl
@@ -127,9 +127,9 @@ end
 
 function setup(::EnergyOutput, sim::Simulation)
     if !have_compute(sim, TemperatureCompute)
-        push!(sim.computes, TemperatureCompute())
+        push!(sim, TemperatureCompute())
     end
     if !have_compute(sim, EnergyCompute)
-        push!(sim.computes, EnergyCompute())
+        push!(sim, EnergyCompute())
     end
 end
