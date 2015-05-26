@@ -1,0 +1,82 @@
+Algorithms for molecular dynamics
+=================================
+
+Writing a new :ref:`integrator <simulation-integrator>`
+-------------------------------------------------------
+
+To create a new integrator, you have to subtype the ``BaseIntegrator`` type, and
+provide the ``call`` method, with the following signature:
+``call(::BaseIntegrator, ::MolecularDynamic)``.
+
+The integrator is responsible for calling the ``get_forces!(::MolecularDynamic)``
+function if it need the ``MolecularDynamic.forces`` field to be updated. It should
+update the two :ref:`Array3D <type-Array3D>`: ``MolecularDynamic.frame.positions``
+and ``MolecularDynamic.frame.velocities`` with appropriate values.
+
+The ``MolecularDynamic.masses`` field is a ``Vector{Float64}`` containing the particles
+masses, in the same order than in the current simulation :ref:`frame <type-Frame>`.
+Any other required information should be stored in the new ``BaseIntegrator`` subtype.
+
+Computing the forces
+--------------------
+
+.. _type-NaiveForceComputer:
+
+Naive force computation
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``NaiveForceComputer`` algorithm computes the forces by iterating over all the
+pairs of atoms, and calling the appropriate interaction potential. This algorithm
+is the default in |Jumos|.
+
+New algorithm for forces computations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To create a new force computation algorithm, you have to subtype ``ForcesComputer``,
+and provide the method ``call(::ForcesComputer, forces::Array3D, frame::Frame,
+interactions)``.
+
+This method should fill the forces array with the forces acting on each particles:
+``forces[i]`` should be the 3D vector of forces acting on the atom ``i``. In order
+to do this, the algorithm can use the ``frame.posistions`` and ``frame.velocities``.
+``interactions`` is a dictionary associating tuples of integers (the atoms types)
+to :ref:`potential <potentials>`. The ``get_potential`` function can be useful
+to get a the potential function acting on two particles.
+
+.. function:: get_potential(interactions, topology, i, j)
+
+    Returns the potential between the atom i and the atom j in the topology.
+
+Due to the internal unit system, forces returned by the potentials are in
+:math:`kJ/(mol \cdot A)`, and should be in :math:`uma \cdot A / fs^2` for being
+used with the newton equations.  The conversion can be handled by the unexported
+``Simulations.force_array_to_internal!`` function, converting the values of an
+Array3D from :math:`kJ/(mol \cdot A)` to :math:`uma \cdot A / fs^2`.
+
+Adding a new :ref:`check <simulation-checks>`
+---------------------------------------------
+
+Adding a new check algorithm is as simple as subtyping ``BaseCheck`` and extending
+the ``call(::BaseCheck, ::MolecularDynamic)`` method. This method should throw an
+exception of type ``CheckError`` if the checked condition is not fullfiled.
+
+.. jl:type:: CheckError
+
+    Customs exception providing a specific error message for simulation checking.
+
+    .. code-block:: jlcon
+
+        julia> throw(CheckError("This is a message"))
+        ERROR: Error in simulation :
+        This is a message
+        in __text at no file (repeats 3 times)
+
+Adding new :ref:`controls <simulation-controls>`
+------------------------------------------------
+
+To add a new type of control to a simulation, the main way is to subtype
+``BaseControl``, and provide two specialised methods: ``call(::BaseControl,
+::MolecularDynamic)`` and the optional ``setup(::BaseControl, ::MolecularDynamic)``.
+The ``call`` method should contain the algorithm inplementation, and the ``setup``
+method is called once at each simulation start. It should be used to add add some
+:ref:`computation algorithm <simulation-computes>` to the simulation.

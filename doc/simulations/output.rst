@@ -1,4 +1,4 @@
-.. _simulation-outputs:
+.. _type-Output:
 
 Exporting values of interest
 ============================
@@ -7,7 +7,7 @@ While running a simulation, some basic analysis can be performed and writen to
 a data file. Further analysis can be differed by writing the trajectory to a
 file, and running existing tools on these trajectories.
 
-In |Jumos|, outputs are subtypes of the ``BaseOutput`` type, and can be added to
+In |Jumos|, outputs are subtypes of the ``Output`` type, and can be added to
 a simulation by using the :func:`add_output` function.
 
 .. function:: add_output(sim, output)
@@ -83,7 +83,7 @@ Defining a new output
 ---------------------
 
 Adding a new output with custom values, can be done either by using a custom output
-or by :ref:`subtyping <new-output>` the ``BaseOutput`` type to define a new output.
+or by :ref:`subtyping <new-output>` the ``Output`` type to define a new output.
 The the former wayis to be prefered when adding a *one-shot* output, and the
 latter when adding an output which will be re-used.
 

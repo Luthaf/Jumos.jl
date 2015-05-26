@@ -9,3 +9,4 @@ fucntionalities to your simulations.
 
     potentials
     algorithms
+    molecular-dynamics
