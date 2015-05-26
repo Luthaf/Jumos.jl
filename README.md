@@ -1,4 +1,10 @@
-# Jumos
+<div align="center">
+    <a href="https://github.com/Luthaf/Jumos.jl">
+        <img alt="Jumos Logo" src="https://raw.githubusercontent.com/Luthaf/Jumos.jl/dev/doc/_static_/img/logo.png"></img>
+    </a>
+</div>
+
+---
 
 <div align="center">
     <a href="https://travis-ci.org/Luthaf/Jumos.jl" >
