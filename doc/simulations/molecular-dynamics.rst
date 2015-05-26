@@ -62,7 +62,11 @@ they provide a NVE integration.
 Force computation
 -----------------
 
-.. TODO:: Document this
+.. _type-NaiveForceComputer:
+
+The ``NaiveForceComputer`` algorithm computes the forces by iterating over all the
+pairs of atoms, and calling the appropriate interaction potential. This algorithm
+is the default in |Jumos|.
 
 .. _type-Control:
 
@@ -73,7 +77,7 @@ While running a simulation, we often want to have control over some simulation
 parameters: the temperature, the pressure, … This is the goal of the *Control*
 algorithms.
 
-Such algorithms are subtypes of ``BaseControl``, and can be added to a simulation
+Such algorithms are subtypes of ``Control``, and can be added to a simulation
 using the :func:`add_control` function:
 
 .. _thermostat:
