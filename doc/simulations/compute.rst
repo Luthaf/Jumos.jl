@@ -3,61 +3,62 @@
 Computing values of interest
 ============================
 
-To compute physical values from a simulation, we can use algorithms represented
-by subtypes of ``Basecompute`` and associate these algorithms to a simulation.
+To compute physical values from a simulation, we can use algorithms represented by
+subtypes of ``Compute`` and associate these algorithms to a simulation.
 
 Users don't usualy need to use these compute algorithms directly, as the output
 algorithms (see :ref:`type-output`) set the needed computations by themself.
 
-Computed values can have various usages: they may be used in :ref:`outputs <type-output>`,
-or in :ref:`controls <type-control>`. The data is shared between algorithms
-using the ``MolecularDynamic.data`` field. This field is a dictionnary associating
+Computed values can have various usages: they may be used in :ref:`outputs
+<type-output>`, or in :ref:`controls <type-control>`. The data is shared between
+algorithms using the ``Universe.data`` field. This field is a dictionnary associating
 symbols and any kind of value.
 
 This page of documentation presents the implemented computations. Each computation
 can be associated with a specific :ref:`simulation <type-Simulation>` using the
-``add_compute`` function.
+``push!`` function.
 
-.. function:: add_compute(::MolecularDynamic, ::BaseCompute)
+
+.. function:: push!(simulation, compute)
     :noindex:
 
-    This function registers a computation for a given simulation. Example usage:
+    Adds a :ref:`compute <type-Compute>` algorithm to the simulation list. If the
+    algorithm is already present, a warning is issued. Usage example:
 
     .. code-block:: julia
 
-        sim = MolecularDynamic() # Create a simulation
-        # ...
+        sim = Simulation(:md, 1.0) # Create a simulation
 
         # Do not forget the parentheses to instanciate the computation
-        add_compute(sim, MyCompute())
+        push!(sim, MyCompute())
 
-        run!(sim, 10)
+        propagate!(sim, universe, 5000)
 
         # You can access the last computed value in the sim.data dictionnary
-        sim.data[:my_compute]
+        universe.data[:my_compute]
 
 
 You can also call directly any instance of ``MyCompute``:
 
 .. code-block:: julia
 
-    sim = MolecularDynamic() # Create a simulation
+    universe = Universe() # Create an universe
     # ...
 
     compute = MyCompute() # Instanciate the compute
-    value = compute(sim) # Compute the value
+    value = compute(universe) # Compute the value
 
 
 The following paragraphs sums up the implemented computations, giving for each
 algorithm the return value (for direct calling), and the associated keys in
-``MolecularDynamic.data``.
+``Universe.data``.
 
 Energy related values
 ---------------------
 
 .. jl:type:: TemperatureCompute
 
-    Computes the temperature of the simulation. All the masses have to be set.
+    Computes the temperature of the universe.
 
     **Key**: ``:temperature``
 
@@ -74,10 +75,9 @@ Energy related values
     .. code-block:: julia
 
         energy = EnergyCompute()
-        sim = MolecularDynamic()
 
         # unpacking the tuple
-        E_kinetic, E_potential, E_total = energy(sim)
+        E_kinetic, E_potential, E_total = energy(universe)
 
         # accessing the tuple values
         E = energy(sim)
