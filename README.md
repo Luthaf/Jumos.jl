@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://github.com/Luthaf/Jumos.jl">
-        <img alt="Jumos Logo" src="https://raw.githubusercontent.com/Luthaf/Jumos.jl/dev/doc/_static_/img/logo.png"></img>
+        <img alt="Jumos Logo" src="https://raw.githubusercontent.com/Luthaf/Jumos.jl/502eee44bcaaf1d782b7628eed062c1de10d0938/doc/_static_/img/logo.png"></img>
     </a>
 </div>
 
