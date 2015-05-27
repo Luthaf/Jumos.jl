@@ -49,7 +49,7 @@ be changed dynamically:
 Existing outputs
 ----------------
 
-.. _type-TrajectorOutput:
+.. _type-TrajectoryOutput:
 
 Trajectory output
 ^^^^^^^^^^^^^^^^^

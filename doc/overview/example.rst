@@ -20,16 +20,16 @@ fluid at :math:`300K`.
 Each simulation script should start by the ``using Jumos`` directive. This imports
 the module and the exported names in the current scope.
 
-Then, in this script, we create two main objects: a :ref:`simulation <Type-Simulation>`,
-and an :ref:`universe <Type-Universe>`. The topology and the original positions
-for the universe are read from the same file, as an :file:`.xyz` file contains
-topological information (mainly the atomics names) and coordinates. The velocities
-are then initialized from a Boltzmann distribution at 300K.
+Then, in this script, we create two main objects: a :ref:`simulation
+<Type-Simulation>`, and an :ref:`universe <Type-Universe>`. The topology and the
+original positions for the universe are read from the same file, as an :file:`.xyz`
+file contains topological information (mainly the atomics names) and coordinates. The
+velocities are then initialized from a Boltzmann distribution at 300K.
 
 The only interaction — a :ref:`Lennard-Jones <lennard-jones-potential>`
 interaction — is also added to the universe before the run. The next lines add
-some outputs to the simulation, namely a :ref:`trajectory <trajectory-output>`
-and an :ref:`energy <energy-output>` output. Finally, the simulation runs for
+some outputs to the simulation, namely a :ref:`trajectory <type-TrajectoryOutput>`
+and an :ref:`energy <type-EnergyOutput>` output. Finally, the simulation runs for
 5000 steps.
 
 Other example
