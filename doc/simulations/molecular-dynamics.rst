@@ -3,23 +3,33 @@
 Molecular Dynamics
 ==================
 
-.. figure:: /_static_/img/MolecularDynamics.*
-    :alt: Flow of algorithms in MolecularDynamics propagator
-    :align: center
+The ``MolecularDynamics`` propagator performs a `molecular dynamics`_ simulation,
+using some specific algorithms. These algorithms are sumarized on the
+:ref:`fig-md-flow` figure. These algorithms are presented in this documentation
+section.
 
-    Flow of algorithms in MolecularDynamics propagator
+The ``MolecularDynamics`` type have the following constructors:
 
 .. function:: MolecularDynamics(timestep)
 
-    Creates an empty molecular dynamic simulation using a Velocity-Verlet
-    integrator with the specified timestep.
-
-    Without any :ref:`thermostat <thermostat>` or :ref:`barostat <barostat>`, this
-    performs a NVE integration of the system.
+    Creates a molecular dynamics propagator using a Velocity-Verlet integrator with
+    the specified timestep. Without any :ref:`thermostat <thermostat>` or
+    :ref:`barostat <barostat>`, this performs a NVE integration of the system.
 
 .. function:: MolecularDynamics(::Integrator)
 
-    Creates an empty simulation with the specified :ref:`integrator <type-Integrator>`.
+    Creates a ``MolecularDynamics`` propagator with the specified :ref:`integrator
+    <type-Integrator>`.
+
+.. _molecular dynamics: http://en.wikipedia.org/wiki/Molecular_dynamics
+
+.. _fig-md-flow:
+
+.. figure:: /_static_/img/MolecularDynamics.*
+    :alt: Algorithms used in MolecularDynamics propagator
+    :align: center
+
+    Algorithms used in MolecularDynamics propagator
 
 .. _type-Integrator:
 
@@ -27,10 +37,10 @@ Time integration
 ----------------
 
 An integrator is an algorithm responsible for updating the positions and the
-velocities of the current :ref:`frame <type-Frame>` of the :ref:`simulation
-<type-Simulation>`.
-
-.. TODO:: how to set the integrator
+velocities of the current :ref:`frame <type-Frame>` of the :ref:`universe
+<type-Universe>`. It is represented by a subtype of the ``Integrator`` type. You can
+set  the integrator to use with your simulation using the :func:`set_integrator!`
+function.
 
 Verlet integrators
 ^^^^^^^^^^^^^^^^^^
@@ -62,11 +72,11 @@ they provide a NVE integration.
 Force computation
 -----------------
 
-.. _type-NaiveForceComputer:
+.. _type-NaiveForces:
 
-The ``NaiveForceComputer`` algorithm computes the forces by iterating over all the
-pairs of atoms, and calling the appropriate interaction potential. This algorithm
-is the default in |Jumos|.
+The ``NaiveForces`` algorithm computes the forces by iterating over all the pairs of
+atoms, and calling the appropriate interaction potential. This algorithm is the
+default in |Jumos|.
 
 .. _type-Control:
 
@@ -74,11 +84,8 @@ Controlling the simulation
 --------------------------
 
 While running a simulation, we often want to have control over some simulation
-parameters: the temperature, the pressure, … This is the goal of the *Control*
-algorithms.
-
-Such algorithms are subtypes of ``Control``, and can be added to a simulation
-using the :func:`add_control` function:
+parameters: the temperature, the pressure, *etc.* This is the goal of the *control*
+algorithms, all subtypes of the ``Control`` type.
 
 .. _thermostat:
 
@@ -86,8 +93,8 @@ Controlling the temperature: Thermostats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Various algorithms are available to control the temperature of a simulation and
-perform pseudo NVT simulations. The following thermostating algorithms are
-currently implemented:
+perform NVT simulations. The following thermostating algorithms are currently
+implemented:
 
 .. jl:type:: VelocityRescaleThermostat
 
@@ -101,12 +108,11 @@ currently implemented:
 
     .. code-block:: julia
 
-        sim = MolecularDynamic(2.0)
+        sim = Simulation(MolecularDynamics(2.0))
 
         # This sets the temperature to 300K, with a tolerance of 50K
         thermostat = VelocityRescaleThermostat(300, 50)
-
-        add_control(sim, thermostat)
+        push!(sim, thermostat)
 
 .. jl:type:: BerendsenThermostat
 
@@ -120,19 +126,18 @@ currently implemented:
     is :math:`1.5\ fs`, and a coupling time of :math:`200\ fs` if the timestep
     is :math:`2.0\ fs`.
 
-.. function:: BerendsenThermostat(T, [coupling])
+.. function:: BerendsenThermostat(T, [coupling = 100])
 
-    Creates a Berendsen thermostat at the temperature ``T`` with a coupling
-    parameter of ``coupling``. The default values for ``coupling`` is :math:`100`.
+    Creates a Berendsen thermostat at the temperature ``T`` with a coupling parameter
+    of ``coupling``.
 
     .. code-block:: julia
 
-        sim = MolecularDynamic(2.0)
+        sim = Simulation(MolecularDynamic(2.0))
 
         # This sets the temperature to 300K
         thermostat = BerendsenThermostat(300)
-
-        add_control(sim, thermostat)
+        push!(sim, thermostat)
 
 .. [#berendsen] H.J.C. Berendsen, *et al.* J. Chem Phys **81**, 3684 (1984); doi: 10.1063/1.448118
 
@@ -141,9 +146,8 @@ currently implemented:
 Controlling the pressure: Barostats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. jl:type:: BerendsenBarostat
-
-    TODO
+Barostats provides a way to implement NPT integration. None of them is implemented
+in |Jumos| for now.
 
 Other controls
 ^^^^^^^^^^^^^^
@@ -154,8 +158,6 @@ Other controls
 
     This control wraps the positions of all the particles inside the :ref:`unit
     cell <type-UnitCell>`.
-
-    This control is present by default in the molecular dynamic simulations.
 
 .. _type-Check:
 
@@ -168,7 +170,7 @@ physical (and chemical) consistency of the simulation should be checked often.
 
 In |Jumos|, this is achieved by the ``Check`` algorithms, which are presented in
 this section. Checking algorithms can be added to a simulation by using the
-:func:`add_check` function.
+``push!`` function.
 
 Existing checks
 ^^^^^^^^^^^^^^^
@@ -182,8 +184,6 @@ Existing checks
 
     This algorithm checks if the sum of the forces is null for the current
     simulation. The absolute tolerance is :math:`10^{-5}\ uma \cdot A/fs^2`.
-
-.. _type-AllPositionsAreDefined:
 
 .. jl:type:: AllPositionsAreDefined
 
@@ -203,22 +203,22 @@ Default algorithms for molecular dynamic are presented in the following table:
 +=====================+======================================================================+
 | Integration         | :ref:`Velocity-Verlet <type-VelocityVerlet>`                         |
 +---------------------+----------------------------------------------------------------------+
-| Forces computation  | :ref:`Naive computation <type-NaiveForceComputer>`                   |
+| Forces computation  | :ref:`Naive computation <type-NaiveForces>`                          |
 +---------------------+----------------------------------------------------------------------+
-| Control             | :ref:`Wrap particles in the box <type-WrapParticles>`                |
+| Control             | None                                                                 |
 +---------------------+----------------------------------------------------------------------+
-| Check               | :ref:`All positions are defined <type-AllPositionsAreDefined>`       |
+| Check               | None                                                                 |
 +---------------------+----------------------------------------------------------------------+
 
 
 Functions for algorithms selection
 ----------------------------------
 
-The six following functions are used to to select specific algorithms for the
-simulation. They allow to add and change all the algorithms, even in the middle
-of a run.
+The following functions are used to to select specific algorithms for the simulation.
+They allow to add and change all the algorithms, even in the middle of a simulation
+run.
 
-.. function:: set_integrator(sim, integrator)
+.. function:: set_integrator!(sim, integrator)
 
     Sets the simulation integrator to ``integrator``.
 
@@ -226,39 +226,23 @@ of a run.
 
     .. code-block:: julia
 
-        # Creates the integrator directly in the function
-        set_integrator(sim, Verlet(2.5))
+        sim = Simulation(MolecularDynamic(0.5))
 
-        # Binds the integrator to a variable if you want to change a parameter
-        integrator = Verlet(0.5)
-        set_integrator(sim, integrator)
         run!(sim, 300)   # Run with a 0.5 fs timestep
-        integrator.timestep = 1.5
+
+        set_integrator!(sim, Verlet(1.5))
         run!(sim, 3000)  # Run with a 1.5 fs timestep
 
-.. function:: set_forces_computation(sim, forces_computer)
+.. function:: push!(simulation, check)
 
-    Sets the simulation algorithm for forces computation to ``forces_computer``.
-
-.. function:: add_check(sim, check)
-
-    Adds a :ref:`check <type-Check>` to the simulation check list and
-    issues a warning if the check is already present.
+    Adds a :ref:`check <type-Check>` or :ref:`control <type-Control>` algorithm to
+    the simulation list and issues a warning if the algorithm is already present.
 
     Usage example:
 
     .. code-block:: julia
 
         # Note the parentheses, needed to instanciate the new check.
-        add_check(sim, AllPositionsAreDefined())
+        push!(sim, AllPositionsAreDefined())
 
-.. function:: add_control(sim, control)
-
-    Adds a :ref:`control <type-Control>` algorithm to the simulation
-    list. If the control algorithm is already present, a warning is issued.
-
-    Usage example:
-
-    .. code-block:: julia
-
-        add_control(sim, RescaleVelocities(300, 100))
+        push!(sim, RescaleVelocities(300, 10))
