@@ -21,6 +21,5 @@ function testing_universe_from_size(n)
     return univ
 end
 
-include("simulations/potentials.jl")
-include("simulations/molecular-dynamics.jl")
-include("simulations/controls.jl")
+include("potentials.jl")
+include("distances.jl")
