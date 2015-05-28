@@ -23,3 +23,4 @@ end
 
 include("potentials.jl")
 include("distances.jl")
+include("Frame.jl")
