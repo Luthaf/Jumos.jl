@@ -11,14 +11,14 @@ function testing_universe_from_cell(cell)
 end
 
 # Cell for later usage
-orthorombic = UnitCell(10.0)
-infitite = UnitCell(InfiniteCell)
-triclinic1 = UnitCell(10.0, 10.0, 10.0, 2*pi/5, pi/2, 2*pi/3)
-triclinic2 = UnitCell(10.0, TriclinicCell)
+const orthorombic = UnitCell(10.0)
+const infitite = UnitCell(InfiniteCell)
+const triclinic1 = UnitCell(10.0, 10.0, 10.0, 2*pi/5, pi/2, 2*pi/3)
+const triclinic2 = UnitCell(10.0, TriclinicCell)
 
-facts("Distances computations") do
+facts("UnitCell type") do
 
-    context("UnitCell constructor") do
+    context("Constructors") do
         @fact UnitCell(13.) => UnitCell(13., 13., 13.)
         @fact UnitCell(13.) => UnitCell(13., 13., 13., pi/2, pi/2, pi/2)
 
@@ -36,13 +36,13 @@ facts("Distances computations") do
         @fact distance(universe, 1, 2) => 2.0
     end
 
-    context("Equivalent orthorombic and triclinic") do
+    context("Equivalent orthorombic and triclinic cells") do
         universe = testing_universe_from_cell(orthorombic)
         universe2 = testing_universe_from_cell(triclinic2)
         @fact distance_array(universe) => distance_array(universe2)
     end
 
-    context("Distance symetry") do
+    context("Distances symetry") do
         for cell in [orthorombic, infitite, triclinic1, triclinic2]
             universe = testing_universe_from_cell(cell)
             for i=1:4, j=1:4

@@ -22,5 +22,5 @@ function testing_universe_from_size(n)
 end
 
 include("potentials.jl")
-include("distances.jl")
+include("UnitCell.jl")
 include("Frame.jl")
