@@ -47,14 +47,14 @@ function Base.call(integrator::VelocityVerlet, md::MolecularDynamics, univ::Univ
 
     const natoms = size(univ)
 
-    # Update positions at t + ∆t
-    @inbounds for i=1:natoms, dim=1:3
-        positions[dim, i] += velocities[dim, i]*dt + 0.5*accelerations[dim, i]*dt^2
-    end
-
     # Update velocities at t + ∆t/2
     @inbounds for i=1:natoms, dim=1:3
         velocities[dim, i] += 0.5*accelerations[dim, i]*dt
+    end
+
+    # Update positions at t + ∆t
+    @inbounds for i=1:natoms, dim=1:3
+        positions[dim, i] += velocities[dim, i]*dt
     end
 
     getforces!(md, univ)
