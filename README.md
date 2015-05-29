@@ -16,6 +16,9 @@
     <a href="http://jumos.readthedocs.org/en/latest/" >
         <img alt="Documentation Status" src="https://readthedocs.org/projects/jumos/badge/?version=latest"></img>
     </a>
+    <a href="http://pkg.julialang.org/?pkg=Jumos&ver=nightly" >
+        <img alt="Pkg evaluation" src="http://pkg.julialang.org/badges/Jumos_nightly.svg"></img>
+    </a>
 </div>
 
 Jumos is a Julia package for molecular simulation and analysis. This package is
