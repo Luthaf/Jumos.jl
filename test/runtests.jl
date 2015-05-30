@@ -10,15 +10,4 @@ function main()
     FactCheck.exitstatus()
 end
 
-const SEP = "   "
-
-function usage()
-    println("Select the test you want to run:")
-    for (test, help) in tests_available
-        println(SEP * string(test) * SEP * help)
-    end
-    println("Options:")
-    println(SEP * "--help (-h): show this help")
-end
-
 main()
