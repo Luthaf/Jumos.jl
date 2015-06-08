@@ -2,10 +2,10 @@
 
 facts("Potentials functions") do
     context("Harmonic potential") do
-        harmonic = Harmonic(30, 2.0, -0.5)
+        harmonic = Harmonic(30, 2.0, 4.5)
 
-        @fact harmonic(2.0) => -0.5
-        @fact harmonic(4.0) => 59.5
+        @fact harmonic(2.0) => -4.5
+        @fact harmonic(4.0) => 55.5
         @fact force(harmonic, 2.0) => 0.0
         @fact force(harmonic, 3.0) => -30.0
     end
@@ -30,6 +30,35 @@ facts("Potentials functions") do
         @fact user_2(3.0) => f(3)
         @fact force(user_1, 3.0) => g(3)
         @fact force(user_2, 3.0) => roughly(g(3), atol=10-6)
+    end
+
+    context("Angle harmonic potential") do
+        harmonic = HarmonicAngle(30, 120.0)
+
+        @fact harmonic(120.0) => 0.0
+        @fact harmonic(122.0) => 60.0
+        @fact force(harmonic, 120.0) => 0.0
+        @fact force(harmonic, 122.0) => -60.0
+    end
+
+    context("Cosine harmonic potential") do
+        coshar = CosineHarmonic(30, 120.0)
+
+        @fact coshar(120.0) => roughly(0.0, 1e-12)
+        @fact coshar(130.0) => 0.30582452219993356
+        @fact force(coshar, 120.0) => roughly(0.0, 1e-12)
+        @fact force(coshar, 130.0) => 2.999428819963821
+    end
+
+    context("Torsion potential") do
+        torsion = Torsion(30, 60.0, 2)
+
+        @fact torsion(60.0) => roughly(0.0, 1e-12)
+        @fact torsion(240.0) => roughly(0.0, 1e-12)
+        @fact torsion(70.0) => 1.8092213764227472
+        @fact force(torsion, 60.0) => roughly(0.0, 1e-12)
+        @fact force(torsion, 240.0) => roughly(0.0, 1e-12)
+        @fact force(torsion, 70.0) => 20.521208599540124
     end
 end
 

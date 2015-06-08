@@ -15,6 +15,8 @@ export PotentialComputation, DirectComputation, CutoffComputation,
        LongRangeComputation, TableComputation
 
 export UserPotential, LennardJones, Harmonic, NullPotential
+export HarmonicAngle, CosineHarmonic
+export Torsion
 export force
 
 type PotentialError <: Exception
@@ -287,9 +289,79 @@ end
 Harmonic(k::Real, r0::Real) = Harmonic(k, r0, 0.0)
 
 @inline function Base.call(pot::Harmonic, r::Real)
-    return 0.5 * pot.k * (r - pot.r0)^2 + pot.depth
+    return 0.5 * pot.k * (r - pot.r0)^2 - pot.depth
 end
 
 @inline function force(pot::Harmonic, r::Real)
     return pot.k * (pot.r0 - r)
+end
+
+# ============================================================================ #
+
+@doc doc"
+Harmonic angle potential, with the following definition :
+    \[ V(\theta) = \frac12 k (\theta - \theta_0) \]
+
+`Harmonic(k, θ)`
+    This function creates an instance of an HarmonicAngle potential.
+" ->
+immutable HarmonicAngle <: AnglePotential
+    k :: Float64
+    θ :: Float64
+end
+
+@inline function Base.call(pot::HarmonicAngle, θ::Real)
+    return 0.5 * pot.k * (θ - pot.θ)^2
+end
+
+@inline function force(pot::HarmonicAngle, θ::Real)
+    return pot.k * (pot.θ - θ)
+end
+
+# ============================================================================ #
+
+@doc doc"
+Cosine harmonic angle potential, with the following definition :
+    \[ V(\theta) = \frac12 k (\cos(\theta) - \cos(\theta_0)) \]
+
+`CosineHarmonic(k, θ)`
+    This function creates an instance of an CosineHarmonic potential.
+" ->
+immutable CosineHarmonic <: AnglePotential
+    k :: Float64
+    θ :: Float64  # in degree
+    CosineHarmonic(k, θ) = new(k, deg2rad(θ))
+end
+
+@inline function Base.call(pot::CosineHarmonic, θ::Real)
+    return 0.5 * pot.k * (cosd(θ) - cos(pot.θ))^2
+end
+
+@inline function force(pot::CosineHarmonic, θ::Real)
+    return pot.k * (sin(pot.θ) - sind(θ))
+end
+
+# ============================================================================ #
+
+@doc doc"
+Torsion dihedral angle potential, with the following definition :
+    \[ V(\phi) = k (1 + n \cos( m \phi - \phi_0)) \]
+
+`Torsion(k, ϕ, m, [n=-1])`
+    This function creates an instance of an Torsion potential, with a default
+    value of 1 for the n coefficient.
+" ->
+immutable Torsion{n, m} <: DihedralPotential
+    k :: Float64
+    ϕ :: Float64
+end
+
+Torsion(k::Real, ϕ::Real, m::Integer, n::Integer=-1) = Torsion{n, m}(k, ϕ)
+
+@inline function Base.call{n, m}(pot::Torsion{n, m}, ϕ::Real)
+    return pot.k * (1 + n * cosd(m*(ϕ - pot.ϕ)))
+end
+
+@inline function force{n, m}(pot::Torsion{n, m}, ϕ::Real)
+    return -1 * pot.k * n * m * sind(m*(ϕ - pot.ϕ))
 end
