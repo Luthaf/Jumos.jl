@@ -13,7 +13,7 @@ facts("Trajectory IO") do
             @fact length(uni.frame.positions) => traj.natoms
 
             @fact uni.topology[4].label => :O
-            @fact uni.topology[4].mass => ATOMIC_MASSES[:O].val
+            @fact uni.topology[4].mass => ATOMIC_MASSES[:O]
         end
 
         context("Writing") do

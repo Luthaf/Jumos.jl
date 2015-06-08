@@ -64,8 +64,7 @@ end
 function mass(name::Symbol)
     res = 0.0
     if haskey(ATOMIC_MASSES, name)
-        # TODO: fix the method error in internal(ATOMIC_MASSES[name])
-        res =  ATOMIC_MASSES[name].val
+        res =  ATOMIC_MASSES[name]
     end
     return res
 end

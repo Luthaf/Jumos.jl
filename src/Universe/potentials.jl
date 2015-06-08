@@ -150,7 +150,6 @@ force(pot::PotentialFunction, r::Real) = force(pot, convert(Float64, r))
 # ============================================================================ #
 
 function CutoffComputation(pot::PotentialFunction; cutoff=12.0)
-    cutoff = internal(cutoff)
     e_cutoff = pot(cutoff)
     return CutoffComputation(pot, cutoff, e_cutoff)
 end

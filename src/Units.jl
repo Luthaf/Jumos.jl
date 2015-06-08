@@ -8,114 +8,157 @@
 #                           Chemistry specific units
 # ============================================================================ #
 
-import SIUnits: SIUnit, NonSIUnit, SIQuantity, NonSIQuantity, unit
+export unit_from, unit_to
 
-# ============================================================================ #
-# Non SI units
-export Calorie, Angstrom, Ångström, AtomicMass, Bar, Atmosphere
+const U_IN_KG = 1.660538782e-27
+const BOHR_RADIUS = 0.52917720859
+const NA = 6.02214179e23
 
-const Calorie = NonSIUnit{typeof(Joule),:cal}()
-Base.convert(::Type{SIQuantity},::typeof(Calorie)) = 4.184Joule
+# Associating unit and conversion factors
+const UNITS = Dict{AbstractString, Float64}(
+    # Distance units. The internal unit for distances is the Angstrom
+    "Å" => 1, "A"=> 1,
+    "nm" => 10, "pm" => 1.e-2, "fm" => 1.e-5, "m" => 1.e10,
+    "bohr" => BOHR_RADIUS,
+    # Time units. The internal unit is the femtosecond
+    "fs" => 1, "ps" => 1.e3, "ns" => 1.e6,
+    # Mass units. The internal unit is the unified atomic mass unit (u or Da)
+    "u" => 1, "Da" => 1, "Da" => 1,
+    "kDa" => 1.e3, "g" => 1.e-3 / U_IN_KG,
+    "kg" => 1 / U_IN_KG,
+    # Temperature units. The internal unit is the Kelvin
+    "K" => 1,
+    # Quantity of matter units. The internal unit is the mole.
+    "mol" => NA,
 
-const Angstrom = NonSIUnit{typeof(Meter),:Å}()
-Base.convert(::Type{SIQuantity},::typeof(Angstrom)) = 0.1Nano*Meter
+    # Angle units. The internal unit is the radian
+    "rad" => 1, "deg" => pi / 180,
 
-const AtomicMass = NonSIUnit{typeof(KiloGram),:amu}()
-Base.convert(::Type{SIQuantity},::typeof(AtomicMass)) = 1.660538921e-27KiloGram
+    # Energy units. The internal unit is "u*A^2/fs^2"
+    "J" => 1.e-10 / U_IN_KG, "kJ" => 1.e-7 / U_IN_KG,
+    "kcal" => 4.184 * 1.e-7 / U_IN_KG,
+    "eV" => 1.60217653e-19 * (1.e-10 / U_IN_KG),
+    "H" => 4.35974417e-18 * (1.e-10 / U_IN_KG),
+    "Ry" => (4.35974417e-18 / 2) * (1.e-10 / U_IN_KG),
 
-const Bar = NonSIUnit{typeof(Pascal),:bar}()
-Base.convert(::Type{SIQuantity},::typeof(Bar)) = 1e5Pascal
+    # Force unit. The internal unit is "u*A/fs^2""
+    "N" => 1.e-20 / U_IN_KG,
 
-const Atmosphere = NonSIUnit{typeof(Pascal),:atm}()
-Base.convert(::Type{SIQuantity},::typeof(Bar)) = 101325Pascal
-
-# UTF-8 version
-const Ångström = Angstrom
-
-# ============================================================================ #
-# Small names
-export kcal, AA, Å, pm, amu, bar, atm
-
-const kcal = Kilo * Calorie
-const AA = Angstrom
-const Å = Angstrom
-const pm = Pico * Meter
-const amu = AtomicMass
-const bar = Bar
-const atm = Atmosphere
-
-const NA = 6.02214129e23
-const mol = 1/NA
-
-
-# ============================================================================ #
-# Conversions from NonSIUnit
-/(x::NonSIUnit,y::NonSIQuantity) = convert(SIQuantity, x)/convert(SIQuantity, y)
-/(x::NonSIQuantity,y::NonSIUnit) = convert(SIQuantity, x)/convert(SIQuantity, y)
-/(x::SIQuantity,y::NonSIQuantity) = x/convert(SIQuantity, y)
-
-# ============================================================================ #
-# Utility functions
-
-export internal, with_unit
-
-type UnitError <: Exception
-    message::String
-end
-
-function Base.show(io::IO, e::UnitError)
-    show(io, "Unit conversion error: $(e.message)")
-end
-
-
-const INTERNAL_UNITS = Dict(
-    typeof(Meter) => Angstrom,
-    typeof(Second) => Femto*Second,
-    typeof(Meter/Second) => Angstrom/(Femto*Second),
-    typeof(KiloGram) => AtomicMass,
-    # Using non typed mol constant to allow for conversions
-    typeof(Joule) => Kilo*Joule/NA,
-    typeof(KiloGram*Meter/Second^2) => kcal/Angstrom,
-    typeof(Kelvin) => Kelvin,
+    # Pressure units. The internal unit is "" TODO
+    "Pa" => 1.e-40 / U_IN_KG, "kPa" => 1.e-37 / U_IN_KG,
+    "MPa" => 1.e-34 / U_IN_KG, "bar" => 1.e-35 / U_IN_KG,
+    "atm" => 101325 * 1.e-40 / U_IN_KG,
 )
 
-function internal(val::SIQuantity)
-    target_unit = nothing
-    res = 0.0
-    try
-        target_unit = INTERNAL_UNITS[typeof(unit(val))]
-    catch
-        throw(UnitError(
-            "Can not convert $(unit(val)) to internal representation"
-            ))
-    end
-
-    try
-        res = as(val, target_unit).val
-    catch e
-        try
-            res = val/target_unit
-        catch
-            throw(e)
-        end
-    end
-    return res
+type UnitError <: Exception
+    unit::AbstractString
+    message::AbstractString
 end
 
-internal(val::Real) = val
+UnitError(unit::AbstractString) = UnitError(unit, "")
 
-SI = Union(SIQuantity, NonSIQuantity, SIUnit, NonSIUnit)
-
-unit(u::SIUnit) = u
-
-function with_unit(value::Number, target_unit::SI)
-    internal_unit = nothing
-    try
-        internal_unit = INTERNAL_UNITS[typeof(unit(target_unit))]
-    catch
-        throw(UnitError(
-            "Can not find an internal representation for $target_unit"
-            ))
+function Base.show(io::IO, e::UnitError)
+    if e.message != ""
+        message = ". $(e.message)."
+    else
+        message = "."
     end
-    return value*internal_unit
+    show(io, "Unit conversion error. The unit was $(e.unit)$message")
+end
+
+# Recursive unit string parsing function
+function conversion(sub::AbstractString, unit::AbstractString)
+    const strlen = length(sub)
+
+    if strlen == 0
+        return 1
+    end
+
+    # First, check parentheses equilibration and any of '/' or '.' or '*' in the string
+    depth = 0  # parentheses counter
+    i = 0
+    for j=1:strlen
+        if sub[j] == '.' || sub[j] == '*' || isspace(sub[j]) || sub[j] == '/'
+            i = j
+        end
+
+        if sub[j] == '('
+            depth += 1
+        elseif sub[j] == ')'
+            depth -= 1
+        end
+
+        # No opening wihtout closing parentheses
+        depth < 0 ? throw(UnitError(unit, "Parentheses are not equilibrated")) : nothing
+    end
+    depth != 0 ? throw(UnitError(unit, "Parentheses are not equilibrated")) : nothing
+
+    # If a product character was found, recurse
+    if i > 0
+        lhs = conversion(sub[1:i-1], unit)
+        rhs = conversion(sub[i+1:end], unit)
+
+        if sub[i] == '/'
+            return lhs / rhs
+        elseif sub[j] == '.' || sub[j] == '*' || isspace(sub[j])
+            return lhs * rhs
+        else
+            throw(UnitError(unit, "Unrecognized binary operator: $(sub[i])"))
+        end
+    end
+
+    # Do we have an exponentiation?
+    j = strlen
+    while isdigit(sub[j]) || sub[j] == '-'
+        j -= 1
+    end
+    if sub[j] == '^'
+        i = j + 1
+        while isdigit(sub[i]) || sub[i] == '-'
+            i += 1
+            if i > strlen
+                i -= 1
+                break
+            end
+        end
+
+        power = tryparse(Int, sub[j+1:i])
+        isnull(power) ? throw(UnitError(unit)) : nothing
+        return ^(conversion(sub[1:j-1], unit), get(power))
+    end
+
+    # Are we enclosed by parentheses?
+    if sub[1] == '('
+        sub[end] != ')' ? throw(UnitError(unit), "Unbalanced parentheses") : nothing
+        return conversion(sub[2 : end - 1], unit)
+    end
+
+    # Now, we should have a know unit
+    if haskey(UNITS, sub)
+        return UNITS[sub]
+    else
+        throw(UnitError(unit))
+    end
+end
+
+conversion(unit::AbstractString) = conversion(unit, unit)
+
+@doc "
+`unit_from(val, unit)`
+
+Convert the numeric value `val` from the unit `unit` to the internal unit.
+" ->
+function unit_from(val::Number, unit::AbstractString)
+    factor = conversion(strip(unit))
+    return factor * val
+end
+
+@doc "
+`unit_to(val, unit)`
+
+Convert the numeric value `val` (in internal units) to the unit `unit`.
+" ->
+function unit_to(val::Number, unit::AbstractString)
+    factor = conversion(strip(unit))
+    return val / factor
 end
