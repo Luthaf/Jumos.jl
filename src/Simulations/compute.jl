@@ -34,7 +34,7 @@ immutable TemperatureCompute <: Compute end
 
 function Base.call(::TemperatureCompute, univ::Universe)
 	T = 0.0
-    K = kinetic_energy(univ)*1e-4
+    K = kinetic_energy(univ)
     natoms = size(univ.frame)
 	T = 1/kB * 2*K/(3*natoms)
 	univ.data[:temperature] = T
@@ -85,7 +85,7 @@ function kinetic_energy(univ::Universe)
 	@inbounds for i=1:natoms
 		K += 0.5 * univ.masses[i] * norm2(univ.frame.velocities[i])
 	end
-    return K*1e4  # TODO: better handling of energy conversions
+    return K
 end
 
 function potential_energy(univ::Universe)

@@ -16,7 +16,7 @@ function testing_universe_from_size(n)
     univ = Universe(UnitCell(side*2.0), top)
     setframe!(univ, frame)
 
-    add_interaction!(univ, LennardJones(0.8, 2.0), "He", "He")
+    add_interaction!(univ, LennardJones(unit_from(0.8, "kJ/mol"), unit_from(2.0, "A")), "He", "He")
     create_velocities!(univ, 300)
     return univ
 end

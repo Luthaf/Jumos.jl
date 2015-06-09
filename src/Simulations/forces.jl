@@ -9,18 +9,7 @@
 # ============================================================================ #
 
 export ForcesComputer, NaiveForces
-
 abstract ForcesComputer
-
-# TODO: More thought about this
-function force_array_to_internal!(a::Array3D)
-    for i=1:3
-        for j=1:length(a)
-            a.data[i, j] *= 1e-4
-        end
-    end
-    return a
-end
 
 # ============================================================================ #
 
@@ -70,5 +59,5 @@ function Base.call(::NaiveForces, univ::Universe, forces::Array3D)
             #TODO add bonds, angles and so on.
         end
     end
-    return force_array_to_internal!(forces)
+    return forces
 end
