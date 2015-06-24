@@ -5,10 +5,8 @@ function run_jumos()
     sim = Simulation(:MD, 1.0)
     universe = Universe(UnitCell(10.0), Topology("He-LJ.xyz"))
     positions_from_file!(universe, "He-LJ.xyz")
-    create_velocities!(universe, 300)  # Initialize at 300K
-
-    add_interaction!(universe, LennardJones(0.3, 2.0), "He", "He")
-
+    create_velocities!(universe, unit_from(300, "K"))
+    add_interaction!(universe, LennardJones(unit_from(0.3, "kJ/mol"), unit_from(2.0, "A")), "He", "He")
     propagate!(sim, universe, 5000)
     return toq()
 end

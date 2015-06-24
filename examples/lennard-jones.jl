@@ -7,7 +7,7 @@ using Jumos
 sim = Simulation(:MD, 1.0)
 
 # Create a cubic cell with a width of 10A
-cell = UnitCell(10.0)
+cell = UnitCell(unit_from(10.0, "A"))
 # Read a topology from a file
 topology = Topology("lennard-jones.xyz")
 # Create an universe from the cell and the topology
@@ -18,7 +18,11 @@ positions_from_file!(universe, "lennard-jones.xyz")
 create_velocities!(universe, 300)
 
 # Add Lennard-Jones interactions between He atoms
-add_interaction!(universe, LennardJones(0.8, 2.0), "He", "He")
+add_interaction!(
+    universe,
+    LennardJones(unit_from(0.2, "kJ/mol"), unit_from(2.0, "A")),
+    "He", "He"
+)
 
 # You can either bind algorithms to variables ...
 out_trajectory = TrajectoryOutput("LJ-trajectory.xyz", 1)
