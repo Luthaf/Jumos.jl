@@ -29,7 +29,7 @@ end
 
 function Base.write(traj::Writer{XYZWriter}, universe::Universe)
     header = traj.writer.header * "\n"
-    natoms = string(size(universe.frame.positions)) * "\n"
+    natoms = string(size(universe.frame.positions, 2)) * "\n"
     write(traj.writer.file, natoms)
     write(traj.writer.file, header)
     write_xyz_data(traj.writer.file, universe)
