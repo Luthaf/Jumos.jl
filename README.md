@@ -33,8 +33,8 @@ algorithms, and experiment with them.
 ## Features
 
 - Use your own potentials simply by providing a function;
-- Develop new algorithms for molecular dynamic with ease;
-- Run dynamic molecular dynamic from the REPL;
+- Develop new algorithms for molecular dynamics with ease;
+- Run dynamic molecular dynamics from the REPL;
 - Perform basic analysis of the run, and write your own analysis tools;
 - Read and analyse trajectories from previous run.
 
@@ -57,7 +57,7 @@ Many thanks to them !
 
 ### First run
 
-Their is a *first run* example in the
+There is a *first run* example in the
 [documentation](http://jumos.readthedocs.org/en/latest/simulations/usage-example.html),
 and some other example scripts in the `example` folder.
 
