@@ -9,6 +9,7 @@
 # ============================================================================ #
 
 module Jumos
+    warn("Jumos is deprecated! You should not use it. Please see cymbalum for a successor of Jumos: https://github.com/Luthaf/cymbalum")
     using Reexport
 
     @reexport module Units

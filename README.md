@@ -1,10 +1,20 @@
+# Jumos is deprecated!
+
+This was a nice experiment, but the Julia language does not appear to be be the right one
+for this code. I will not maintain this anymore, and I will not take any big reports.
+
+Even if it is deprecated, most of the ideas behind Jumos are now par of my new molecular
+simulation code: [cymbalum](https://github.com/Luthaf/cymbalum).
+
+The code is still available if you want to read it, use it or do whatever you want with it.
+
+---
+
 <div align="center">
     <a href="https://github.com/Luthaf/Jumos.jl">
         <img alt="Jumos Logo" src="https://raw.githubusercontent.com/Luthaf/Jumos.jl/502eee44bcaaf1d782b7628eed062c1de10d0938/doc/_static_/img/logo.png"></img>
     </a>
 </div>
-
----
 
 <div align="center">
     <a href="https://travis-ci.org/Luthaf/Jumos.jl" >
@@ -33,8 +43,8 @@ algorithms, and experiment with them.
 ## Features
 
 - Use your own potentials simply by providing a function;
-- Develop new algorithms for molecular dynamics with ease;
-- Run dynamic molecular dynamics from the REPL;
+- Develop new algorithms for molecular dynamic with ease;
+- Run dynamic molecular dynamic from the REPL;
 - Perform basic analysis of the run, and write your own analysis tools;
 - Read and analyse trajectories from previous run.
 
@@ -57,7 +67,7 @@ Many thanks to them !
 
 ### First run
 
-There is a *first run* example in the
+Their is a *first run* example in the
 [documentation](http://jumos.readthedocs.org/en/latest/simulations/usage-example.html),
 and some other example scripts in the `example` folder.
 
