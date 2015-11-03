@@ -1,9 +1,9 @@
 # Jumos is deprecated!
 
-This was a nice experiment, but the Julia language does not appear to be be the right one
-for this code. I will not maintain this anymore, and I will not take any big reports.
+This was a nice experiment, but the Julia language does not appear to be be the right language
+to use for this kind of code. I will not maintain this anymore.
 
-Even if it is deprecated, most of the ideas behind Jumos are now par of my new molecular
+Even if it is deprecated, most of the ideas behind Jumos are now part of my new molecular
 simulation code: [cymbalum](https://github.com/Luthaf/cymbalum).
 
 The code is still available if you want to read it, use it or do whatever you want with it.
