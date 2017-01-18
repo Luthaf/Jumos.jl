@@ -4,7 +4,7 @@ This was a nice experiment, but the Julia language does not appear to be be the 
 to use for this kind of code. I will not maintain this anymore.
 
 Even if it is deprecated, most of the ideas behind Jumos are now part of my new molecular
-simulation code: [cymbalum](https://github.com/Luthaf/cymbalum).
+simulation code: [lumol](https://github.com/lumol-org/lumol).
 
 The code is still available if you want to read it, use it or do whatever you want with it.
 
